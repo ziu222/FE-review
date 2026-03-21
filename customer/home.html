@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopHub - Customer Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="../asset/css/main.css">
+</head>
+<body>
+    <!-- Top Header/Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top" style="z-index: 101;">
+        <div class="container-fluid px-2 px-lg-5">
+            <!-- Logo -->
+            <a class="navbar-brand me-4" href="home.html">
+                <img src="../asset/img/logo.webp" alt=" Logo" height="40" class="logo-img me-2">
+                <span class="fw-bold fs-5">E-C Website</span>
+            </a>
+            
+            <!-- Center Navigation Links -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link fw-500" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-500" href="#">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-500" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-500" href="../login.html">Sign Up</a>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Right Side: Search, Wishlist, Cart -->
+            <div class="d-flex gap-3 align-items-center">
+                <div class="search-container-navbar">
+                    <input id="searchInput" type="text" class="form-control form-control-sm" placeholder="What are you looking for?" style="width: 200px;">
+                    <button class="btn btn-sm btn-light search-btn"><i class="fas fa-search"></i></button>
+                </div>
+                <a href="#" class="text-dark text-decoration-none">
+                    <i class="fas fa-heart fa-lg"></i>
+                </a>
+                <a href="#" class="text-dark position-relative text-decoration-none">
+                    <i class="fas fa-shopping-cart fa-lg"></i>
+                    <span id="cartCount" class="badge bg-danger position-absolute top-0 start-100 translate-middle" style="font-size: 0.65rem;">0</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section with Categories Sidebar and Slider -->
+        <div class="hero-section">
+            <div class="hero-container">
+                <!-- Left Sidebar Categories -->
+                <div class="categories-sidebar">
+                    <div class="category-item" data-category="all">
+                        <i class="fas fa-th-large me-2"></i>All Products
+                        <i class="fas fa-chevron-right ms-auto"></i>
+                    </div>
+                    <div class="category-item" data-category="electronics">
+                        <i class="fas fa-mobile-alt me-2"></i>Smartphones
+                        <i class="fas fa-chevron-right ms-auto"></i>
+                    </div>
+                    <div class="category-item" data-category="wearables">
+                        <i class="fas fa-watch me-2"></i>Wearables
+                        <i class="fas fa-chevron-right ms-auto"></i>
+                    </div>
+                    <div class="category-item" data-category="laptops">
+                        <i class="fas fa-laptop me-2"></i>Laptops
+                        <i class="fas fa-chevron-right ms-auto"></i>
+                    </div>
+                    <div class="category-item" data-category="audio">
+                        <i class="fas fa-headphones me-2"></i>Audio
+                        <i class="fas fa-chevron-right ms-auto"></i>
+                    </div>
+                    <div class="category-item" data-category="cameras">
+                        <i class="fas fa-camera me-2"></i>Cameras
+                        <i class="fas fa-chevron-right ms-auto"></i>
+                    </div>
+                    <div class="category-item" data-category="gaming">
+                        <i class="fas fa-gamepad me-2"></i>Gaming
+                        <i class="fas fa-chevron-right ms-auto"></i>
+                    </div>
+                </div>
+
+                <!-- Right Carousel Slider -->
+                <div class="carousel-wrapper">
+                    <div id="carouselSlider" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="../asset/img/home/slider1.webp" class="d-block carousel-img" alt="Slide 1">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="../asset/img/home/slider2.webp" class="d-block carousel-img" alt="Slide 2">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="../asset/img/home/slider3.webp" class="d-block carousel-img" alt="Slide 3">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="../asset/img/home/slider4.webp" class="d-block carousel-img" alt="Slide 4">
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselSlider" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselSlider" data-bs-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                        </button>
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#carouselSlider" data-bs-slide-to="0" class="active"></button>
+                            <button type="button" data-bs-target="#carouselSlider" data-bs-slide-to="1"></button>
+                            <button type="button" data-bs-target="#carouselSlider" data-bs-slide-to="2"></button>
+                            <button type="button" data-bs-target="#carouselSlider" data-bs-slide-to="3"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Promotion Popup Modal -->
+        <div class="modal fade" id="promotionModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0">
+                    <div class="modal-header bg-primary text-white border-0">
+                        <h5 class="modal-title fw-bold">🎁 Special Offer</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body text-center py-5">
+                        <h2 class="mb-3 text-primary fw-bold">Get 20% OFF</h2>
+                        <p class="text-muted mb-4">Limited time offer on all products!</p>
+                        <a href="#products" class="btn btn-primary btn-lg" data-bs-dismiss="modal">
+                            <i class="fas fa-shopping-bag me-2"></i>Shop Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- All Products Section -->
+        <section id="products" class="py-5 bg-light">
+            <div class="container-fluid px-3 px-lg-5">
+                <h4 class="fw-bold mb-2">All Products</h4>
+        <!-- Responsive -->
+                <div class="d-flex gap-2 mb-2 flex-wrap">
+                </div>
+
+                <!-- Product Grid -->
+                <div id="productContainer">
+                    <!-- Products will be rendered here by JavaScript -->
+                    <div class="col-12 text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container-fluid px-3 px-lg-5">
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <h5 class="fw-bold mb-3">ShopHub</h5>
+                    <p class="text-white-50">Your trusted online shopping destination for quality products.</p>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5 class="fw-bold mb-3">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="home.html" class="text-white-50 text-decoration-none">Home</a></li>
+                        <li class="mb-2"><a href="#products" class="text-white-50 text-decoration-none">Products</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5 class="fw-bold mb-3">Support</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Help Center</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Returns</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">FAQs</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5 class="fw-bold mb-3">Follow Us</h5>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-white-50 text-decoration-none"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="text-white-50 text-decoration-none"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-white-50 text-decoration-none"><i class="fab fa-instagram fa-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="bg-secondary my-4">
+            <p class="text-center text-white-50 mb-0">&copy; 2026 ShopHub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../asset/js/main.js"></script>
+</body>
+</html>
