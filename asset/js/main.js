@@ -6,7 +6,7 @@ const sampleProducts = [
         price: 1199,
         oldPrice: 1499,
     image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png",
-        category: "electronics",
+        category: "smartphones",
         rating: 4.8,
         reviews: 342
     },
@@ -15,8 +15,8 @@ const sampleProducts = [
         name: "Samsung Galaxy S24 Ultra",
         price: 1299,
         oldPrice: 1599,
-    image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png",
-        category: "electronics",
+    image: "https://cdn2.fptshop.com.vn/unsafe/512x0/filters:format(webp):quality(75)/2024_1_27_638419500119790990_samsung-galaxy-s24-ultra-xam-4.png",
+        category: "smartphones",
         rating: 4.7,
         reviews: 287
     },
@@ -25,8 +25,8 @@ const sampleProducts = [
         name: "Google Pixel 8 Pro",
         price: 999,
         oldPrice: 1299,
-    image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png",
-        category: "electronics",
+    image: "https://mobileworld.com.vn/uploads/product/Pixel_8_series/Pixel_8Pro_Black.jpg",
+        category: "smartphones",
         rating: 4.6,
         reviews: 215
     },
@@ -35,7 +35,7 @@ const sampleProducts = [
         name: "Apple Watch Ultra",
         price: 799,
         oldPrice: 999,
-    image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png",
+    image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:0/q:100/plain/https://cellphones.com.vn/media/wysiwyg/Dong-ho-thong-minh/Apple/Ultra-series/Ultra-3/apple-watch-ultra-49mm-5g-size-s-m-5.jpg",
         category: "wearables",
         rating: 4.9,
         reviews: 412
@@ -45,7 +45,7 @@ const sampleProducts = [
         name: "Samsung Galaxy Watch 6",
         price: 399,
         oldPrice: 599,
-    image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png",
+    image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/m/sm-r930_003_l_perspective_graphite_2_1.png",
         category: "wearables",
         rating: 4.6,
         reviews: 189
@@ -116,17 +116,8 @@ function calculateSavings(oldPrice, newPrice) {
     return oldPrice - newPrice;
 }
 
-function handleProductImageError(imgEl, productId) {
-    const isAlreadyFallback = imgEl.dataset.fallbackStep === "placeholder";
-    if (!isAlreadyFallback) {
-        imgEl.dataset.fallbackStep = "placeholder";
-        imgEl.src = `https://picsum.photos/seed/flagship-${productId}/400/300`;
-        return;
-    }
 
-    imgEl.onerror = null;
-    imgEl.src = "../asset/img/logo.webp";
-}
+
 
 
 

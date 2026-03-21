@@ -29,7 +29,7 @@
                         <a class="nav-link fw-500" href="#">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link fw-500" href="../login.html">Sign Up</a>
+                        <a class="nav-link fw-500" href="../login.html">Sign In</a>
                     </li>
                 </ul>
             </div>
@@ -115,25 +115,30 @@
         </div>
 
         <div class="modal fade" id="promotionModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content border-0">
-                    <div class="modal-header bg-primary text-white border-0">
-                        <h5 class="modal-title fw-bold">🎁 Special Offer</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body text-center py-5">
-                        <h2 class="mb-3 text-primary fw-bold">Get 20% OFF</h2>
-                        <p class="text-muted mb-4">Limited time offer on all products!</p>
-                        <a href="#products" class="btn btn-primary btn-lg" data-bs-dismiss="modal">
-                            <i class="fas fa-shopping-bag me-2"></i>Shop Now
-                        </a>
+            <div class="modal-dialog modal-dialog-centered modal-lg promo-modal-dialog">
+                <div class="modal-content promo-modal-content border-0 overflow-hidden">
+                    <button type="button" class="btn-close promo-modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="promo-modal-grid">
+                        <div class="promo-modal-visual">
+                            <img src="../asset/img/home/modal.jpg" alt="Special promotion" class="promo-modal-img">
+                        </div>
+                        <div class="promo-modal-copy">
+                            <span class="promo-badge">Limited Offer</span>
+                            <h2 class="promo-modal-title">Flash Sale Up To 20% OFF</h2>
+                            <p class="promo-modal-text">Unlock extra savings on selected products today. Tap below to explore handpicked deals.</p>
+                            <div class="promo-modal-actions">
+                                <a href="#" class="btn promo-modal-btn" data-bs-dismiss="modal">
+                                    <i class="fas fa-shopping-bag me-2"></i>Shop The Deals
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <section id="products" class="py-5 bg-light">
             <div class="container-fluid px-3 px-lg-5">
-                <h4 class="fw-bold mb-2">All Products</h4>
+                <h4 class="fw-bold mb-2">Flash Sale</h4>
                 <div class="d-flex gap-2 mb-2 flex-wrap">
                 </div>
 
