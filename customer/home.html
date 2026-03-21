@@ -10,16 +10,13 @@
     <link rel="stylesheet" href="../asset/css/main.css">
 </head>
 <body>
-    <!-- Top Header/Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top" style="z-index: 101;">
         <div class="container-fluid px-2 px-lg-5">
-            <!-- Logo -->
             <a class="navbar-brand me-4" href="home.html">
                 <img src="../asset/img/logo.webp" alt=" Logo" height="40" class="logo-img me-2">
                 <span class="fw-bold fs-5">E-C Website</span>
             </a>
             
-            <!-- Center Navigation Links -->
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
@@ -37,7 +34,6 @@
                 </ul>
             </div>
             
-            <!-- Right Side: Search, Wishlist, Cart -->
             <div class="d-flex gap-3 align-items-center">
                 <div class="search-container-navbar">
                     <input id="searchInput" type="text" class="form-control form-control-sm" placeholder="What are you looking for?" style="width: 200px;">
@@ -55,42 +51,36 @@
     </nav>
 
     <main>
-        <!-- Hero Section with Categories Sidebar and Slider -->
         <div class="hero-section">
             <div class="hero-container">
-                <!-- Left Sidebar Categories -->
                 <div class="categories-sidebar">
-                    <div class="category-item" data-category="all">
-                        <i class="fas fa-th-large me-2"></i>All Products
-                        <i class="fas fa-chevron-right ms-auto"></i>
-                    </div>
                     <div class="category-item" data-category="electronics">
-                        <i class="fas fa-mobile-alt me-2"></i>Smartphones
+                        <img src="../asset/img/home/categoriesSmartphone.png" alt="Smartphones" class="category-icon">Smartphones
                         <i class="fas fa-chevron-right ms-auto"></i>
                     </div>
+                  
                     <div class="category-item" data-category="wearables">
-                        <i class="fas fa-watch me-2"></i>Wearables
+                        <img src="../asset/img/home/categoriesWearables.png" alt="Wearables" class="category-icon">Wearables
                         <i class="fas fa-chevron-right ms-auto"></i>
                     </div>
                     <div class="category-item" data-category="laptops">
-                        <i class="fas fa-laptop me-2"></i>Laptops
+                        <img src="../asset/img/home/categoriesLaptop.png" alt="Laptops" class="category-icon">Laptops
                         <i class="fas fa-chevron-right ms-auto"></i>
                     </div>
                     <div class="category-item" data-category="audio">
-                        <i class="fas fa-headphones me-2"></i>Audio
+                        <img src="../asset/img/home/categoriesAudiopng.png" alt="Audio" class="category-icon">Audio
                         <i class="fas fa-chevron-right ms-auto"></i>
                     </div>
                     <div class="category-item" data-category="cameras">
-                        <i class="fas fa-camera me-2"></i>Cameras
+                        <img src="../asset/img/home/categoriesCamera.png" alt="Cameras" class="category-icon">Cameras
                         <i class="fas fa-chevron-right ms-auto"></i>
                     </div>
                     <div class="category-item" data-category="gaming">
-                        <i class="fas fa-gamepad me-2"></i>Gaming
+                        <img src="../asset/img/home/categoriesGaming.png" alt="Gaming" class="category-icon">Gaming
                         <i class="fas fa-chevron-right ms-auto"></i>
                     </div>
                 </div>
 
-                <!-- Right Carousel Slider -->
                 <div class="carousel-wrapper">
                     <div id="carouselSlider" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000">
                         <div class="carousel-inner">
@@ -124,7 +114,6 @@
             </div>
         </div>
 
-        <!-- Promotion Popup Modal -->
         <div class="modal fade" id="promotionModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content border-0">
@@ -142,17 +131,13 @@
                 </div>
             </div>
         </div>
-        <!-- All Products Section -->
         <section id="products" class="py-5 bg-light">
             <div class="container-fluid px-3 px-lg-5">
                 <h4 class="fw-bold mb-2">All Products</h4>
-        <!-- Responsive -->
                 <div class="d-flex gap-2 mb-2 flex-wrap">
                 </div>
 
-                <!-- Product Grid -->
                 <div id="productContainer">
-                    <!-- Products will be rendered here by JavaScript -->
                     <div class="col-12 text-center py-5">
                         <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">Loading...</span>
@@ -164,7 +149,6 @@
     </main>
 
 
-    <!-- Footer -->
     <footer class="bg-dark text-white py-5 mt-5">
         <div class="container-fluid px-3 px-lg-5">
             <div class="row">
