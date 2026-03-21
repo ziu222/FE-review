@@ -58,20 +58,13 @@ let currentCategory = 'all';
 let cart = [];
 let hasShownPromotionPopup = false;
 
-// ==================== DATA MANAGEMENT ====================
 
-/**
- * Initialize products from sample data (in-memory only)
- */
 function initializeProducts() {
     allProducts = sampleProducts.map((product) => ({ ...product }));
     filteredProducts = [...allProducts];
     console.log("✅ Products initialized from sample data");
 }
 
-/**
- * Add a new product and re-render product cards
- */
 function addProduct(productData) {
     const nextId = allProducts.length > 0
         ? Math.max(...allProducts.map((p) => Number(p.id) || 0)) + 1
@@ -98,11 +91,7 @@ function addProduct(productData) {
 
 
 
-// ==================== POPUP MANAGEMENT ====================
 
-/**
- * Show promotion popup only once per page load
- */
 function showPromotionPopup() {
     if (!hasShownPromotionPopup) {
         const modal = new bootstrap.Modal(document.getElementById("promotionModal"));
@@ -112,34 +101,21 @@ function showPromotionPopup() {
     }
 }
 
-// ==================== PRODUCT RENDERING ====================
 
-/**
- * Calculate discount percentage
- */
 function calculateDiscount(oldPrice, newPrice) {
     if (!oldPrice || oldPrice <= newPrice) return 0;
     return Math.round(((oldPrice - newPrice) / oldPrice) * 100);
 }
 
-/**
- * Format price with commas (US format)
- */
 function formatPrice(price) {
     return price.toLocaleString('en-US');
 }
 
-/**
- * Calculate savings
- */
 function calculateSavings(oldPrice, newPrice) {
     if (!oldPrice || oldPrice <= newPrice) return 0;
     return oldPrice - newPrice;
 }
 
-/**
- * Product image fallback chain
- */
 function handleProductImageError(imgEl, productId) {
     const isAlreadyFallback = imgEl.dataset.fallbackStep === "placeholder";
     if (!isAlreadyFallback) {
@@ -154,16 +130,12 @@ function handleProductImageError(imgEl, productId) {
 
 
 
-/**
- * Render product showcase section (horizontal scroll)
- */
 function renderProductShowcase() {
     const container = document.getElementById("showcaseProducts");
     if (!container) return;
 
     container.innerHTML = "";
 
-    // Flagship showcase focuses on electronics category
     const showcase = allProducts.filter(p => p.category === "electronics").slice(0, 6);
 
     showcase.forEach(product => {
@@ -190,9 +162,6 @@ function renderProductShowcase() {
     console.log(`✅ Rendered ${showcase.length} showcase products`);
 }
 
-/**
- * Render products to the DOM
- */
 function renderProducts(products) {
     const container = document.getElementById("productContainer");
 
@@ -224,10 +193,8 @@ function renderProducts(products) {
         const card = document.createElement("div");
         card.className = "card product-card h-100 position-relative";
         card.innerHTML = `
-            <!-- Discount Badge -->
             ${discount > 0 ? `<div class="product-discount-badge">-${discount}%</div>` : ''}
             
-            <!-- Action Icons (Wishlist & View) -->
             <div class="product-actions">
                 <button class="action-btn wishlist-btn" title="Add to Wishlist">
                     <i class="fas fa-heart"></i>
@@ -237,22 +204,18 @@ function renderProducts(products) {
                 </button>
             </div>
             
-            <!-- Product Image -->
             <div class="product-image-wrapper">
                 <img src="${product.image}" alt="${product.name}" class="product-card-img product-card-img-crop" onerror="handleProductImageError(this, ${product.id})">
             </div>
             
-            <!-- Product Info -->
             <div class="product-card-body">
                 <h6 class="product-name">${product.name}</h6>
                 
-                <!-- Pricing -->
                 <div class="product-price-section">
                     <span class="product-price-new">$${formatPrice(product.price)}</span>
                     ${product.oldPrice ? `<span class="product-price-old">$${formatPrice(product.oldPrice)}</span>` : ''}
                 </div>
                 
-                <!-- Rating -->
                 <div class="product-rating">
                     <div class="stars">${stars}</div>
                     <span class="review-count">(${product.reviews})</span>
@@ -267,9 +230,6 @@ function renderProducts(products) {
     console.log(`✅ Rendered ${products.length} product(s)`);
 }
 
-/**
- * Generate star rating HTML
- */
 function generateStarRating(rating) {
     let stars = '';
     const fullStars = Math.floor(rating);
@@ -288,11 +248,7 @@ function generateStarRating(rating) {
     return stars;
 }
 
-// ==================== FILTERING ====================
 
-/**
- * Filter products by category
- */
 function filterProducts(category) {
     currentCategory = category;
 
@@ -306,9 +262,6 @@ function filterProducts(category) {
     console.log(`🔍 Filtered by category: ${category} (${filteredProducts.length} products)`);
 }
 
-/**
- * Search products by name
- */
 function searchProducts(query) {
     const lowerQuery = query.toLowerCase().trim();
 
@@ -321,7 +274,6 @@ function searchProducts(query) {
         );
     }
 
-    // Apply current category filter on top of search
     if (currentCategory !== 'all') {
         filteredProducts = filteredProducts.filter(p => p.category === currentCategory);
     }
@@ -330,23 +282,14 @@ function searchProducts(query) {
     console.log(`🔎 Search: "${query}" (${filteredProducts.length} results)`);
 }
 
-// ==================== CART MANAGEMENT ====================
 
-/**
- * View product details (placeholder - will be implemented later)
- */
 function viewProduct(productId) {
     console.log(`👁️ View product ${productId}`);
     alert("Product details page coming soon!");
 }
 
-// ==================== EVENT LISTENERS ====================
 
-/**
- * Initialize all event listeners
- */
 function initializeEventListeners() {
-    // Category filter buttons
     document.querySelectorAll(".filter-btn").forEach(button => {
         button.addEventListener("click", function () {
             document.querySelectorAll(".filter-btn").forEach(btn => {
@@ -359,7 +302,6 @@ function initializeEventListeners() {
         });
     });
 
-    // Sidebar category items
     document.querySelectorAll(".category-item").forEach(item => {
         item.addEventListener("click", function () {
             document.querySelectorAll(".category-item").forEach(el => {
@@ -370,7 +312,6 @@ function initializeEventListeners() {
             const category = this.getAttribute("data-category");
             filterProducts(category);
 
-            // Also update main filter buttons
             document.querySelectorAll(".filter-btn").forEach(btn => {
                 btn.classList.remove("active");
                 if (btn.getAttribute("data-category") === category) {
@@ -380,7 +321,6 @@ function initializeEventListeners() {
         });
     });
 
-    // Search functionality
     const searchInput = document.getElementById("searchInput");
     if (searchInput) {
         searchInput.addEventListener("keyup", function () {
@@ -391,32 +331,23 @@ function initializeEventListeners() {
     console.log("✅ Event listeners initialized");
 }
 
-// ==================== INITIALIZATION ====================
 
-/**
- * Initialize the application
- */
 function initializeApp() {
     console.log("🚀 Initializing ShopHub E-Commerce (MegaMart Style)...");
 
-    // Initialize data
     initializeProducts();
 
-    // Show popup on first visit
     showPromotionPopup();
 
-    // Render product showcase and products
     renderProductShowcase();
     renderProducts(allProducts);
 
-    // Setup event listeners
     initializeEventListeners();
 
     console.log("✅ ShopHub E-Commerce initialized successfully!");
     console.log(`📦 Total products: ${allProducts.length}`);
 }
 
-// ==================== RUN ON PAGE LOAD ====================
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeApp);
@@ -424,7 +355,6 @@ if (document.readyState === 'loading') {
     initializeApp();
 }
 
-// Export functions for global access
 window.viewProduct = viewProduct;
 window.filterProducts = filterProducts;
 window.searchProducts = searchProducts;
