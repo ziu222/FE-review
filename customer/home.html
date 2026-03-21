@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="../asset/css/main.css">
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top" style="z-index: 101;">
         <div class="container-fluid px-2 px-lg-5">
@@ -16,7 +18,7 @@
                 <img src="../asset/img/logo.webp" alt=" Logo" height="40" class="logo-img me-2">
                 <span class="fw-bold fs-5">E-C Website</span>
             </a>
-            
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
@@ -33,10 +35,11 @@
                     </li>
                 </ul>
             </div>
-            
+
             <div class="d-flex gap-3 align-items-center">
                 <div class="search-container-navbar">
-                    <input id="searchInput" type="text" class="form-control form-control-sm" placeholder="What are you looking for?" style="width: 200px;">
+                    <input id="searchInput" type="text" class="form-control form-control-sm"
+                        placeholder="What are you looking for?" style="width: 200px;">
                     <button class="btn btn-sm btn-light search-btn"><i class="fas fa-search"></i></button>
                 </div>
                 <a href="#" class="text-dark text-decoration-none">
@@ -44,7 +47,8 @@
                 </a>
                 <a href="#" class="text-dark position-relative text-decoration-none">
                     <i class="fas fa-shopping-cart fa-lg"></i>
-                    <span id="cartCount" class="badge bg-danger position-absolute top-0 start-100 translate-middle" style="font-size: 0.65rem;">0</span>
+                    <span id="cartCount" class="badge bg-danger position-absolute top-0 start-100 translate-middle"
+                        style="font-size: 0.65rem;">0</span>
                 </a>
             </div>
         </div>
@@ -55,12 +59,14 @@
             <div class="hero-container">
                 <div class="categories-sidebar">
                     <div class="category-item" data-category="electronics">
-                        <img src="../asset/img/home/categoriesSmartphone.png" alt="Smartphones" class="category-icon">Smartphones
+                        <img src="../asset/img/home/categoriesSmartphone.png" alt="Smartphones"
+                            class="category-icon">Smartphones
                         <i class="fas fa-chevron-right ms-auto"></i>
                     </div>
-                  
+
                     <div class="category-item" data-category="wearables">
-                        <img src="../asset/img/home/categoriesWearables.png" alt="Wearables" class="category-icon">Wearables
+                        <img src="../asset/img/home/categoriesWearables.png" alt="Wearables"
+                            class="category-icon">Wearables
                         <i class="fas fa-chevron-right ms-auto"></i>
                     </div>
                     <div class="category-item" data-category="laptops">
@@ -82,7 +88,8 @@
                 </div>
 
                 <div class="carousel-wrapper">
-                    <div id="carouselSlider" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000">
+                    <div id="carouselSlider" class="carousel slide carousel-fade" data-bs-ride="carousel"
+                        data-bs-interval="3000">
                         <div class="carousel-inner">
                             <div class="carousel-item active">
                                 <img src="../asset/img/home/slider1.webp" class="d-block carousel-img" alt="Slide 1">
@@ -97,14 +104,17 @@
                                 <img src="../asset/img/home/slider4.webp" class="d-block carousel-img" alt="Slide 4">
                             </div>
                         </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselSlider" data-bs-slide="prev">
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselSlider"
+                            data-bs-slide="prev">
                             <span class="carousel-control-prev-icon"></span>
                         </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselSlider" data-bs-slide="next">
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselSlider"
+                            data-bs-slide="next">
                             <span class="carousel-control-next-icon"></span>
                         </button>
                         <div class="carousel-indicators">
-                            <button type="button" data-bs-target="#carouselSlider" data-bs-slide-to="0" class="active"></button>
+                            <button type="button" data-bs-target="#carouselSlider" data-bs-slide-to="0"
+                                class="active"></button>
                             <button type="button" data-bs-target="#carouselSlider" data-bs-slide-to="1"></button>
                             <button type="button" data-bs-target="#carouselSlider" data-bs-slide-to="2"></button>
                             <button type="button" data-bs-target="#carouselSlider" data-bs-slide-to="3"></button>
@@ -117,7 +127,8 @@
         <div class="modal fade" id="promotionModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-dialog-centered modal-lg promo-modal-dialog">
                 <div class="modal-content promo-modal-content border-0 overflow-hidden">
-                    <button type="button" class="btn-close promo-modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close promo-modal-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                     <div class="promo-modal-grid">
                         <div class="promo-modal-visual">
                             <img src="../asset/img/home/modal.jpg" alt="Special promotion" class="promo-modal-img">
@@ -125,7 +136,8 @@
                         <div class="promo-modal-copy">
                             <span class="promo-badge">Limited Offer</span>
                             <h2 class="promo-modal-title">Flash Sale Up To 20% OFF</h2>
-                            <p class="promo-modal-text">Unlock extra savings on selected products today. Tap below to explore handpicked deals.</p>
+                            <p class="promo-modal-text">Unlock extra savings on selected products today. Tap below to
+                                explore handpicked deals.</p>
                             <div class="promo-modal-actions">
                                 <a href="#" class="btn promo-modal-btn" data-bs-dismiss="modal">
                                     <i class="fas fa-shopping-bag me-2"></i>Shop The Deals
@@ -154,44 +166,71 @@
     </main>
 
 
-    <footer class="bg-dark text-white py-5 mt-5">
-        <div class="container-fluid px-3 px-lg-5">
-            <div class="row">
-                <div class="col-md-3 mb-4">
-                    <h5 class="fw-bold mb-3">ShopHub</h5>
-                    <p class="text-white-50">Your trusted online shopping destination for quality products.</p>
+    <footer class="site-footer text-white mt-5">
+        <div class="container-fluid px-3 px-lg-5 footer-main">
+            <div class="row gy-4">
+                <div class="col-12 col-sm-6 col-lg-3 col-xl-2">
+                    <h5 class="footer-title">Exclusive</h5>
+                    <h6 class="footer-subtitle">Subscribe</h6>
+                    <p class="footer-muted mb-3">Get 10% off your first order</p>
+                    <form class="footer-subscribe-form" action="#" method="post">
+                        <input type="email" class="footer-subscribe-input" placeholder="Enter your email"
+                            aria-label="Enter your email">
+                        <button type="submit" class="footer-subscribe-btn" aria-label="Submit email">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
                 </div>
-                <div class="col-md-3 mb-4">
-                    <h5 class="fw-bold mb-3">Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="home.html" class="text-white-50 text-decoration-none">Home</a></li>
-                        <li class="mb-2"><a href="#products" class="text-white-50 text-decoration-none">Products</a></li>
-                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Contact</a></li>
+
+                <div class="col-12 col-sm-6 col-lg-3 col-xl-2">
+                    <h5 class="footer-title">Support</h5>
+                    <p class="footer-muted mb-2">1 Nguyen Hue Street, Ho Chi Minh City, Vietnam</p>
+                    <p class="footer-muted mb-2">btn2812@gmail.com</p>
+                    <p class="footer-muted mb-0">0123456789</p>
+                </div>
+
+                <div class="col-6 col-sm-6 col-lg-2 col-xl-2">
+                    <h5 class="footer-title">Account</h5>
+                    <ul class="footer-links list-unstyled mb-0">
+                        <li><a href="#">My Account</a></li>
+                        <li><a href="#">Login / Register</a></li>
+                        <li><a href="#">Cart</a></li>
                     </ul>
                 </div>
-                <div class="col-md-3 mb-4">
-                    <h5 class="fw-bold mb-3">Support</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Help Center</a></li>
-                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Returns</a></li>
-                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">FAQs</a></li>
+
+                <div class="col-6 col-sm-6 col-lg-2 col-xl-2">
+                    <h5 class="footer-title">Quick Link</h5>
+                    <ul class="footer-links list-unstyled mb-0">
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms Of Use</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Contact</a></li>
                     </ul>
                 </div>
-                <div class="col-md-3 mb-4">
-                    <h5 class="fw-bold mb-3">Follow Us</h5>
-                    <div class="d-flex gap-3">
-                        <a href="#" class="text-white-50 text-decoration-none"><i class="fab fa-facebook fa-lg"></i></a>
-                        <a href="#" class="text-white-50 text-decoration-none"><i class="fab fa-twitter fa-lg"></i></a>
-                        <a href="#" class="text-white-50 text-decoration-none"><i class="fab fa-instagram fa-lg"></i></a>
+
+                <div class="col-12 col-lg-2 col-xl-4">
+                    <h5 class="footer-title">Download App</h5>
+                    <p class="footer-muted footer-app-note mb-2">Save $3 with App New User Only</p>
+                    <div class="footer-app-wrap">
+                        <img src="../asset/img/home/qrfooter.png" alt="QR code" class="footer-qr-img">
+                        <img src="../asset/img/home/downloadframe.png" alt="Download links" class="footer-download-img">
+                    </div>
+                    <div class="footer-socials d-flex gap-4 mt-3">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
             </div>
-            <hr class="bg-secondary my-4">
-            <p class="text-center text-white-50 mb-0">&copy; 2026 ShopHub. All rights reserved.</p>
+        </div>
+        <div class="footer-bottom">
+            <p class="mb-0">&copy; Copyright EC 2026. All right reserved</p>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../asset/js/main.js"></script>
 </body>
+
 </html>
