@@ -1,12 +1,13 @@
-
+//Anh add thêm ảnh nha em làm biếng quá :DDD
+//Local Storage cua products 
 const sampleProducts = [
     {
         id: 1,
         name: "iPhone 15 Pro Max",
         price: 1199,
         oldPrice: 1499,
-    image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png",
-        category: "smartphones",
+    image: "../asset/img/home/ip15PM.webp",
+        category: "smartphone",
         rating: 4.8,
         reviews: 342
     },
@@ -16,7 +17,7 @@ const sampleProducts = [
         price: 1299,
         oldPrice: 1599,
     image: "https://cdn2.fptshop.com.vn/unsafe/512x0/filters:format(webp):quality(75)/2024_1_27_638419500119790990_samsung-galaxy-s24-ultra-xam-4.png",
-        category: "smartphones",
+        category: "smartphone",
         rating: 4.7,
         reviews: 287
     },
@@ -25,8 +26,8 @@ const sampleProducts = [
         name: "Google Pixel 8 Pro",
         price: 999,
         oldPrice: 1299,
-    image: "https://mobileworld.com.vn/uploads/product/Pixel_8_series/Pixel_8Pro_Black.jpg",
-        category: "smartphones",
+    image: "../asset/img/home/pixel8.png",
+        category: "smartphone",
         rating: 4.6,
         reviews: 215
     },
@@ -35,7 +36,7 @@ const sampleProducts = [
         name: "Apple Watch Ultra",
         price: 799,
         oldPrice: 999,
-    image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:0:0/q:100/plain/https://cellphones.com.vn/media/wysiwyg/Dong-ho-thong-minh/Apple/Ultra-series/Ultra-3/apple-watch-ultra-49mm-5g-size-s-m-5.jpg",
+        image: "https://cdn.tgdd.vn/Products/Images/7077/329717/s16/apple-watch-ultra-2-gps-cellular-49mm-vien-titanium-day-ocean-den-650x650.png",
         category: "wearables",
         rating: 4.9,
         reviews: 412
@@ -49,6 +50,156 @@ const sampleProducts = [
         category: "wearables",
         rating: 4.6,
         reviews: 189
+    },
+    {
+        id: 6,
+        name: "Dell XPS 15",
+        price: 1699,
+        oldPrice: 1999,
+        image: "../asset/img/home/ip15PM.webp",
+        category: "laptops",
+        rating: 4.7,
+        reviews: 226
+    },
+    {
+        id: 7,
+        name: "MacBook Air M3",
+        price: 1399,
+        oldPrice: 1599,
+        image: "../asset/img/home/ip15PM.webp",
+        category: "laptops",
+        rating: 4.8,
+        reviews: 378
+    },
+    {
+        id: 8,
+        name: "ASUS ROG Zephyrus G14",
+        price: 1499,
+        oldPrice: 1799,
+        image: "../asset/img/home/ip15PM.webp",
+        category: "laptops",
+        rating: 4.7,
+        reviews: 244
+    },
+    {
+        id: 9,
+        name: "Sony WH-1000XM5",
+        price: 329,
+        oldPrice: 399,
+        image: "../asset/img/home/ip15PM.webp",
+        category: "audio",
+        rating: 4.8,
+        reviews: 512
+    },
+    {
+        id: 10,
+        name: "Bose QuietComfort Ultra",
+        price: 349,
+        oldPrice: 429,
+        image: "../asset/img/home/ip15PM.webp",
+        category: "audio",
+        rating: 4.7,
+        reviews: 294
+    },
+    {
+        id: 11,
+        name: "JBL Charge 5",
+        price: 149,
+        oldPrice: 199,
+        image: "../asset/img/home/ip15PM.webp",
+        category: "audio",
+        rating: 4.5,
+        reviews: 318
+    },
+    {
+        id: 12,
+        name: "Canon EOS R50",
+        price: 879,
+        oldPrice: 999,
+        image: "../asset/img/home/ip15PM.webp",
+        category: "cameras",
+        rating: 4.6,
+        reviews: 141
+    },
+    {
+        id: 13,
+        name: "Sony Alpha A7 IV",
+        price: 2299,
+        oldPrice: 2599,
+        image: "../asset/img/home/ip15PM.webp",
+        category: "cameras",
+        rating: 4.9,
+        reviews: 187
+    },
+    {
+        id: 14,
+        name: "GoPro HERO12 Black",
+        price: 399,
+        oldPrice: 499,
+        image: "../asset/img/home/ip15PM.webp",
+        category: "cameras",
+        rating: 4.6,
+        reviews: 263
+    },
+    {
+        id: 15,
+        name: "PlayStation 5 Slim",
+        price: 499,
+        oldPrice: 599,
+        image: "../asset/img/home/ip15PM.webp",
+        category: "gaming",
+        rating: 4.8,
+        reviews: 640
+    },
+    {
+        id: 16,
+        name: "Xbox Series X",
+        price: 489,
+        oldPrice: 569,
+        image: "../asset/img/home/ip15PM.webp",
+        category: "gaming",
+        rating: 4.7,
+        reviews: 472
+    },
+    {
+        id: 17,
+        name: "Nintendo Switch OLED",
+        price: 329,
+        oldPrice: 379,
+        image: "../asset/img/home/ip15PM.webp",
+        category: "gaming",
+        rating: 4.8,
+        reviews: 558
+    },
+    {
+        id: 18,
+        name: "Anker 737 Power Bank",
+        price: 139,
+        oldPrice: 179,
+        image: "../asset/img/home/ip15PM.webp",
+        category: "smartphone",
+        rating: 4.5,
+        reviews: 203
+    },
+    {
+        id: 19,
+        name: "Logitech MX Master 3S",
+        price: 99,
+        oldPrice: 129,
+        image: "../asset/img/home/ip15PM.webp",
+        category: "smartphone",
+        rating: 4.7,
+        reviews: 431
+    },
+    {
+        id: 20,
+        name: "Kindle Paperwhite 11th Gen",
+        price: 149,
+        oldPrice: 189,
+        image: "../asset/img/home/ip15PM.webp",
+        category: "smartphone",
+        rating: 4.6,
+        reviews: 356
     }
 ];
 
@@ -76,7 +227,7 @@ function addProduct(productData) {
         price: Number(productData.price) || 0,
         oldPrice: Number(productData.oldPrice) || Number(productData.price) || 0,
         image: productData.image || "https://picsum.photos/seed/new-product/800/600",
-        category: productData.category || "electronics",
+        category: productData.category || "smartphone",
         rating: Number(productData.rating) || 4.5,
         reviews: Number(productData.reviews) || 0
     };
@@ -116,9 +267,14 @@ function calculateSavings(oldPrice, newPrice) {
     return oldPrice - newPrice;
 }
 
+// function check link file img chan loopback
+function handleProductImageError(imageEl) {
+    if (!imageEl) return;
+    if (imageEl.dataset.fallbackApplied === "1") return;
 
-
-
+    imageEl.dataset.fallbackApplied = "1";
+    imageEl.src = "../asset/img/404.png";
+}
 
 
 function renderProductShowcase() {
@@ -127,7 +283,7 @@ function renderProductShowcase() {
 
     container.innerHTML = "";
 
-    const showcase = allProducts.filter(p => p.category === "electronics").slice(0, 6);
+    const showcase = allProducts.filter(p => p.category === "smartphone").slice(0, 6);
 
     showcase.forEach(product => {
         const discount = calculateDiscount(product.oldPrice, product.price);
