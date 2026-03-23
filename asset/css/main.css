@@ -25,15 +25,25 @@
 
 html {
     scroll-behavior: smooth;
+    overflow-x: clip;
 }
 
 body {
     font-family: 'Manrope', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--text-color);
+    overflow-x: hidden;
     background:
         radial-gradient(circle at 0% 0%, #e6f6f4 0%, rgba(230, 246, 244, 0) 45%),
         radial-gradient(circle at 95% 10%, #fff0e8 0%, rgba(255, 240, 232, 0) 42%),
         var(--light-bg);
+}
+
+.font-headline {
+    font-family: 'Manrope', sans-serif;
+}
+
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
 /* ============= TOP HEADER/NAVBAR ============= */
@@ -42,6 +52,10 @@ body {
     border-bottom: 1px solid #dce5ef;
     background: rgba(255, 255, 255, 0.86) !important;
     backdrop-filter: blur(8px);
+}
+
+.nav-z-top {
+    z-index: 101;
 }
 
 .navbar-brand {
@@ -68,28 +82,14 @@ body {
     font-weight: 600;
     transition: color 0.25s ease;
     position: relative;
+    z-index:120;
 }
 
 .navbar-nav .nav-link:hover {
     color: var(--primary-color) !important;
 }
 
-.navbar-nav .nav-link::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -2px;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.25s ease;
-}
 
-.navbar-nav .nav-link:hover::after {
-    transform: scaleX(1);
-}
 
 .search-container-navbar {
     position: relative;
@@ -105,6 +105,10 @@ body {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
     background: #f7fafc;
+}
+
+.navbar-search-input {
+    width: 200px;
 }
 
 .search-container-navbar input:focus {
@@ -630,7 +634,6 @@ body {
     }
 }
 
-/* ============= OFFER SECTION ============= */
 #products {
     background: linear-gradient(180deg, #f7fafc 0%, #eef4fa 100%);
     min-height: 600px;
@@ -660,7 +663,6 @@ body {
     margin-bottom: 1.5rem;
 }
 
-/* Product Grid */
 #productContainer {
     display: flex;
     flex-wrap: nowrap;
@@ -1086,6 +1088,10 @@ body {
     font-weight: bold;
 }
 
+.cart-count-badge {
+    font-size: 0.65rem;
+}
+
 .no-products {
     text-align: center;
     padding: 3rem 1rem;
@@ -1134,22 +1140,4 @@ button, a {
     .top-header, .category-nav, footer {
         display: none;
     }
-}
-
-/* Scrollbar styling */
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-::-webkit-scrollbar-track {
-    background: #e2e8f0;
-}
-
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, var(--primary-color), var(--accent-color));
-    border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, var(--primary-strong), #ea580c);
 }

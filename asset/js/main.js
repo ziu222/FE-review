@@ -56,7 +56,7 @@ const sampleProducts = [
         name: "Dell XPS 15",
         price: 1699,
         oldPrice: 1999,
-        image: "../asset/img/home/ip15PM.webp",
+        image: "../asset/img/home/ip15PM.png",
         category: "laptops",
         rating: 4.7,
         reviews: 226

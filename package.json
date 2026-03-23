@@ -1,0 +1,29 @@
+{
+  "name": "ck",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:tw": "tailwindcss -i ./asset/css/tailwind-input.css -o ./asset/css/tailwind-built.css --minify",
+    "watch:tw": "tailwindcss -i ./asset/css/tailwind-input.css -o ./asset/css/tailwind-built.css --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ziu222/FE-review.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ziu222/FE-review/issues"
+  },
+  "homepage": "https://github.com/ziu222/FE-review#readme",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.2.2",
+    "autoprefixer": "^10.4.27",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.2"
+  }
+}
