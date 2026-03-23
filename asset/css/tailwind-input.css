@@ -1,0 +1,61 @@
+@custom-variant dark (&:where(.dark, .dark *));
+@import "tailwindcss/theme";
+@import "tailwindcss/utilities";
+
+@source "../../customer/**/*.html";
+@source "../../components/**/*.html";
+@source "../../newhtml.md";
+
+@theme {
+  --color-tertiary-container: #4c5c78;
+  --color-on-tertiary-fixed: #091c35;
+  --color-surface-container-high: #e7e8ea;
+  --color-on-primary-fixed: #002020;
+  --color-outline-variant: #bec9c8;
+  --color-on-tertiary-fixed-variant: #374763;
+  --color-on-tertiary-container: #c4d5f6;
+  --color-outline: #6f7979;
+  --color-surface-container: #edeef0;
+  --color-surface-tint: #096969;
+  --color-surface-variant: #e1e2e4;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary: #344460;
+  --color-secondary-fixed: #ffdbd1;
+  --color-on-secondary-container: #fffbff;
+  --color-error-container: #ffdad6;
+  --color-background: #f8f9fb;
+  --color-primary-fixed-dim: #86d4d3;
+  --color-primary-container: #006666;
+  --color-on-error: #ffffff;
+  --color-primary-fixed: #a2f0ef;
+  --color-on-primary: #ffffff;
+  --color-secondary-fixed-dim: #ffb5a1;
+  --color-on-surface-variant: #3f4948;
+  --color-on-background: #191c1e;
+  --color-secondary: #ad2b00;
+  --color-on-primary-fixed-variant: #004f4f;
+  --color-surface: #f8f9fb;
+  --color-on-surface: #191c1e;
+  --color-inverse-surface: #2e3132;
+  --color-inverse-primary: #86d4d3;
+  --color-on-secondary-fixed: #3b0900;
+  --color-inverse-on-surface: #f0f1f3;
+  --color-secondary-container: #d93800;
+  --color-surface-dim: #d9dadc;
+  --color-on-secondary: #ffffff;
+  --color-error: #ba1a1a;
+  --color-on-secondary-fixed-variant: #882000;
+  --color-primary: #004c4c;
+  --color-on-error-container: #93000a;
+  --color-surface-container-low: #f3f4f6;
+  --color-tertiary-fixed-dim: #b7c7e8;
+  --color-surface-container-highest: #e1e2e4;
+  --color-surface-container-lowest: #ffffff;
+  --color-on-primary-container: #93e1e0;
+  --color-surface-bright: #f8f9fb;
+  --color-tertiary-fixed: #d6e3ff;
+
+  --font-headline: "Manrope", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-label: "Inter", sans-serif;
+}

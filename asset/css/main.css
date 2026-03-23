@@ -36,12 +36,24 @@ body {
         var(--light-bg);
 }
 
+.font-headline {
+    font-family: 'Manrope', sans-serif;
+}
+
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
 /* ============= TOP HEADER/NAVBAR ============= */
 .navbar {
     padding: 16px 0;
     border-bottom: 1px solid #dce5ef;
     background: rgba(255, 255, 255, 0.86) !important;
     backdrop-filter: blur(8px);
+}
+
+.nav-z-top {
+    z-index: 101;
 }
 
 .navbar-brand {
@@ -105,6 +117,10 @@ body {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
     background: #f7fafc;
+}
+
+.navbar-search-input {
+    width: 200px;
 }
 
 .search-container-navbar input:focus {
@@ -1084,6 +1100,10 @@ body {
     border-radius: 50%;
     font-size: 0.75rem;
     font-weight: bold;
+}
+
+.cart-count-badge {
+    font-size: 0.65rem;
 }
 
 .no-products {
