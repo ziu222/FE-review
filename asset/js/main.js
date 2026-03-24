@@ -475,12 +475,12 @@ function initializeEventListeners() {
         });
     }
 
-    console.log("✅ Event listeners initialized");
+    console.log("Event listeners initialized");
 }
 
 
 function initializeApp() {
-    console.log("🚀 Initializing ShopHub E-Commerce (MegaMart Style)...");
+    console.log(" Initializing ShopHub E-Commerce (MegaMart Style)...");
 
     initializeProducts();
 
