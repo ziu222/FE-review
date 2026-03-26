@@ -1,17 +1,14 @@
 // ============================================================
 // admin-login.js - Admin Login Page Logic
-// ============================================================
-// Depends on: storage.js
-// ============================================================
 
-// If already logged in as admin, go to dashboard
+
 var currentUser = Store.getCurrentUser();
 if (currentUser && currentUser.role === "admin") {
     window.location.href = "dashboard.html";
 }
 
 
-// -- Toggle password visibility ---------------------------------
+
 
 var toggleBtn = document.getElementById("togglePassword");
 var passwordInput = document.getElementById("password");
@@ -27,25 +24,24 @@ toggleBtn.addEventListener("click", function () {
 });
 
 
-// -- Handle login form submit -----------------------------------
-
+// login submit
 var loginForm = document.getElementById("loginForm");
 var loginError = document.getElementById("loginError");
 
 loginForm.addEventListener("submit", function (e) {
     e.preventDefault();
 
-    var email = document.getElementById("email").value.trim();
+    var identifier = document.getElementById("identifier").value.trim();
     var password = document.getElementById("password").value;
 
     // Hide previous error
     loginError.classList.remove("show");
 
-    // Try to authenticate
-    var session = Store.authenticate(email, password);
+
+    var session = Store.authenticate(identifier, password);
 
     if (!session) {
-        loginError.textContent = "Wrong email or password. Please try again.";
+        loginError.textContent = "Wrong username/email or password. Please try again.";
         loginError.classList.add("show");
         return;
     }
@@ -57,6 +53,6 @@ loginForm.addEventListener("submit", function (e) {
         return;
     }
 
-    // Login success — redirect to dashboard
+    // direct to dashboard
     window.location.href = "dashboard.html";
 });
