@@ -2,7 +2,7 @@
 
 var currentUser = Store.getCurrentUser();
 if (!currentUser || currentUser.role !== "admin") {
-    window.location.href = "login.html";
+    window.location.href = "admin-login.html";
 }
 
 
@@ -10,5 +10,5 @@ if (!currentUser || currentUser.role !== "admin") {
 
 function handleLogout() {
     Store.logout();
-    window.location.href = "login.html";
+    window.location.href = "admin-login.html";
 }

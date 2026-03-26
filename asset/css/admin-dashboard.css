@@ -1,0 +1,543 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    background: #f8f9fb;
+    color: #191c1e;
+    min-height: 100vh;
+}
+
+
+/* ── SIDEBAR ─────────────────────────────────────────────── */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 240px;
+    height: 100vh;
+    background: #ffffff;
+    border-right: 1px solid #e8e8e8;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+}
+
+.sidebar-logo {
+    padding: 28px 24px 24px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.sidebar-logo-text {
+    font-family: "Manrope", sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: #004c4c;
+    letter-spacing: -0.5px;
+    text-decoration: none;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 16px 12px;
+    overflow-y: auto;
+}
+
+.nav-section-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 16px 12px 8px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    color: #555;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    margin-bottom: 2px;
+}
+
+.nav-item i {
+    width: 20px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.nav-item:hover {
+    background: #f0f7f7;
+    color: #004c4c;
+}
+
+.nav-item.active {
+    background: #e6f0f0;
+    color: #004c4c;
+    font-weight: 600;
+}
+
+.sidebar-footer {
+    padding: 16px 12px;
+    border-top: 1px solid #f0f0f0;
+}
+
+
+/* ── TOP BAR ─────────────────────────────────────────────── */
+
+.topbar {
+    position: fixed;
+    top: 0;
+    left: 240px;
+    right: 0;
+    height: 64px;
+    background: #ffffff;
+    border-bottom: 1px solid #e8e8e8;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    z-index: 90;
+}
+
+.topbar-title {
+    font-family: "Manrope", sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #191c1e;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.topbar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+}
+
+.topbar-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #004c4c;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.btn-logout {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    color: #555;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: "Inter", sans-serif;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-logout:hover {
+    background: #fff0f0;
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+
+
+/* ── MAIN CONTENT ────────────────────────────────────────── */
+
+.main-content {
+    margin-left: 240px;
+    margin-top: 64px;
+    padding: 32px;
+    min-height: calc(100vh - 64px);
+}
+
+
+/* ── STAT CARDS ROW ──────────────────────────────────────── */
+
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.stat-card {
+    background: #ffffff;
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+    padding: 24px;
+    transition: box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.stat-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.stat-card-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #888;
+}
+
+.stat-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.stat-card-icon.teal    { background: #e6f0f0; color: #004c4c; }
+.stat-card-icon.blue    { background: #e8f0fe; color: #1a73e8; }
+.stat-card-icon.orange  { background: #fef3e6; color: #e67e22; }
+.stat-card-icon.green   { background: #e6f8ef; color: #27ae60; }
+.stat-card-icon.purple  { background: #f0e8fe; color: #8e44ad; }
+.stat-card-icon.red     { background: #fee8e8; color: #e74c3c; }
+
+.stat-card-value {
+    font-family: "Manrope", sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: #191c1e;
+    line-height: 1.1;
+}
+
+.stat-card-sub {
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+}
+
+
+/* ── TWO-COLUMN GRID ─────────────────────────────────────── */
+
+.grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+
+/* ── CARD (generic white panel) ──────────────────────────── */
+
+.card {
+    background: #ffffff;
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.card-title {
+    font-family: "Manrope", sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #191c1e;
+    margin-bottom: 20px;
+}
+
+
+/* ── ORDER STATUS OVERVIEW ───────────────────────────────── */
+
+.status-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.status-dot.pending   { background: #e67e22; }
+.status-dot.confirmed { background: #1a73e8; }
+.status-dot.shipped   { background: #8e44ad; }
+.status-dot.delivered { background: #27ae60; }
+.status-dot.cancelled { background: #e74c3c; }
+
+.status-label {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    text-transform: capitalize;
+}
+
+.status-count {
+    font-family: "Manrope", sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #191c1e;
+}
+
+.status-bar-track {
+    flex: 2;
+    height: 8px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.status-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.status-bar-fill.pending   { background: #e67e22; }
+.status-bar-fill.confirmed { background: #1a73e8; }
+.status-bar-fill.shipped   { background: #8e44ad; }
+.status-bar-fill.delivered { background: #27ae60; }
+.status-bar-fill.cancelled { background: #e74c3c; }
+
+
+/* ── TOP PRODUCTS LIST ───────────────────────────────────── */
+
+.top-product-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.top-product-item:last-child {
+    border-bottom: none;
+}
+
+.top-product-rank {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #555;
+    flex-shrink: 0;
+}
+
+.top-product-rank.gold   { background: #fef3e6; color: #e67e22; }
+.top-product-rank.silver { background: #f0f0f0; color: #666; }
+.top-product-rank.bronze { background: #fef0e6; color: #b5651d; }
+
+.top-product-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.top-product-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #191c1e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.top-product-category {
+    font-size: 12px;
+    color: #999;
+    text-transform: capitalize;
+}
+
+.top-product-sold {
+    font-family: "Manrope", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #004c4c;
+    white-space: nowrap;
+}
+
+
+/* ── RECENT ORDERS TABLE ─────────────────────────────────── */
+
+.card-full {
+    background: #ffffff;
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.orders-table th {
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 0 12px 14px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.orders-table td {
+    padding: 14px 12px;
+    font-size: 14px;
+    color: #444;
+    border-bottom: 1px solid #f8f8f8;
+}
+
+.orders-table tr:last-child td {
+    border-bottom: none;
+}
+
+.orders-table tr:hover td {
+    background: #fafbfc;
+}
+
+.order-id {
+    font-weight: 600;
+    color: #004c4c;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.badge-pending   { background: #fef3e6; color: #e67e22; }
+.badge-confirmed { background: #e8f0fe; color: #1a73e8; }
+.badge-shipped   { background: #f0e8fe; color: #8e44ad; }
+.badge-delivered { background: #e6f8ef; color: #27ae60; }
+.badge-cancelled { background: #fee8e8; color: #e74c3c; }
+
+
+/* ── CATEGORY BREAKDOWN ──────────────────────────────────── */
+
+.category-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.category-item:last-child {
+    border-bottom: none;
+}
+
+.category-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #e6f0f0;
+    color: #004c4c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.category-name {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+    color: #444;
+    text-transform: capitalize;
+}
+
+.category-count {
+    font-family: "Manrope", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #191c1e;
+}
+
+.category-bar-track {
+    flex: 2;
+    height: 8px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.category-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: #004c4c;
+    transition: width 0.5s ease;
+}
+
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+
+@media (max-width: 1024px) {
+    .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .grid-2col {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+    .topbar {
+        left: 200px;
+    }
+    .main-content {
+        margin-left: 200px;
+        padding: 20px;
+    }
+    .stats-row {
+        grid-template-columns: 1fr;
+    }
+}
