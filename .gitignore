@@ -44,3 +44,4 @@ asset/css/tailwind-built.css
 # Temporary files
 *.tmp
 *.temp
+*.md
