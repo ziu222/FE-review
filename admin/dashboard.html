@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EC SHOP - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="../asset/css/admin-dashboard.css">
+</head>
+<body>
+
+<!-- ── SIDEBAR ──────────────────────────────────────────── -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <a href="dashboard.html" class="sidebar-logo-text">EC SHOP</a>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Main</div>
+        <a href="dashboard.html" class="nav-item active">
+            <i class="fa-solid fa-chart-line"></i> Dashboard
+        </a>
+        <a href="shops-manage.html" class="nav-item">
+            <i class="fa-solid fa-store"></i> Shops
+        </a>
+        <a href="products.html" class="nav-item">
+            <i class="fa-solid fa-box-open"></i> Products
+        </a>
+        <a href="orders-manage.html" class="nav-item">
+            <i class="fa-solid fa-clipboard-list"></i> Orders
+        </a>
+        <a href="customers-manage.html" class="nav-item">
+            <i class="fa-solid fa-users"></i> Customers
+        </a>
+        <a href="financial.html" class="nav-item">
+            <i class="fa-solid fa-wallet"></i> Financial
+        </a>
+
+        <div class="nav-section-label">Support</div>
+        <a href="#" class="nav-item">
+            <i class="fa-solid fa-gear"></i> Settings
+        </a>
+    </nav>
+</aside>
+
+
+<header class="topbar">
+    <h1 class="topbar-title">Dashboard</h1>
+    <div class="topbar-right">
+        <div class="topbar-user">
+            <div class="topbar-avatar" id="topbarAvatar">A</div>
+            <span id="topbarUserName">Admin</span>
+        </div>
+        <button class="btn-logout" onclick="handleLogout()">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+    </div>
+</header>
+
+
+<main class="main-content">
+
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <span class="stat-card-label">Total Shops</span>
+                <div class="stat-card-icon teal"><i class="fa-solid fa-store"></i></div>
+            </div>
+            <div class="stat-card-value" id="statShops">0</div>
+            <div class="stat-card-sub">Active marketplace sellers</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <span class="stat-card-label">Total Products</span>
+                <div class="stat-card-icon blue"><i class="fa-solid fa-box-open"></i></div>
+            </div>
+            <div class="stat-card-value" id="statProducts">0</div>
+            <div class="stat-card-sub">Listed across all shops</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <span class="stat-card-label">Total Orders</span>
+                <div class="stat-card-icon orange"><i class="fa-solid fa-clipboard-list"></i></div>
+            </div>
+            <div class="stat-card-value" id="statOrders">0</div>
+            <div class="stat-card-sub">All-time orders placed</div>
+        </div>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <span class="stat-card-label">Total Revenue</span>
+                <div class="stat-card-icon green"><i class="fa-solid fa-coins"></i></div>
+            </div>
+            <div class="stat-card-value" id="statRevenue">0 VND</div>
+            <div class="stat-card-sub">Excluding cancelled orders</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <span class="stat-card-label">Customers</span>
+                <div class="stat-card-icon purple"><i class="fa-solid fa-users"></i></div>
+            </div>
+            <div class="stat-card-value" id="statCustomers">0</div>
+            <div class="stat-card-sub">Registered customer accounts</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <span class="stat-card-label">Pending Orders</span>
+                <div class="stat-card-icon red"><i class="fa-solid fa-hourglass-half"></i></div>
+            </div>
+            <div class="stat-card-value" id="statPending">0</div>
+            <div class="stat-card-sub">Awaiting confirmation</div>
+        </div>
+    </div>
+
+    <div class="grid-2col">
+        <div class="card">
+            <h2 class="card-title">Order Status Overview</h2>
+            <div class="status-list" id="orderStatusList"></div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Top Selling Products</h2>
+            <div id="topProductsList"></div>
+        </div>
+    </div>
+
+    <div class="grid-2col">
+        <div class="card">
+            <h2 class="card-title">Products by Category</h2>
+            <div id="categoryList"></div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Recent Orders</h2>
+            <div style="overflow-x: auto;">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Order</th>
+                            <th>Customer</th>
+                            <th>Shop</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentOrdersBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+
+<script src="../asset/js/model/product-data.js"></script>
+<script src="../asset/js/model/user-data.js"></script>
+<script src="../asset/js/model/order-data.js"></script>
+<script src="../asset/js/model/storage.js"></script>
+<script src="../asset/js/admin/admin.js"></script>
+<script src="../asset/js/admin/admin-dashboard.js"></script>
+
+</body>
+</html>

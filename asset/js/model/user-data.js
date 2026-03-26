@@ -13,8 +13,9 @@ var SEED_USERS = [
     {
         id: 1,
         name: "Admin",
+        username: "admin1",
         email: "admin@ecshop.com",
-        password: "admin123",
+        password: "123",
         role: "admin",
         avatar: "",
         createdAt: "2025-01-01"
@@ -25,6 +26,7 @@ var SEED_USERS = [
     {
         id: 2,
         name: "Nguyen Van A",
+        username: "nguyenvana",
         email: "nguyenvana@gmail.com",
         password: "user123",
         role: "customer",
@@ -34,6 +36,7 @@ var SEED_USERS = [
     {
         id: 3,
         name: "Tran Thi B",
+        username: "tranthib",
         email: "tranthib@gmail.com",
         password: "user123",
         role: "customer",
@@ -43,6 +46,7 @@ var SEED_USERS = [
     {
         id: 4,
         name: "Le Van C",
+        username: "levanc",
         email: "levanc@gmail.com",
         password: "user123",
         role: "customer",
@@ -50,13 +54,14 @@ var SEED_USERS = [
         createdAt: "2025-07-10"
     },
 
-    // -- SHOPS ----------------------------------------------
+    // -- SHOPS Data ----------------------------------------------
     // Each shop is a user with role "shop" + shop-specific fields
-    // shopStatus: "pending" (cho duyet), "active" (da duyet), "suspended" (bi khoa)
+    // shop         Status: "pending" (cho duyet), "active" (da duyet), "suspended" (bi khoa)
 
     {
         id: 5,
         name: "Tim Cook",
+        username: "apple",
         email: "apple@shop.com",
         password: "shop123",
         role: "shop",
@@ -72,6 +77,7 @@ var SEED_USERS = [
     {
         id: 6,
         name: "Jong-Hee Han",
+        username: "samsung",
         email: "samsung@shop.com",
         password: "shop123",
         role: "shop",
@@ -87,6 +93,7 @@ var SEED_USERS = [
     {
         id: 7,
         name: "Kenichiro Yoshida",
+        username: "sony",
         email: "sony@shop.com",
         password: "shop123",
         role: "shop",
@@ -102,6 +109,7 @@ var SEED_USERS = [
     {
         id: 8,
         name: "Pham Minh Tuan",
+        username: "gearvn",
         email: "gearvn@shop.com",
         password: "shop123",
         role: "shop",
@@ -117,6 +125,7 @@ var SEED_USERS = [
     {
         id: 9,
         name: "Hoang Duc Minh",
+        username: "audiverse",
         email: "audiverse@shop.com",
         password: "shop123",
         role: "shop",

@@ -1,15 +1,6 @@
-// ============================================================
-// Store - LocalStorage CRUD Engine for EC SHOP
-// ============================================================
-// Usage:  Store.getProducts(), Store.addProduct(data), etc.
-// Keys:   ecshop_products, ecshop_users, ecshop_orders,
-//         ecshop_cart, ecshop_seeded, ecshop_currentUser
-// Roles:  admin, shop, customer
-// ============================================================
-
+//Data storage layer using LocalStorage
 var Store = (function () {
 
-    // ── Key constants ──────────────────────────────────────
     var KEYS = {
         products:    "ecshop_products",
         users:       "ecshop_users",
@@ -20,7 +11,6 @@ var Store = (function () {
     };
 
 
-    // ── Core helpers ───────────────────────────────────────
 
     function _get(key) {
         var raw = localStorage.getItem(key);
@@ -43,8 +33,7 @@ var Store = (function () {
     }
 
 
-    // ── Seed ───────────────────────────────────────────────
-
+    // Seed 
     function seed() {
         if (localStorage.getItem(KEYS.seeded)) return;
 
@@ -69,7 +58,7 @@ var Store = (function () {
     }
 
 
-    // ── PRODUCTS ───────────────────────────────────────────
+    // PRODUCTS 
 
     function getProducts() {
         return _get(KEYS.products) || [];
@@ -166,7 +155,7 @@ var Store = (function () {
     }
 
 
-    // ── USERS ──────────────────────────────────────────────
+    // User
 
     function getUsers() {
         return _get(KEYS.users) || [];
@@ -185,6 +174,15 @@ var Store = (function () {
         var users = getUsers();
         for (var i = 0; i < users.length; i++) {
             if (users[i].email.toLowerCase() === lower) return users[i];
+        }
+        return null;
+    }
+
+    function getUserByUsername(username) {
+        var lower = username.toLowerCase().trim();
+        var users = getUsers();
+        for (var i = 0; i < users.length; i++) {
+            if (users[i].username && users[i].username.toLowerCase() === lower) return users[i];
         }
         return null;
     }
@@ -218,12 +216,13 @@ var Store = (function () {
     function updateShopStatus(shopId, newStatus) {
         return updateUser(shopId, { shopStatus: newStatus });
     }
-
+//register user
     function addUser(data) {
         var users = getUsers();
         var newUser = {
             id:        _nextId(KEYS.users),
             name:      data.name     || "",
+            username:  data.username || "",
             email:     data.email    || "",
             password:  data.password || "",
             role:      data.role     || "customer",
@@ -270,8 +269,8 @@ var Store = (function () {
         return true;
     }
 
-    function authenticate(email, password) {
-        var user = getUserByEmail(email);
+    function authenticate(identifier, password) {
+        var user = getUserByEmail(identifier) || getUserByUsername(identifier);
         if (!user) return null;
         if (user.password !== password) return null;
         // Save logged-in user (without password)
@@ -525,8 +524,9 @@ var Store = (function () {
         // Users
         getUsers:        getUsers,
         getUserById:     getUserById,
-        getUserByEmail:  getUserByEmail,
-        addUser:         addUser,
+        getUserByEmail:     getUserByEmail,
+        getUserByUsername:   getUserByUsername,
+        addUser:             addUser,
         updateUser:      updateUser,
         deleteUser:      deleteUser,
         authenticate:    authenticate,
