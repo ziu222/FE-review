@@ -216,7 +216,7 @@ var Store = (function () {
     function updateShopStatus(shopId, newStatus) {
         return updateUser(shopId, { shopStatus: newStatus });
     }
-
+//register user
     function addUser(data) {
         var users = getUsers();
         var newUser = {

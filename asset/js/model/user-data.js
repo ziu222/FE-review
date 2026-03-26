@@ -56,7 +56,7 @@ var SEED_USERS = [
 
     // -- SHOPS Data ----------------------------------------------
     // Each shop is a user with role "shop" + shop-specific fields
-    // shopStatus: "pending" (cho duyet), "active" (da duyet), "suspended" (bi khoa)
+    // shop         Status: "pending" (cho duyet), "active" (da duyet), "suspended" (bi khoa)
 
     {
         id: 5,
