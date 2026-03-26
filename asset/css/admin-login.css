@@ -1,0 +1,213 @@
+/* ============================================================
+   admin.css - Admin Panel Styles
+   ============================================================
+   Color theme matched to EC SHOP:
+   Primary:    #004c4c (dark teal)
+   Surface:    #f8f9fb
+   On-surface: #191c1e
+   ============================================================ */
+
+
+/* -- Login Page ------------------------------------------------ */
+
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fb;
+    font-family: "Inter", sans-serif;
+    padding: 20px;
+}
+
+.login-logo {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.login-logo-text {
+    font-family: "Manrope", sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: #004c4c;
+    letter-spacing: -1px;
+}
+
+.login-card {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.login-title {
+    font-family: "Manrope", sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #191c1e;
+    text-align: center;
+    margin: 0 0 28px 0;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    font-family: "Inter", sans-serif;
+    color: #191c1e;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.form-input:focus {
+    border-color: #004c4c;
+    box-shadow: 0 0 0 2px rgba(0, 76, 76, 0.12);
+}
+
+.form-input::placeholder {
+    color: #aaa;
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #004c4c;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: "Inter", sans-serif;
+    padding: 0;
+}
+
+.password-toggle:hover {
+    color: #006666;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: #004c4c;
+    color: #ffffff;
+    border: none;
+    border-radius: 24px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: "Inter", sans-serif;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 8px;
+}
+
+.login-btn:hover {
+    background-color: #006666;
+}
+
+.login-btn:active {
+    background-color: #003d3d;
+}
+
+.login-footer {
+    text-align: center;
+    margin-top: 16px;
+}
+
+.login-footer a {
+    color: #004c4c;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+    color: #006666;
+}
+
+.login-divider {
+    display: flex;
+    align-items: center;
+    margin: 24px 0;
+    color: #aaa;
+    font-size: 13px;
+}
+
+.login-divider:before,
+.login-divider:after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #e0e0e0;
+}
+
+.login-divider:before {
+    margin-right: 12px;
+}
+
+.login-divider:after {
+    margin-left: 12px;
+}
+
+.signup-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: none;
+    color: #004c4c;
+    border: 1px solid #004c4c;
+    border-radius: 24px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: "Inter", sans-serif;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    text-align: center;
+    text-decoration: none;
+}
+
+.signup-btn:hover {
+    background-color: #004c4c;
+    color: #ffffff;
+}
+
+.login-error {
+    background-color: #ffeaea;
+    color: #cc0000;
+    border: 1px solid #ffcccc;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    display: none;
+}
+
+.login-error.show {
+    display: block;
+}

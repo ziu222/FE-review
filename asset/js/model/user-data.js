@@ -50,7 +50,7 @@ var SEED_USERS = [
         createdAt: "2025-07-10"
     },
 
-    // -- SHOPS ----------------------------------------------
+    // -- SHOPS Data ----------------------------------------------
     // Each shop is a user with role "shop" + shop-specific fields
     // shopStatus: "pending" (cho duyet), "active" (da duyet), "suspended" (bi khoa)
 
