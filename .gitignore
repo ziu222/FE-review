@@ -33,6 +33,7 @@ asset/css/tailwind-built.css
 # Editor
 .vscode/
 .idea/
+.cursor/plans/
 *.suo
 *.ntvs*
 *.njsproj
@@ -44,4 +45,9 @@ asset/css/tailwind-built.css
 # Temporary files
 *.tmp
 *.temp
+
+# Local installers / binaries
+*.exe
+
 *.md
+.cursor

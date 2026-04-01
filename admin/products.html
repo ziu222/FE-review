@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EC SHOP - Products Review</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="../asset/css/admin-dashboard.css">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <a href="dashboard.html" class="sidebar-logo-text">EC SHOP</a>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Main</div>
+        <a href="dashboard.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i> Dashboard
+        </a>
+        <a href="shops-manage.html" class="nav-item">
+            <i class="fa-solid fa-store"></i> Shops
+        </a>
+        <a href="products.html" class="nav-item active">
+            <i class="fa-solid fa-box-open"></i> Products
+        </a>
+        <a href="../404.html" class="nav-item">
+            <i class="fa-solid fa-clipboard-list"></i> Orders
+        </a>
+        <a href="../404.html" class="nav-item">
+            <i class="fa-solid fa-users"></i> Customers
+        </a>
+        <a href="../404.html" class="nav-item">
+            <i class="fa-solid fa-wallet"></i> Financial
+        </a>
+
+        <div class="nav-section-label">Support</div>
+        <a href="#" class="nav-item">
+            <i class="fa-solid fa-gear"></i> Settings
+        </a>
+    </nav>
+</aside>
+
+<header class="topbar">
+    <h1 class="topbar-title">Products Review</h1>
+    <div class="topbar-right">
+        <div class="topbar-user">
+            <div class="topbar-avatar" id="topbarAvatar">A</div>
+            <span id="topbarUserName">Admin</span>
+        </div>
+        <button class="btn-logout" onclick="handleLogout()">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+    </div>
+</header>
+
+<main class="main-content">
+
+    <section class="page-intro-card">
+        <div>
+            <div class="page-eyebrow">Moderation workspace</div>
+            <h2 class="page-intro-title">Review all marketplace products in one place</h2>
+            <p class="page-intro-subtitle">
+                Scan listings across shops, watch stock health, and open item details before approval or moderation.
+            </p>
+        </div>
+        <div class="page-intro-note">
+            <i class="fa-solid fa-shield-heart"></i>
+            <span>HTML + CSS layout ready for the next JS integration step.</span>
+        </div>
+    </section>
+
+    <div class="stats-row stats-row-4">
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <span class="stat-card-label">Total Products</span>
+                <div class="stat-card-icon blue"><i class="fa-solid fa-box-open"></i></div>
+            </div>
+            <div class="stat-card-value">13</div>
+            <div class="stat-card-sub">Across all active shops</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <span class="stat-card-label">Visible</span>
+                <div class="stat-card-icon green"><i class="fa-solid fa-eye"></i></div>
+            </div>
+            <div class="stat-card-value">9</div>
+            <div class="stat-card-sub">Currently shown to customers</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <span class="stat-card-label">Low Stock</span>
+                <div class="stat-card-icon orange"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            </div>
+            <div class="stat-card-value">3</div>
+            <div class="stat-card-sub">Need shop attention soon</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <span class="stat-card-label">Flagged</span>
+                <div class="stat-card-icon red"><i class="fa-solid fa-flag"></i></div>
+            </div>
+            <div class="stat-card-value">2</div>
+            <div class="stat-card-sub">Require admin review</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="toolbar product-toolbar">
+            <div class="toolbar-stack">
+                <div class="filter-tabs">
+                    <button class="filter-tab active" type="button">All</button>
+                    <button class="filter-tab" type="button">Visible</button>
+                    <button class="filter-tab" type="button">Hidden</button>
+                    <button class="filter-tab" type="button">Flagged</button>
+                </div>
+                <div class="product-filter-row">
+                    <select class="filter-select">
+                        <option>All Categories</option>
+                        <option>Smartphone</option>
+                        <option>Laptops</option>
+                        <option>Audio</option>
+                        <option>Cameras</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>All Shops</option>
+                        <option>Apple Store</option>
+                        <option>Samsung Store</option>
+                        <option>Sony Store</option>
+                        <option>GearVN</option>
+                        <option>Audiverse</option>
+                    </select>
+                    <div class="price-range-group">
+                        <input type="text" placeholder="Min $">
+                        <span>-</span>
+                        <input type="text" placeholder="Max $">
+                    </div>
+                </div>
+            </div>
+
+            <div class="toolbar-right toolbar-right-wrap">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search by product or shop...">
+                </div>
+                <button class="btn-reset" type="button">
+                    <i class="fa-solid fa-rotate-left"></i> Reset filters
+                </button>
+            </div>
+        </div>
+
+        <div style="overflow-x: auto;">
+            <table class="orders-table products-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Product</th>
+                        <th>Shop</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                        <th>Updated</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="order-id">#001</td>
+                        <td>
+                            <div class="product-cell">
+                                <div class="product-thumb thumb-blue"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                                <div>
+                                    <div class="product-name">iPhone 15 Pro Max</div>
+                                    <div class="product-meta">Titanium flagship • 48MP camera</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Apple Store</td>
+                        <td><span class="category-pill">Smartphone</span></td>
+                        <td class="price-text">$1,199</td>
+                        <td><span class="stock-text stock-ok">25 in stock</span></td>
+                        <td><span class="badge badge-visible">Visible</span></td>
+                        <td>2 hours ago</td>
+                        <td>
+                            <div class="row-actions">
+                                <button class="action-btn-sm view" type="button" title="View"><i class="fa-solid fa-eye"></i></button>
+                                <button class="action-btn-sm suspend" type="button" title="Hide"><i class="fa-solid fa-eye-slash"></i></button>
+                                <button class="action-btn-sm edit" type="button" title="Flag"><i class="fa-solid fa-flag"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="order-id">#006</td>
+                        <td>
+                            <div class="product-cell">
+                                <div class="product-thumb thumb-violet"><i class="fa-solid fa-laptop"></i></div>
+                                <div>
+                                    <div class="product-name">Dell XPS 15</div>
+                                    <div class="product-meta">Premium laptop • 13th Gen Intel</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>GearVN</td>
+                        <td><span class="category-pill">Laptops</span></td>
+                        <td class="price-text">$1,699</td>
+                        <td><span class="stock-text stock-low">4 left</span></td>
+                        <td><span class="badge badge-flagged">Flagged</span></td>
+                        <td>Today</td>
+                        <td>
+                            <div class="row-actions">
+                                <button class="action-btn-sm view" type="button" title="View"><i class="fa-solid fa-eye"></i></button>
+                                <button class="action-btn-sm approve" type="button" title="Approve"><i class="fa-solid fa-check"></i></button>
+                                <button class="action-btn-sm suspend" type="button" title="Hide"><i class="fa-solid fa-ban"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="order-id">#009</td>
+                        <td>
+                            <div class="product-cell">
+                                <div class="product-thumb thumb-dark"><i class="fa-solid fa-headphones"></i></div>
+                                <div>
+                                    <div class="product-name">Sony WH-1000XM5</div>
+                                    <div class="product-meta">Noise cancelling • Wireless audio</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Sony Store</td>
+                        <td><span class="category-pill">Audio</span></td>
+                        <td class="price-text">$329</td>
+                        <td><span class="stock-text stock-ok">50 in stock</span></td>
+                        <td><span class="badge badge-visible">Visible</span></td>
+                        <td>Yesterday</td>
+                        <td>
+                            <div class="row-actions">
+                                <button class="action-btn-sm view" type="button" title="View"><i class="fa-solid fa-eye"></i></button>
+                                <button class="action-btn-sm reactivate" type="button" title="Feature"><i class="fa-solid fa-star"></i></button>
+                                <button class="action-btn-sm edit" type="button" title="Flag"><i class="fa-solid fa-flag"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="order-id">#012</td>
+                        <td>
+                            <div class="product-cell">
+                                <div class="product-thumb thumb-orange"><i class="fa-solid fa-camera"></i></div>
+                                <div>
+                                    <div class="product-name">Canon EOS R50</div>
+                                    <div class="product-meta">Mirrorless camera • Creator kit</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Audiverse</td>
+                        <td><span class="category-pill">Cameras</span></td>
+                        <td class="price-text">$879</td>
+                        <td><span class="stock-text stock-out">Out of stock</span></td>
+                        <td><span class="badge badge-hidden">Hidden</span></td>
+                        <td>Apr 01, 2026</td>
+                        <td>
+                            <div class="row-actions">
+                                <button class="action-btn-sm view" type="button" title="View"><i class="fa-solid fa-eye"></i></button>
+                                <button class="action-btn-sm reactivate" type="button" title="Restore"><i class="fa-solid fa-rotate-left"></i></button>
+                                <button class="action-btn-sm edit" type="button" title="Note"><i class="fa-solid fa-comment-dots"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="grid-2col product-review-grid">
+        <div class="card">
+            <h2 class="card-title">Review Checklist</h2>
+            <div class="review-checklist">
+                <div class="review-check-item">
+                    <div class="check-icon"><i class="fa-solid fa-circle-check"></i></div>
+                    <div>
+                        <div class="check-title">Content quality</div>
+                        <p>Verify title, description, and images are clear and match the listing.</p>
+                    </div>
+                </div>
+                <div class="review-check-item">
+                    <div class="check-icon"><i class="fa-solid fa-tags"></i></div>
+                    <div>
+                        <div class="check-title">Pricing consistency</div>
+                        <p>Ensure price is reasonable, formatted correctly, and category is accurate.</p>
+                    </div>
+                </div>
+                <div class="review-check-item">
+                    <div class="check-icon"><i class="fa-solid fa-boxes-stacked"></i></div>
+                    <div>
+                        <div class="check-title">Stock health</div>
+                        <p>Highlight low-stock and out-of-stock items for quick admin decisions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card detail-preview-card">
+            <div class="detail-preview-top">
+                <div>
+                    <h2 class="card-title">Product Detail Preview</h2>
+                    <p class="preview-subtext">Static preview block for the next modal interaction step.</p>
+                </div>
+                <span class="badge badge-flagged">Needs review</span>
+            </div>
+
+            <div class="preview-hero">
+                <div class="preview-hero-thumb"><i class="fa-solid fa-laptop"></i></div>
+                <div>
+                    <div class="preview-product-name">Dell XPS 15</div>
+                    <div class="preview-product-meta">GearVN • Laptops • SKU #006</div>
+                </div>
+            </div>
+
+            <div class="preview-detail-grid">
+                <div class="preview-detail-item">
+                    <span>Price</span>
+                    <strong>$1,699</strong>
+                </div>
+                <div class="preview-detail-item">
+                    <span>Stock</span>
+                    <strong class="stock-low">4 left</strong>
+                </div>
+                <div class="preview-detail-item">
+                    <span>Category</span>
+                    <strong>Laptops</strong>
+                </div>
+                <div class="preview-detail-item">
+                    <span>Updated</span>
+                    <strong>Today</strong>
+                </div>
+            </div>
+
+            <div class="preview-description">
+                Premium 15-inch laptop with a sleek build, edge-to-edge display, and high-performance hardware.
+                This section is prepared for the future admin detail modal content.
+            </div>
+
+            <div class="modal-footer preview-footer">
+                <button class="modal-btn close" type="button">Close</button>
+                <button class="modal-btn suspend" type="button">Reject</button>
+                <button class="modal-btn approve" type="button">Approve</button>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<script src="../asset/js/model/product-data.js"></script>
+<script src="../asset/js/model/user-data.js"></script>
+<script src="../asset/js/model/order-data.js"></script>
+<script src="../asset/js/model/storage.js"></script>
+<script src="../asset/js/admin/admin.js"></script>
+
+</body>
+</html>
