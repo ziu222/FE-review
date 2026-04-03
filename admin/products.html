@@ -63,12 +63,12 @@
             <div class="page-eyebrow">Moderation workspace</div>
             <h2 class="page-intro-title">Review all marketplace products in one place</h2>
             <p class="page-intro-subtitle">
-                Scan listings across shops, watch stock health, and open item details before approval or moderation.
+                Review new product submissions from shop users before they go live on the marketplace.
             </p>
         </div>
         <div class="page-intro-note">
             <i class="fa-solid fa-shield-heart"></i>
-            <span>HTML + CSS layout ready for the next JS integration step.</span>
+            <span>New uploads now follow a pending → approved / rejected review flow.</span>
         </div>
     </section>
 
@@ -78,35 +78,35 @@
                 <span class="stat-card-label">Total Products</span>
                 <div class="stat-card-icon blue"><i class="fa-solid fa-box-open"></i></div>
             </div>
-            <div class="stat-card-value">13</div>
+            <div class="stat-card-value" id="statTotalProducts">0</div>
             <div class="stat-card-sub">Across all active shops</div>
         </div>
 
         <div class="stat-card">
             <div class="stat-card-header">
-                <span class="stat-card-label">Visible</span>
-                <div class="stat-card-icon green"><i class="fa-solid fa-eye"></i></div>
+                <span class="stat-card-label">Pending Review</span>
+                <div class="stat-card-icon orange"><i class="fa-solid fa-hourglass-half"></i></div>
             </div>
-            <div class="stat-card-value">9</div>
-            <div class="stat-card-sub">Currently shown to customers</div>
+            <div class="stat-card-value" id="statPendingProducts">0</div>
+            <div class="stat-card-sub">Waiting for admin approval</div>
         </div>
 
         <div class="stat-card">
             <div class="stat-card-header">
-                <span class="stat-card-label">Low Stock</span>
-                <div class="stat-card-icon orange"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <span class="stat-card-label">Approved</span>
+                <div class="stat-card-icon green"><i class="fa-solid fa-circle-check"></i></div>
             </div>
-            <div class="stat-card-value">3</div>
-            <div class="stat-card-sub">Need shop attention soon</div>
+            <div class="stat-card-value" id="statApprovedProducts">0</div>
+            <div class="stat-card-sub">Allowed to appear in the shop</div>
         </div>
 
         <div class="stat-card">
             <div class="stat-card-header">
-                <span class="stat-card-label">Flagged</span>
-                <div class="stat-card-icon red"><i class="fa-solid fa-flag"></i></div>
+                <span class="stat-card-label">Rejected</span>
+                <div class="stat-card-icon red"><i class="fa-solid fa-ban"></i></div>
             </div>
-            <div class="stat-card-value">2</div>
-            <div class="stat-card-sub">Require admin review</div>
+            <div class="stat-card-value" id="statRejectedProducts">0</div>
+            <div class="stat-card-sub">Need shop edits before approval</div>
         </div>
     </div>
 
@@ -114,31 +114,22 @@
         <div class="toolbar product-toolbar">
             <div class="toolbar-stack">
                 <div class="filter-tabs">
-                    <button class="filter-tab active" type="button">All</button>
-                    <button class="filter-tab" type="button">Visible</button>
-                    <button class="filter-tab" type="button">Hidden</button>
-                    <button class="filter-tab" type="button">Flagged</button>
+                    <button class="filter-tab active" type="button" data-filter="all">All</button>
+                    <button class="filter-tab" type="button" data-filter="pending">Pending</button>
+                    <button class="filter-tab" type="button" data-filter="approved">Approved</button>
+                    <button class="filter-tab" type="button" data-filter="rejected">Rejected</button>
                 </div>
                 <div class="product-filter-row">
-                    <select class="filter-select">
-                        <option>All Categories</option>
-                        <option>Smartphone</option>
-                        <option>Laptops</option>
-                        <option>Audio</option>
-                        <option>Cameras</option>
+                    <select class="filter-select" id="categoryFilter">
+                        <option value="all">All Categories</option>
                     </select>
-                    <select class="filter-select">
-                        <option>All Shops</option>
-                        <option>Apple Store</option>
-                        <option>Samsung Store</option>
-                        <option>Sony Store</option>
-                        <option>GearVN</option>
-                        <option>Audiverse</option>
+                    <select class="filter-select" id="shopFilter">
+                        <option value="all">All Shops</option>
                     </select>
                     <div class="price-range-group">
-                        <input type="text" placeholder="Min $">
+                        <input type="number" id="minPriceInput" placeholder="Min $" min="0">
                         <span>-</span>
-                        <input type="text" placeholder="Max $">
+                        <input type="number" id="maxPriceInput" placeholder="Max $" min="0">
                     </div>
                 </div>
             </div>
@@ -146,9 +137,9 @@
             <div class="toolbar-right toolbar-right-wrap">
                 <div class="search-box">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Search by product or shop...">
+                    <input type="text" id="productSearchInput" placeholder="Search by product or shop...">
                 </div>
-                <button class="btn-reset" type="button">
+                <button class="btn-reset" type="button" id="resetFiltersBtn">
                     <i class="fa-solid fa-rotate-left"></i> Reset filters
                 </button>
             </div>
@@ -169,112 +160,26 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td class="order-id">#001</td>
-                        <td>
-                            <div class="product-cell">
-                                <div class="product-thumb thumb-blue"><i class="fa-solid fa-mobile-screen-button"></i></div>
-                                <div>
-                                    <div class="product-name">iPhone 15 Pro Max</div>
-                                    <div class="product-meta">Titanium flagship • 48MP camera</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Apple Store</td>
-                        <td><span class="category-pill">Smartphone</span></td>
-                        <td class="price-text">$1,199</td>
-                        <td><span class="stock-text stock-ok">25 in stock</span></td>
-                        <td><span class="badge badge-visible">Visible</span></td>
-                        <td>2 hours ago</td>
-                        <td>
-                            <div class="row-actions">
-                                <button class="action-btn-sm view" type="button" title="View"><i class="fa-solid fa-eye"></i></button>
-                                <button class="action-btn-sm suspend" type="button" title="Hide"><i class="fa-solid fa-eye-slash"></i></button>
-                                <button class="action-btn-sm edit" type="button" title="Flag"><i class="fa-solid fa-flag"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td class="order-id">#006</td>
-                        <td>
-                            <div class="product-cell">
-                                <div class="product-thumb thumb-violet"><i class="fa-solid fa-laptop"></i></div>
-                                <div>
-                                    <div class="product-name">Dell XPS 15</div>
-                                    <div class="product-meta">Premium laptop • 13th Gen Intel</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>GearVN</td>
-                        <td><span class="category-pill">Laptops</span></td>
-                        <td class="price-text">$1,699</td>
-                        <td><span class="stock-text stock-low">4 left</span></td>
-                        <td><span class="badge badge-flagged">Flagged</span></td>
-                        <td>Today</td>
-                        <td>
-                            <div class="row-actions">
-                                <button class="action-btn-sm view" type="button" title="View"><i class="fa-solid fa-eye"></i></button>
-                                <button class="action-btn-sm approve" type="button" title="Approve"><i class="fa-solid fa-check"></i></button>
-                                <button class="action-btn-sm suspend" type="button" title="Hide"><i class="fa-solid fa-ban"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td class="order-id">#009</td>
-                        <td>
-                            <div class="product-cell">
-                                <div class="product-thumb thumb-dark"><i class="fa-solid fa-headphones"></i></div>
-                                <div>
-                                    <div class="product-name">Sony WH-1000XM5</div>
-                                    <div class="product-meta">Noise cancelling • Wireless audio</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Sony Store</td>
-                        <td><span class="category-pill">Audio</span></td>
-                        <td class="price-text">$329</td>
-                        <td><span class="stock-text stock-ok">50 in stock</span></td>
-                        <td><span class="badge badge-visible">Visible</span></td>
-                        <td>Yesterday</td>
-                        <td>
-                            <div class="row-actions">
-                                <button class="action-btn-sm view" type="button" title="View"><i class="fa-solid fa-eye"></i></button>
-                                <button class="action-btn-sm reactivate" type="button" title="Feature"><i class="fa-solid fa-star"></i></button>
-                                <button class="action-btn-sm edit" type="button" title="Flag"><i class="fa-solid fa-flag"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td class="order-id">#012</td>
-                        <td>
-                            <div class="product-cell">
-                                <div class="product-thumb thumb-orange"><i class="fa-solid fa-camera"></i></div>
-                                <div>
-                                    <div class="product-name">Canon EOS R50</div>
-                                    <div class="product-meta">Mirrorless camera • Creator kit</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Audiverse</td>
-                        <td><span class="category-pill">Cameras</span></td>
-                        <td class="price-text">$879</td>
-                        <td><span class="stock-text stock-out">Out of stock</span></td>
-                        <td><span class="badge badge-hidden">Hidden</span></td>
-                        <td>Apr 01, 2026</td>
-                        <td>
-                            <div class="row-actions">
-                                <button class="action-btn-sm view" type="button" title="View"><i class="fa-solid fa-eye"></i></button>
-                                <button class="action-btn-sm reactivate" type="button" title="Restore"><i class="fa-solid fa-rotate-left"></i></button>
-                                <button class="action-btn-sm edit" type="button" title="Note"><i class="fa-solid fa-comment-dots"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
+                <tbody id="productsTableBody"></tbody>
             </table>
+        </div>
+
+        <div class="table-pagination" id="paginationBar">
+            <div class="pagination-info" id="paginationInfo">Showing 0-0 of 0 products</div>
+            <div class="pagination-actions">
+                <button class="btn-reset" type="button" id="prevPageBtn">
+                    <i class="fa-solid fa-chevron-left"></i> Prev
+                </button>
+                <span class="pagination-page" id="paginationPageLabel">Page 1 / 1</span>
+                <button class="btn-reset" type="button" id="nextPageBtn">
+                    Next <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="table-empty" id="emptyState" style="display:none;">
+            <i class="fa-solid fa-box-open"></i>
+            <p>No products match the current filters</p>
         </div>
     </div>
 
@@ -310,58 +215,69 @@
             <div class="detail-preview-top">
                 <div>
                     <h2 class="card-title">Product Detail Preview</h2>
-                    <p class="preview-subtext">Static preview block for the next modal interaction step.</p>
+                    <p class="preview-subtext" id="previewSubtext">Select a product row to inspect its review details.</p>
                 </div>
-                <span class="badge badge-flagged">Needs review</span>
+                <span class="badge badge-pending-review" id="previewStatusBadge">Pending</span>
             </div>
 
             <div class="preview-hero">
-                <div class="preview-hero-thumb"><i class="fa-solid fa-laptop"></i></div>
+                <div class="preview-hero-thumb" id="previewHeroThumb"><i class="fa-solid fa-box"></i></div>
                 <div>
-                    <div class="preview-product-name">Dell XPS 15</div>
-                    <div class="preview-product-meta">GearVN • Laptops • SKU #006</div>
+                    <div class="preview-product-name" id="previewProductName">Choose a product</div>
+                    <div class="preview-product-meta" id="previewProductMeta">The detail preview updates from the selected row.</div>
                 </div>
             </div>
 
             <div class="preview-detail-grid">
                 <div class="preview-detail-item">
                     <span>Price</span>
-                    <strong>$1,699</strong>
+                    <strong id="previewPrice">$0</strong>
                 </div>
                 <div class="preview-detail-item">
                     <span>Stock</span>
-                    <strong class="stock-low">4 left</strong>
+                    <strong id="previewStock">-</strong>
                 </div>
                 <div class="preview-detail-item">
                     <span>Category</span>
-                    <strong>Laptops</strong>
+                    <strong id="previewCategory">-</strong>
                 </div>
                 <div class="preview-detail-item">
                     <span>Updated</span>
-                    <strong>Today</strong>
+                    <strong id="previewUpdated">-</strong>
                 </div>
             </div>
 
-            <div class="preview-description">
-                Premium 15-inch laptop with a sleek build, edge-to-edge display, and high-performance hardware.
-                This section is prepared for the future admin detail modal content.
+            <div class="preview-description" id="previewDescription">
+                Product notes and description will appear here once a row is selected.
             </div>
 
             <div class="modal-footer preview-footer">
-                <button class="modal-btn close" type="button">Close</button>
-                <button class="modal-btn suspend" type="button">Reject</button>
-                <button class="modal-btn approve" type="button">Approve</button>
+                <button class="modal-btn close" type="button" id="previewViewBtn">View detail</button>
+                <button class="modal-btn suspend" type="button" id="previewRejectBtn">Reject</button>
+                <button class="modal-btn approve" type="button" id="previewApproveBtn">Approve</button>
             </div>
         </div>
     </div>
 
 </main>
 
+<div class="modal-overlay" id="productModal">
+    <div class="modal-panel modal-panel-md">
+        <div class="modal-header">
+            <h3 id="productModalTitle">Product Detail</h3>
+            <button class="modal-close" type="button" onclick="closeProductModal()">&times;</button>
+        </div>
+        <div class="modal-body" id="productModalBody"></div>
+        <div class="modal-footer" id="productModalFooter"></div>
+    </div>
+</div>
+
 <script src="../asset/js/model/product-data.js"></script>
 <script src="../asset/js/model/user-data.js"></script>
 <script src="../asset/js/model/order-data.js"></script>
 <script src="../asset/js/model/storage.js"></script>
 <script src="../asset/js/admin/admin.js"></script>
+<script src="../asset/js/admin/admin-products.js"></script>
 
 </body>
 </html>

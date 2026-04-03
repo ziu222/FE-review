@@ -10,8 +10,8 @@ var hasShownPromotionPopup = false;
 // -- Init -------------------------------------------------------
 
 function initializeApp() {
-    // Load products from LocalStorage
-    allProducts = Store.getProducts();
+    // Customer pages should only show products that were approved by admin.
+    allProducts = Store.getApprovedProducts ? Store.getApprovedProducts() : Store.getProducts();
     filteredProducts = allProducts.slice();
 
     showPromotionPopup();
