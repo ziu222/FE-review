@@ -72,9 +72,23 @@ var Store = (function () {
         return null;
     }
 
-    function getProductsByCategory(category) {
-        if (!category || category === "all") return getProducts();
+    function getApprovedProducts() {
         var products = getProducts();
+        var result = [];
+
+        for (var i = 0; i < products.length; i++) {
+            var status = products[i].adminStatus;
+            if (!status || status === "approved" || status === "visible") {
+                result.push(products[i]);
+            }
+        }
+
+        return result;
+    }
+
+    function getProductsByCategory(category) {
+        if (!category || category === "all") return getApprovedProducts();
+        var products = getApprovedProducts();
         var result = [];
         for (var i = 0; i < products.length; i++) {
             if (products[i].category === category) result.push(products[i]);
@@ -84,8 +98,8 @@ var Store = (function () {
 
     function searchProducts(query) {
         var lower = query.toLowerCase().trim();
-        if (!lower) return getProducts();
-        var products = getProducts();
+        if (!lower) return getApprovedProducts();
+        var products = getApprovedProducts();
         var result = [];
         for (var i = 0; i < products.length; i++) {
             var p = products[i];
@@ -108,6 +122,7 @@ var Store = (function () {
 
     function addProduct(data) {
         var products = getProducts();
+        var today = new Date().toISOString().split("T")[0];
         var newProduct = {
             id:          _nextId(KEYS.products),
             shopId:      data.shopId      || 0,
@@ -120,7 +135,9 @@ var Store = (function () {
             reviews:     Number(data.reviews)   || 0,
             stock:       Number(data.stock)     || 0,
             description: data.description || "",
-            createdAt:   new Date().toISOString().split("T")[0]
+            adminStatus: data.adminStatus || "pending",
+            createdAt:   today,
+            updatedAt:   today
         };
         products.push(newProduct);
         _set(KEYS.products, products);
@@ -505,7 +522,7 @@ var Store = (function () {
     }
 
 
-    // ── Public API ─────────────────────────────────────────
+    // Public API 
 
     return {
         seed:       seed,
@@ -513,6 +530,7 @@ var Store = (function () {
 
         // Products
         getProducts:            getProducts,
+        getApprovedProducts:    getApprovedProducts,
         getProductById:         getProductById,
         getProductsByCategory:  getProductsByCategory,
         getProductsByShop:      getProductsByShop,
