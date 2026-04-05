@@ -154,7 +154,7 @@
 
         for (var i = 0; i < recent.length; i++) {
             var o = recent[i];
-            var customer = Store.getUserById(o.userId);
+            var customer = Store.getUserById(Store.getOrderCustomerId(o));
             var shop = Store.getShopById(o.shopId);
             var customerName = customer ? escapeHtml(customer.name) : "Unknown";
             var shopName = shop ? escapeHtml(shop.shopName) : "Unknown";
@@ -183,17 +183,24 @@
 
         for (var i = 0; i < shops.length; i++) {
             var shop = shops[i];
-            if (shop.status === "active") {
+            if (shop.shopStatus === "active") {
                 activeShops++;
             }
 
-            var shopRevenueData = Store.getShopRevenue(shop.id);
+            var shopOrders = Store.getOrdersByShop(shop.id);
+            var validOrderCount = 0;
+            for (var x = 0; x < shopOrders.length; x++) {
+                if (shopOrders[x].status !== "cancelled") {
+                    validOrderCount++;
+                }
+            }
+
             financeRows.push({
                 shopName: shop.shopName,
-                ownerName: shop.ownerName,
-                status: shop.status,
-                orders: shopRevenueData.orders,
-                revenue: shopRevenueData.revenue
+                ownerName: shop.name,
+                status: shop.shopStatus || "pending",
+                orders: validOrderCount,
+                revenue: Store.getShopRevenue(shop.id)
             });
         }
 
@@ -272,7 +279,7 @@
 
         for (var i = 0; i < orders.length; i++) {
             var order = orders[i];
-            var customer = Store.getUserById(order.userId);
+            var customer = Store.getUserById(Store.getOrderCustomerId(order));
             var shop = Store.getShopById(order.shopId);
 
             rows.push([
