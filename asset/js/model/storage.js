@@ -6,8 +6,7 @@ var Store = (function () {
         users:       "ecshop_users",
         orders:      "ecshop_orders",
         cart:        "ecshop_cart",
-        seeded:      "ecshop_seeded",
-        currentUser: "ecshop_currentUser"
+        seeded:      "ecshop_seeded"
     };
 
 
@@ -56,7 +55,7 @@ var Store = (function () {
         localStorage.removeItem(KEYS.orders);
         localStorage.removeItem(KEYS.cart);
         localStorage.removeItem(KEYS.seeded);
-        localStorage.removeItem(KEYS.currentUser);
+        localStorage.removeItem("ecshop_currentUser");
         seed();
         console.log("Store: all data reset");
     }
@@ -290,28 +289,6 @@ var Store = (function () {
         return true;
     }
 
-    function authenticate(identifier, password) {
-        var user = getUserByEmail(identifier) || getUserByUsername(identifier);
-        if (!user) return null;
-        if (user.password !== password) return null;
-        // Save logged-in user (without password)
-        var session = { id: user.id, name: user.name, email: user.email, role: user.role };
-        // If shop, include shopName in session
-        if (user.role === "shop") {
-            session.shopName = user.shopName;
-        }
-        _set(KEYS.currentUser, session);
-        return session;
-    }
-
-    function getCurrentUser() {
-        return _get(KEYS.currentUser);
-    }
-
-    function logout() {
-        localStorage.removeItem(KEYS.currentUser);
-    }
-
     function getOrderCustomerId(order) {
         if (!order) return 0;
         if (order.customerId !== undefined && order.customerId !== null) return order.customerId;
@@ -344,7 +321,7 @@ var Store = (function () {
     }
 
 
-    // ── ORDERS ─────────────────────────────────────────────
+    // ── ORDERS (logic in admin-orders.js)
 
     function getOrders() {
         return _get(KEYS.orders) || [];
@@ -390,7 +367,9 @@ var Store = (function () {
             return changedBy;
         }
 
-        var currentUser = getCurrentUser();
+        var currentUser = (typeof Auth !== "undefined" && Auth.getCurrentUser)
+            ? Auth.getCurrentUser()
+            : null;
         if (currentUser && (currentUser.role === "customer" || currentUser.role === "shop" || currentUser.role === "admin")) {
             return currentUser.role;
         }
@@ -507,7 +486,7 @@ var Store = (function () {
     }
 
 
-    // ── CART ───────────────────────────────────────────────
+    // ── CART (tested in shop.js) not official
 
     function getCart() {
         return _get(KEYS.cart) || [];
@@ -570,7 +549,7 @@ var Store = (function () {
     }
 
 
-    // ── STATS (for admin dashboard) ────────────────────────
+    //   STATS (for admin dashboard) 
 
     function getTotalRevenue() {
         var orders = getOrders();
@@ -664,10 +643,6 @@ var Store = (function () {
         addUser:             addUser,
         updateUser:      updateUser,
         deleteUser:      deleteUser,
-        authenticate:    authenticate,
-        getCurrentUser:  getCurrentUser,
-        logout:          logout,
-
         // Shops (filtered from users)
         getShops:           getShops,
         getShopById:        getShopById,
