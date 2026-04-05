@@ -499,6 +499,32 @@ body {
     color: #fff;
 }
 
+.dashboard-tabbar {
+    margin-bottom: 24px;
+}
+
+.dashboard-tab-panel {
+    display: none;
+}
+
+.dashboard-tab-panel.active {
+    display: block;
+}
+
+.report-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.report-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
 .search-box {
     position: relative;
 }
