@@ -6,8 +6,7 @@ var Store = (function () {
         users:       "ecshop_users",
         orders:      "ecshop_orders",
         cart:        "ecshop_cart",
-        seeded:      "ecshop_seeded",
-        currentUser: "ecshop_currentUser"
+        seeded:      "ecshop_seeded"
     };
 
 
@@ -56,7 +55,7 @@ var Store = (function () {
         localStorage.removeItem(KEYS.orders);
         localStorage.removeItem(KEYS.cart);
         localStorage.removeItem(KEYS.seeded);
-        localStorage.removeItem(KEYS.currentUser);
+        localStorage.removeItem("ecshop_currentUser");
         seed();
         console.log("Store: all data reset");
     }
@@ -290,28 +289,6 @@ var Store = (function () {
         return true;
     }
 
-    function authenticate(identifier, password) {
-        var user = getUserByEmail(identifier) || getUserByUsername(identifier);
-        if (!user) return null;
-        if (user.password !== password) return null;
-        // Save logged-in user (without password)
-        var session = { id: user.id, name: user.name, email: user.email, role: user.role };
-        // If shop, include shopName in session
-        if (user.role === "shop") {
-            session.shopName = user.shopName;
-        }
-        _set(KEYS.currentUser, session);
-        return session;
-    }
-
-    function getCurrentUser() {
-        return _get(KEYS.currentUser);
-    }
-
-    function logout() {
-        localStorage.removeItem(KEYS.currentUser);
-    }
-
     function getOrderCustomerId(order) {
         if (!order) return 0;
         if (order.customerId !== undefined && order.customerId !== null) return order.customerId;
@@ -344,7 +321,7 @@ var Store = (function () {
     }
 
 
-    // ── ORDERS ─────────────────────────────────────────────
+    // ── ORDERS (logic in admin-orders.js)
 
     function getOrders() {
         return _get(KEYS.orders) || [];
@@ -385,9 +362,61 @@ var Store = (function () {
         return result;
     }
 
+    function normalizeChangedBy(changedBy) {
+        if (changedBy === "customer" || changedBy === "shop" || changedBy === "admin") {
+            return changedBy;
+        }
+
+        var currentUser = (typeof Auth !== "undefined" && Auth.getCurrentUser)
+            ? Auth.getCurrentUser()
+            : null;
+        if (currentUser && (currentUser.role === "customer" || currentUser.role === "shop" || currentUser.role === "admin")) {
+            return currentUser.role;
+        }
+
+        return null;
+    }
+
+    function isAllowedStatusTransition(fromStatus, toStatus, changedBy) {
+        if (fromStatus === toStatus) return false;
+
+        if (changedBy === "admin") {
+            return toStatus === "cancelled" && fromStatus !== "cancelled";
+        }
+
+        if (changedBy === "shop") {
+            if (fromStatus === "pending" && (toStatus === "confirmed" || toStatus === "cancelled")) return true;
+            if (fromStatus === "confirmed" && toStatus === "shipped") return true;
+            if (fromStatus === "shipped" && toStatus === "delivered") return true;
+            return false;
+        }
+
+        if (changedBy === "customer") {
+            return fromStatus === "pending" && toStatus === "cancelled";
+        }
+
+        return false;
+    }
+
+    function ensureOrderStatusHistory(order) {
+        if (Array.isArray(order.statusHistory) && order.statusHistory.length > 0) {
+            return;
+        }
+
+        var baseStatus = order.status || "pending";
+        var baseTime = order.createdAt ? new Date(order.createdAt).toISOString() : new Date().toISOString();
+
+        order.statusHistory = [{
+            status: baseStatus,
+            changedAt: baseTime,
+            changedBy: "customer"
+        }];
+    }
+
     function addOrder(data) {
         var orders = getOrders();
         var customerId = data.customerId || data.userId || 0;
+        var nowIso = new Date().toISOString();
         var newOrder = {
             id:        _nextId(KEYS.orders),
             customerId: customerId,
@@ -396,18 +425,48 @@ var Store = (function () {
             items:     data.items    || [],
             total:     Number(data.total) || 0,
             status:    "pending",
-            createdAt: new Date().toISOString().split("T")[0]
+            statusHistory: [{
+                status: "pending",
+                changedAt: nowIso,
+                changedBy: "customer"
+            }],
+            createdAt: nowIso.split("T")[0]
         };
         orders.push(newOrder);
         _set(KEYS.orders, orders);
         return newOrder;
     }
 
-    function updateOrderStatus(id, newStatus) {
+    function updateOrderStatus(id, newStatus, changedBy) {
         var orders = getOrders();
+        var normalizedChangedBy = normalizeChangedBy(changedBy);
+        var allowedStatuses = {
+            pending: true,
+            confirmed: true,
+            shipped: true,
+            delivered: true,
+            cancelled: true
+        };
+
+        if (!allowedStatuses[newStatus] || !normalizedChangedBy) {
+            return null;
+        }
+
         for (var i = 0; i < orders.length; i++) {
             if (orders[i].id === id) {
+                var currentStatus = orders[i].status || "pending";
+                ensureOrderStatusHistory(orders[i]);
+
+                if (!isAllowedStatusTransition(currentStatus, newStatus, normalizedChangedBy)) {
+                    return null;
+                }
+
                 orders[i].status = newStatus;
+                orders[i].statusHistory.push({
+                    status: newStatus,
+                    changedAt: new Date().toISOString(),
+                    changedBy: normalizedChangedBy
+                });
                 _set(KEYS.orders, orders);
                 return orders[i];
             }
@@ -427,7 +486,7 @@ var Store = (function () {
     }
 
 
-    // ── CART ───────────────────────────────────────────────
+    // ── CART (tested in shop.js) not official
 
     function getCart() {
         return _get(KEYS.cart) || [];
@@ -490,7 +549,7 @@ var Store = (function () {
     }
 
 
-    // ── STATS (for admin dashboard) ────────────────────────
+    //   STATS (for admin dashboard) 
 
     function getTotalRevenue() {
         var orders = getOrders();
@@ -584,10 +643,6 @@ var Store = (function () {
         addUser:             addUser,
         updateUser:      updateUser,
         deleteUser:      deleteUser,
-        authenticate:    authenticate,
-        getCurrentUser:  getCurrentUser,
-        logout:          logout,
-
         // Shops (filtered from users)
         getShops:           getShops,
         getShopById:        getShopById,

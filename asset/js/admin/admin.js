@@ -1,6 +1,6 @@
 
 
-var currentUser = Store.getCurrentUser();
+var currentUser = Auth.getCurrentUser();
 if (!currentUser || currentUser.role !== "admin") {
     window.location.href = "admin-login.html";
 }
@@ -9,6 +9,6 @@ if (!currentUser || currentUser.role !== "admin") {
 //Log out btn
 
 function handleLogout() {
-    Store.logout();
+    Auth.logout();
     window.location.href = "admin-login.html";
 }
