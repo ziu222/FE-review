@@ -27,14 +27,14 @@
         <a href="products.html" class="nav-item">
             <i class="fa-solid fa-box-open"></i> Products
         </a>
-        <a href="../404.html" class="nav-item">
+        <a href="orders-manage.html" class="nav-item">
             <i class="fa-solid fa-clipboard-list"></i> Orders
         </a>
         <a href="../404.html" class="nav-item">
             <i class="fa-solid fa-users"></i> Customers
         </a>
         <a href="../404.html" class="nav-item">
-            <i class="fa-solid fa-wallet"></i> Financial
+            <i class="fa-solid fa-bell"></i> Notifications
         </a>
 
         <div class="nav-section-label">Support</div>
@@ -60,6 +60,16 @@
 
 
 <main class="main-content">
+
+    <div class="toolbar dashboard-tabbar">
+        <div class="filter-tabs">
+            <button class="filter-tab active dashboard-tab-btn" type="button" data-tab="overview">Overview</button>
+            <button class="filter-tab dashboard-tab-btn" type="button" data-tab="finance">Finance</button>
+            <button class="filter-tab dashboard-tab-btn" type="button" data-tab="reports">Reports</button>
+        </div>
+    </div>
+
+    <section class="dashboard-tab-panel active" id="tabOverview">
 
     <div class="stats-row">
         <div class="stat-card">
@@ -156,6 +166,84 @@
             </div>
         </div>
     </div>
+
+    </section>
+
+    <section class="dashboard-tab-panel" id="tabFinance">
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <span class="stat-card-label">Total Marketplace Revenue</span>
+                    <div class="stat-card-icon green"><i class="fa-solid fa-coins"></i></div>
+                </div>
+                <div class="stat-card-value" id="financeTotalRevenue">$0</div>
+                <div class="stat-card-sub">Excluding cancelled orders</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <span class="stat-card-label">Revenue Today</span>
+                    <div class="stat-card-icon blue"><i class="fa-solid fa-calendar-day"></i></div>
+                </div>
+                <div class="stat-card-value" id="financeTodayRevenue">$0</div>
+                <div class="stat-card-sub">Based on today's paid orders</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <span class="stat-card-label">Active Shops</span>
+                    <div class="stat-card-icon teal"><i class="fa-solid fa-store"></i></div>
+                </div>
+                <div class="stat-card-value" id="financeActiveShops">0</div>
+                <div class="stat-card-sub">Shops contributing to marketplace</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Shop Revenue Overview</h2>
+            <div style="overflow-x: auto;">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Shop</th>
+                            <th>Owner</th>
+                            <th>Status</th>
+                            <th>Orders</th>
+                            <th>Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody id="financeTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="dashboard-tab-panel" id="tabReports">
+        <div class="card">
+            <div class="report-header">
+                <h2 class="card-title">Reports Center</h2>
+                <div class="report-actions">
+                    <button class="btn-primary" type="button" id="btnExportCsv">
+                        <i class="fa-solid fa-file-csv"></i> Export Orders CSV
+                    </button>
+                    <button class="btn-logout" type="button" id="btnPrintReport">
+                        <i class="fa-solid fa-print"></i> Print Summary
+                    </button>
+                </div>
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportSummaryBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
 
 </main>
 

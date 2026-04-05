@@ -35,7 +35,10 @@ var Store = (function () {
 
     // Seed 
     function seed() {
-        if (localStorage.getItem(KEYS.seeded)) return;
+        if (localStorage.getItem(KEYS.seeded)) {
+            migrateOrderSchema();
+            return;
+        }
 
         _set(KEYS.products, typeof SEED_PRODUCTS !== "undefined" ? SEED_PRODUCTS : []);
         _set(KEYS.users,    typeof SEED_USERS    !== "undefined" ? SEED_USERS    : []);
@@ -43,6 +46,7 @@ var Store = (function () {
         _set(KEYS.cart, []);
 
         localStorage.setItem(KEYS.seeded, "true");
+        migrateOrderSchema();
         console.log("Store: seed data loaded into LocalStorage");
     }
 
@@ -308,6 +312,37 @@ var Store = (function () {
         localStorage.removeItem(KEYS.currentUser);
     }
 
+    function getOrderCustomerId(order) {
+        if (!order) return 0;
+        if (order.customerId !== undefined && order.customerId !== null) return order.customerId;
+        if (order.userId !== undefined && order.userId !== null) return order.userId;
+        return 0;
+    }
+
+    function migrateOrderSchema() {
+        var orders = getOrders();
+        var changed = false;
+
+        for (var i = 0; i < orders.length; i++) {
+            var order = orders[i];
+            var customerId = getOrderCustomerId(order);
+
+            if (order.customerId === undefined || order.customerId === null) {
+                order.customerId = customerId;
+                changed = true;
+            }
+
+            if (order.userId === undefined || order.userId === null) {
+                order.userId = customerId;
+                changed = true;
+            }
+        }
+
+        if (changed) {
+            _set(KEYS.orders, orders);
+        }
+    }
+
 
     // ── ORDERS ─────────────────────────────────────────────
 
@@ -327,7 +362,7 @@ var Store = (function () {
         var orders = getOrders();
         var result = [];
         for (var i = 0; i < orders.length; i++) {
-            if (orders[i].userId === userId) result.push(orders[i]);
+            if (getOrderCustomerId(orders[i]) === userId) result.push(orders[i]);
         }
         return result;
     }
@@ -352,9 +387,11 @@ var Store = (function () {
 
     function addOrder(data) {
         var orders = getOrders();
+        var customerId = data.customerId || data.userId || 0;
         var newOrder = {
             id:        _nextId(KEYS.orders),
-            userId:    data.userId   || 0,
+            customerId: customerId,
+            userId:    customerId,
             shopId:    data.shopId   || 0,
             items:     data.items    || [],
             total:     Number(data.total) || 0,
@@ -563,6 +600,7 @@ var Store = (function () {
         getOrdersByUser:    getOrdersByUser,
         getOrdersByShop:    getOrdersByShop,
         getOrdersByStatus:  getOrdersByStatus,
+        getOrderCustomerId: getOrderCustomerId,
         addOrder:           addOrder,
         updateOrderStatus:  updateOrderStatus,
         deleteOrder:        deleteOrder,
