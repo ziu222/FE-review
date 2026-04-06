@@ -8,6 +8,57 @@ function saveUsers(users) {
   localStorage.setItem("users", JSON.stringify(users));
 }
 
+// ===== USER SESSION =====
+function getCurrentUser() {
+  return JSON.parse(localStorage.getItem("currentUser"));
+}
+
+function renderUser() {
+  const userBtn = document.getElementById("userBtn");
+  const userContent = document.getElementById("userContent");
+  if (!userBtn) return;
+
+  const user = getCurrentUser();
+
+  if (user) {
+    userContent.textContent = user.firstName;
+    userContent.classList.remove("material-symbols-outlined");
+    userBtn.onclick = toggleMenu;
+  } else {
+    userContent.textContent = "person";
+    userContent.classList.add("material-symbols-outlined");
+    userBtn.onclick = () => {
+      window.location.href = "login.html";
+    };
+  }
+}
+
+function toggleMenu() {
+  const userBtn = document.getElementById("userBtn");
+  let menu = document.getElementById("userMenu");
+
+  if (menu) {
+    menu.remove();
+    return;
+  }
+
+  menu = document.createElement("div");
+  menu.id = "userMenu";
+  menu.className = "absolute right-0 mt-2 w-32 bg-white shadow rounded";
+
+  menu.innerHTML = `
+    <button onclick="logout()" class="block w-full text-left px-4 py-2 hover:bg-gray-100">
+      Đăng xuất
+    </button>
+  `;
+
+  userBtn.appendChild(menu);
+}
+function logout() {
+  localStorage.removeItem("currentUser");
+  location.reload();
+}
+
 // ===== CHUYỂN TRANG =====
 const signupTab = document.querySelector(".auth-links span:first-child");
 const loginTab = document.querySelector(".auth-links span:last-child");
@@ -88,9 +139,13 @@ if (loginForm) {
       localStorage.setItem("currentUser", JSON.stringify(user));
 
       // chuyển trang (bạn có thể đổi)
-      window.location.href = "https://www.facebook.com/";
+      window.location.href = "home.html";
     } else {
       alert("Sai email hoặc mật khẩu!");
     }
   });
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderUser();
+});

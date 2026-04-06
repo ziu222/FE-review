@@ -21,29 +21,37 @@
     <nav class="fixed top-0 w-full z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm">
         <div class="flex justify-between items-center px-8 py-4 max-w-screen-2xl mx-auto w-full">
             <div class="flex items-center gap-12">
-                <a class="text-2xl font-bold tracking-tighter text-teal-900 dark:text-teal-400 font-headline no-underline hover:no-underline flex items-center gap-3" href="#">
+                <a class="text-2xl font-bold tracking-tighter text-teal-900 dark:text-teal-400 font-headline no-underline hover:no-underline flex items-center gap-3"
+                    href="#">
                     <span>EC SHOP</span>
                 </a>
                 <div class="hidden lg:flex items-center gap-8">
-                    <a class="text-slate-600 dark:text-slate-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors text-sm font-medium tracking-wide no-underline hover:no-underline" href="./login/login.html">Sign in</a>
-                    <a class="text-slate-600 dark:text-slate-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors text-sm font-medium tracking-wide no-underline hover:no-underline" href="#">Sign up</a>
-                    <a class="text-slate-600 dark:text-slate-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors text-sm font-medium tracking-wide no-underline hover:no-underline" href="#">Product</a>
-                    <a class="text-slate-600 dark:text-slate-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors text-sm font-medium tracking-wide no-underline hover:no-underline" href="#">About</a>
-                    <a class="text-slate-600 dark:text-slate-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors text-sm font-medium tracking-wide no-underline hover:no-underline" href="#">Contact</a>
+                    <a class="text-slate-600 dark:text-slate-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors text-sm font-medium tracking-wide no-underline hover:no-underline"
+                        href="#">Home</a>
+                    <a class="text-slate-600 dark:text-slate-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors text-sm font-medium tracking-wide no-underline hover:no-underline"
+                        href="#">Product</a>
+                    <a class="text-slate-600 dark:text-slate-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors text-sm font-medium tracking-wide no-underline hover:no-underline"
+                        href="#">About</a>
+                    <a class="text-slate-600 dark:text-slate-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors text-sm font-medium tracking-wide no-underline hover:no-underline"
+                        href="#">Contact</a>
                 </div>
             </div>
             <div class="flex items-center gap-6">
                 <div class="relative group hidden xl:block">
-                    <input class="bg-surface-container-highest border-none rounded-full py-2 pl-10 pr-4 w-64 text-sm focus:ring-2 focus:ring-primary transition-all" placeholder="Search flagship boutique..." type="text"/>
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 scale-90">search</span>
+                    <input
+                        class="bg-surface-container-highest border-none rounded-full py-2 pl-10 pr-4 w-64 text-sm focus:ring-2 focus:ring-primary transition-all"
+                        placeholder="Search flagship boutique..." type="text" />
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 scale-90">search</span>
                 </div>
                 <div class="flex items-center gap-4">
-                    <button class="p-2 text-teal-900 dark:text-teal-400 hover:bg-teal-50/50 dark:hover:bg-teal-900/20 rounded-full transition-all duration-300 active:scale-95">
-                        <span class="material-symbols-outlined">person</span>
+                    <button id="userBtn"
+                        class="p-2 text-teal-900 dark:text-teal-400 hover:bg-teal-50/50 dark:hover:bg-teal-900/20 rounded-full transition-all duration-300 active:scale-95">
+                        <span id="userContent" class="material-symbols-outlined">person</span>
                     </button>
-                    <button class="p-2 text-teal-900 dark:text-teal-400 hover:bg-teal-50/50 dark:hover:bg-teal-900/20 rounded-full transition-all duration-300 active:scale-95 relative">
+                    <button
+                        class="p-2 text-teal-900 dark:text-teal-400 hover:bg-teal-50/50 dark:hover:bg-teal-900/20 rounded-full transition-all duration-300 active:scale-95 relative">
                         <span class="material-symbols-outlined">shopping_cart</span>
-                        <span class="absolute top-1 right-1 w-2 h-2 bg-secondary rounded-full border border-white"></span>
                     </button>
                 </div>
             </div>
@@ -312,6 +320,7 @@
     <script src="../asset/js/model/order-data.js"></script>
     <script src="../asset/js/model/storage.js"></script>
     <script src="../asset/js/main.js"></script>
+    <script src="../asset/js/user/user-login.js"></script>
 </body>
 
 </html>
