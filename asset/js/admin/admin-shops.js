@@ -29,7 +29,7 @@
     // ── Topbar user ────────────────────────────────────────
 
     function renderTopbar() {
-        var user = Store.getCurrentUser();
+        var user = Auth.getCurrentUser();
         if (!user) return;
         document.getElementById("topbarUserName").textContent = user.name;
         document.getElementById("topbarAvatar").textContent = user.name.charAt(0).toUpperCase();
