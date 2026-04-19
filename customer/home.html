@@ -45,10 +45,29 @@
                         class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 scale-90">search</span>
                 </div>
                 <div class="flex items-center gap-4">
-                    <button id="userBtn"
-                        class="p-2 text-teal-900 dark:text-teal-400 hover:bg-teal-50/50 dark:hover:bg-teal-900/20 rounded-full transition-all duration-300 active:scale-95">
-                        <span id="userContent" class="material-symbols-outlined">person</span>
-                    </button>
+                    <el-dropdown class="inline-block relative">
+                        <button id="userBtn"
+                            class="p-2 text-teal-900 dark:text-teal-400 hover:bg-teal-50/50 dark:hover:bg-teal-900/20 rounded-full transition-all duration-300 active:scale-95">
+                            <span id="userContent" class="material-symbols-outlined">person</span>
+                        </button>
+                        <!-- Dropdown -->
+                        <div id="userMenu"
+                            class="hidden absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden z-50">
+
+                            <button onclick="logout()"
+                                class="block w-full text-left px-6 py-2 whitespace-nowrap hover:bg-gray-100 dark:hover:bg-gray-700">
+                                Đăng xuất
+                            </button>
+                            <button 
+                                class="block w-full text-left px-6 py-2 whitespace-nowrap hover:bg-gray-100 dark:hover:bg-gray-700">
+                                Tài khoản
+                            </button>
+                            <button 
+                                class="block w-full text-left px-6 py-2 whitespace-nowrap hover:bg-gray-100 dark:hover:bg-gray-700">
+                                Hỗ trợ
+                            </button>
+                        </div>
+                    </el-dropdown>
                     <button
                         class="p-2 text-teal-900 dark:text-teal-400 hover:bg-teal-50/50 dark:hover:bg-teal-900/20 rounded-full transition-all duration-300 active:scale-95 relative">
                         <span class="material-symbols-outlined">shopping_cart</span>
