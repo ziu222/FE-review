@@ -14,6 +14,7 @@ var SEED_PRODUCTS = [
         reviews: 342,
         stock: 25,
         description: "The most powerful iPhone ever with A17 Pro chip, titanium design, and 48MP camera system.",
+        adminStatus: "pending",
         createdAt: "2025-09-22"
     },
     {
@@ -28,6 +29,7 @@ var SEED_PRODUCTS = [
         reviews: 287,
         stock: 18,
         description: "Galaxy AI powered flagship with S Pen, 200MP camera, and titanium frame.",
+        adminStatus: "pending",
         createdAt: "2025-01-17"
     },
     {
@@ -42,6 +44,7 @@ var SEED_PRODUCTS = [
         reviews: 215,
         stock: 30,
         description: "Google's smartest phone with Tensor G3 chip and advanced AI photography features.",
+        adminStatus: "pending",
         createdAt: "2025-10-04"
     },
     {
@@ -168,6 +171,7 @@ var SEED_PRODUCTS = [
         reviews: 141,
         stock: 20,
         description: "Compact mirrorless camera with 24.2MP sensor, 4K video, and subject detection AF.",
+        adminStatus: "rejected",
         createdAt: "2025-02-28"
     },
     {
@@ -252,6 +256,7 @@ var SEED_PRODUCTS = [
         reviews: 203,
         stock: 70,
         description: "24,000mAh portable charger with 140W output and smart digital display.",
+        adminStatus: "rejected",
         createdAt: "2025-08-15"
     },
     {

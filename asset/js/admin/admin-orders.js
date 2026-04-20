@@ -36,7 +36,7 @@
     }
 
     function renderTopbarUser() {
-        var user = Store.getCurrentUser();
+        var user = Auth.getCurrentUser();
         if (!user) return;
 
         document.getElementById("topbarUserName").textContent = user.name;

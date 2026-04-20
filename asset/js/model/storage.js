@@ -2,14 +2,13 @@
 var Store = (function () {
 
     var KEYS = {
-        products:    "ecshop_products",
-        users:       "ecshop_users",
-        orders:      "ecshop_orders",
-        cart:        "ecshop_cart",
-        seeded:      "ecshop_seeded",
-        currentUser: "ecshop_currentUser"
+        products:      "ecshop_products",
+        users:         "ecshop_users",
+        orders:        "ecshop_orders",
+        cart:          "ecshop_cart",
+        notifications: "ecshop_notifications",
+        seeded:        "ecshop_seeded"
     };
-
 
 
     function _get(key) {
@@ -32,10 +31,18 @@ var Store = (function () {
         return maxId + 1;
     }
 
+    function getTodayString() {
+        return new Date().toISOString().split("T")[0];
+    }
+
 
     // Seed 
     function seed() {
         if (localStorage.getItem(KEYS.seeded)) {
+            if (!_get(KEYS.notifications)) {
+                _set(KEYS.notifications, []);
+            }
+            migrateProductSchema();
             migrateOrderSchema();
             return;
         }
@@ -44,8 +51,10 @@ var Store = (function () {
         _set(KEYS.users,    typeof SEED_USERS    !== "undefined" ? SEED_USERS    : []);
         _set(KEYS.orders,   typeof SEED_ORDERS   !== "undefined" ? SEED_ORDERS   : []);
         _set(KEYS.cart, []);
+        _set(KEYS.notifications, []);
 
         localStorage.setItem(KEYS.seeded, "true");
+        migrateProductSchema();
         migrateOrderSchema();
         console.log("Store: seed data loaded into LocalStorage");
     }
@@ -55,8 +64,9 @@ var Store = (function () {
         localStorage.removeItem(KEYS.users);
         localStorage.removeItem(KEYS.orders);
         localStorage.removeItem(KEYS.cart);
+        localStorage.removeItem(KEYS.notifications);
         localStorage.removeItem(KEYS.seeded);
-        localStorage.removeItem(KEYS.currentUser);
+        localStorage.removeItem("ecshop_currentUser");
         seed();
         console.log("Store: all data reset");
     }
@@ -64,8 +74,84 @@ var Store = (function () {
 
     // PRODUCTS 
 
+    function getSeedProductTemplate(productId) {
+        if (typeof SEED_PRODUCTS === "undefined" || !SEED_PRODUCTS) return null;
+        for (var i = 0; i < SEED_PRODUCTS.length; i++) {
+            if (SEED_PRODUCTS[i].id === productId) return SEED_PRODUCTS[i];
+        }
+        return null;
+    }
+
+    function normalizeProduct(product) {
+        if (!product) return null;
+
+        var normalized = {};
+        var seedProduct = getSeedProductTemplate(product.id);
+        var key;
+
+        for (key in product) {
+            normalized[key] = product[key];
+        }
+
+        if (seedProduct) {
+            for (key in seedProduct) {
+                if (normalized[key] === undefined || normalized[key] === null || normalized[key] === "") {
+                    normalized[key] = seedProduct[key];
+                }
+            }
+        }
+
+        var legacyStatus = normalized.visible === true ? "approved" : null;
+        normalized.adminStatus = normalized.adminStatus || legacyStatus || (seedProduct && seedProduct.adminStatus) || "approved";
+        normalized.adminNote = normalized.adminNote || "";
+        normalized.submittedAt = normalized.submittedAt || normalized.createdAt || getTodayString();
+        normalized.reviewedAt = normalized.reviewedAt || (normalized.adminStatus !== "pending" ? (normalized.updatedAt || normalized.createdAt || normalized.submittedAt) : null);
+        normalized.reviewedBy = normalized.reviewedBy || (normalized.adminStatus !== "pending" ? "admin" : null);
+        normalized.updatedAt = normalized.updatedAt || normalized.createdAt || normalized.submittedAt;
+        normalized.price = Number(normalized.price) || 0;
+        normalized.oldPrice = Number(normalized.oldPrice) || 0;
+        normalized.rating = Number(normalized.rating) || 0;
+        normalized.reviews = Number(normalized.reviews) || 0;
+        normalized.stock = Number(normalized.stock) || 0;
+        normalized.description = normalized.description || "";
+
+        return normalized;
+    }
+
+    function migrateProductSchema() {
+        var products = _get(KEYS.products) || [];
+        var changed = false;
+
+        for (var i = 0; i < products.length; i++) {
+            var product = products[i];
+            var needsNormalize = (
+                product.adminStatus === undefined ||
+                product.adminNote === undefined ||
+                product.submittedAt === undefined ||
+                product.reviewedAt === undefined ||
+                product.reviewedBy === undefined ||
+                product.updatedAt === undefined
+            );
+
+            if (needsNormalize) {
+                products[i] = normalizeProduct(product);
+                changed = true;
+            }
+        }
+
+        if (changed) {
+            _set(KEYS.products, products);
+        }
+    }
+
     function getProducts() {
-        return _get(KEYS.products) || [];
+        migrateProductSchema();
+        var products = _get(KEYS.products) || [];
+        var result = [];
+        for (var i = 0; i < products.length; i++) {
+            result.push(normalizeProduct(products[i]));
+        }
+        return result;
     }
 
     function getProductById(id) {
@@ -76,18 +162,35 @@ var Store = (function () {
         return null;
     }
 
-    function getApprovedProducts() {
+    function getProductsByStatus(status) {
+        if (!status || status === "all") return getProducts();
+
         var products = getProducts();
         var result = [];
-
         for (var i = 0; i < products.length; i++) {
-            var status = products[i].adminStatus;
-            if (!status || status === "approved" || status === "visible") {
+            if (products[i].adminStatus === status) {
                 result.push(products[i]);
             }
         }
-
         return result;
+    }
+
+    function getApprovedProducts() {
+        return getProductsByStatus("approved");
+    }
+
+    function getProductStats() {
+        var products = getProducts();
+        var counts = { total: products.length, pending: 0, approved: 0, rejected: 0, suspended: 0 };
+
+        for (var i = 0; i < products.length; i++) {
+            var status = products[i].adminStatus || "approved";
+            if (counts[status] !== undefined) {
+                counts[status]++;
+            }
+        }
+
+        return counts;
     }
 
     function getProductsByCategory(category) {
@@ -101,14 +204,15 @@ var Store = (function () {
     }
 
     function searchProducts(query) {
-        var lower = query.toLowerCase().trim();
+        var lower = (query || "").toLowerCase().trim();
         if (!lower) return getApprovedProducts();
         var products = getApprovedProducts();
         var result = [];
         for (var i = 0; i < products.length; i++) {
             var p = products[i];
-            if (p.name.toLowerCase().indexOf(lower) !== -1 ||
-                p.category.toLowerCase().indexOf(lower) !== -1) {
+            var name = (p.name || "").toLowerCase();
+            var category = (p.category || "").toLowerCase();
+            if (name.indexOf(lower) !== -1 || category.indexOf(lower) !== -1) {
                 result.push(p);
             }
         }
@@ -126,23 +230,27 @@ var Store = (function () {
 
     function addProduct(data) {
         var products = getProducts();
-        var today = new Date().toISOString().split("T")[0];
-        var newProduct = {
+        var today = getTodayString();
+        var newProduct = normalizeProduct({
             id:          _nextId(KEYS.products),
-            shopId:      data.shopId      || 0,
-            name:        data.name        || "New Product",
-            price:       Number(data.price)    || 0,
-            oldPrice:    Number(data.oldPrice)  || 0,
-            image:       data.image       || "../asset/img/404.png",
-            category:    data.category    || "smartphone",
-            rating:      Number(data.rating)    || 0,
-            reviews:     Number(data.reviews)   || 0,
-            stock:       Number(data.stock)     || 0,
+            shopId:      data.shopId || 0,
+            name:        data.name || "New Product",
+            price:       Number(data.price) || 0,
+            oldPrice:    Number(data.oldPrice) || 0,
+            image:       data.image || "../asset/img/404.png",
+            category:    data.category || "smartphone",
+            rating:      Number(data.rating) || 0,
+            reviews:     Number(data.reviews) || 0,
+            stock:       Number(data.stock) || 0,
             description: data.description || "",
             adminStatus: data.adminStatus || "pending",
+            adminNote:   data.adminNote || "",
+            submittedAt: data.submittedAt || today,
+            reviewedAt:  data.reviewedAt || null,
+            reviewedBy:  data.reviewedBy || null,
             createdAt:   today,
             updatedAt:   today
-        };
+        });
         products.push(newProduct);
         _set(KEYS.products, products);
         return newProduct;
@@ -152,11 +260,14 @@ var Store = (function () {
         var products = getProducts();
         for (var i = 0; i < products.length; i++) {
             if (products[i].id === id) {
-                // Only update fields that are provided
                 var keys = Object.keys(data);
                 for (var k = 0; k < keys.length; k++) {
                     products[i][keys[k]] = data[keys[k]];
                 }
+                if (!data.updatedAt) {
+                    products[i].updatedAt = getTodayString();
+                }
+                products[i] = normalizeProduct(products[i]);
                 _set(KEYS.products, products);
                 return products[i];
             }
@@ -173,6 +284,152 @@ var Store = (function () {
         if (filtered.length === products.length) return false;
         _set(KEYS.products, filtered);
         return true;
+    }
+
+    function getCurrentReviewerLabel() {
+        var currentUser = (typeof Auth !== "undefined" && Auth.getCurrentUser)
+            ? Auth.getCurrentUser()
+            : null;
+
+        if (!currentUser) return "admin";
+        return currentUser.username || currentUser.name || currentUser.email || currentUser.role || "admin";
+    }
+
+    function requireAdminReviewer() {
+        var currentUser = (typeof Auth !== "undefined" && Auth.getCurrentUser)
+            ? Auth.getCurrentUser()
+            : null;
+
+        return !!(currentUser && currentUser.role === "admin");
+    }
+
+    function dispatchProductNotification(product, event, adminNote) {
+        var messageMap = {
+            approved: {
+                type: "info",
+                title: "Product approved",
+                message: 'Your product "' + product.name + '" has been approved and is now visible to customers.'
+            },
+            rejected: {
+                type: "warning",
+                title: "Product rejected",
+                message: 'Your product "' + product.name + '" was rejected. Reason: ' + (adminNote || "No note provided.")
+            },
+            suspended: {
+                type: "warning",
+                title: "Product suspended",
+                message: 'Your product "' + product.name + '" has been suspended. Reason: ' + (adminNote || "No note provided.")
+            },
+            restored: {
+                type: "info",
+                title: "Product restored",
+                message: 'Your product "' + product.name + '" has been restored and is live again.'
+            }
+        };
+
+        var payload = messageMap[event];
+        if (!payload) return null;
+
+        return addNotification({
+            targetId: product.shopId,
+            targetRole: "shop",
+            sentBy: "admin",
+            type: payload.type,
+            title: payload.title,
+            message: payload.message
+        });
+    }
+
+    function reviewProduct(productId, newStatus, adminNote) {
+        if (!requireAdminReviewer()) {
+            return { success: false, error: "Only admin can review products." };
+        }
+
+        if (newStatus !== "approved" && newStatus !== "rejected") {
+            return { success: false, error: "Invalid review action." };
+        }
+
+        var product = getProductById(productId);
+        if (!product) {
+            return { success: false, error: "Product not found." };
+        }
+
+        if (product.adminStatus !== "pending") {
+            return { success: false, error: "Only pending products can be reviewed." };
+        }
+
+        var note = (adminNote || "").trim();
+        if (newStatus === "rejected" && !note) {
+            return { success: false, error: "Rejection note is required." };
+        }
+
+        var updated = updateProduct(productId, {
+            adminStatus: newStatus,
+            adminNote: note,
+            reviewedAt: getTodayString(),
+            reviewedBy: getCurrentReviewerLabel(),
+            updatedAt: getTodayString()
+        });
+
+        dispatchProductNotification(updated, newStatus, note);
+        return { success: true, product: updated };
+    }
+
+    function suspendProduct(productId, adminNote) {
+        if (!requireAdminReviewer()) {
+            return { success: false, error: "Only admin can suspend products." };
+        }
+
+        var note = (adminNote || "").trim();
+        if (!note) {
+            return { success: false, error: "Suspend note is required." };
+        }
+
+        var product = getProductById(productId);
+        if (!product) {
+            return { success: false, error: "Product not found." };
+        }
+
+        if (product.adminStatus !== "approved") {
+            return { success: false, error: "Only approved products can be suspended." };
+        }
+
+        var updated = updateProduct(productId, {
+            adminStatus: "suspended",
+            adminNote: note,
+            reviewedAt: getTodayString(),
+            reviewedBy: getCurrentReviewerLabel(),
+            updatedAt: getTodayString()
+        });
+
+        dispatchProductNotification(updated, "suspended", note);
+        return { success: true, product: updated };
+    }
+
+    function restoreProduct(productId) {
+        if (!requireAdminReviewer()) {
+            return { success: false, error: "Only admin can restore products." };
+        }
+
+        var product = getProductById(productId);
+        if (!product) {
+            return { success: false, error: "Product not found." };
+        }
+
+        if (product.adminStatus !== "suspended") {
+            return { success: false, error: "Only suspended products can be restored." };
+        }
+
+        var updated = updateProduct(productId, {
+            adminStatus: "approved",
+            adminNote: "",
+            reviewedAt: getTodayString(),
+            reviewedBy: getCurrentReviewerLabel(),
+            updatedAt: getTodayString()
+        });
+
+        dispatchProductNotification(updated, "restored", "");
+        return { success: true, product: updated };
     }
 
 
@@ -290,26 +547,28 @@ var Store = (function () {
         return true;
     }
 
-    function authenticate(identifier, password) {
-        var user = getUserByEmail(identifier) || getUserByUsername(identifier);
-        if (!user) return null;
-        if (user.password !== password) return null;
-        // Save logged-in user (without password)
-        var session = { id: user.id, name: user.name, email: user.email, role: user.role };
-        // If shop, include shopName in session
-        if (user.role === "shop") {
-            session.shopName = user.shopName;
-        }
-        _set(KEYS.currentUser, session);
-        return session;
+    function getNotifications() {
+        return _get(KEYS.notifications) || [];
     }
 
-    function getCurrentUser() {
-        return _get(KEYS.currentUser);
-    }
+    function addNotification(data) {
+        var notifications = getNotifications();
+        var item = {
+            id:         _nextId(KEYS.notifications),
+            targetId:   data.targetId || 0,
+            targetRole: data.targetRole || "customer",
+            orderId:    data.orderId || null,
+            sentBy:     data.sentBy || "system",
+            type:       data.type || "info",
+            title:      data.title || "Notification",
+            message:    data.message || "",
+            isRead:     false,
+            createdAt:  new Date().toISOString()
+        };
 
-    function logout() {
-        localStorage.removeItem(KEYS.currentUser);
+        notifications.unshift(item);
+        _set(KEYS.notifications, notifications);
+        return item;
     }
 
     function getOrderCustomerId(order) {
@@ -344,7 +603,7 @@ var Store = (function () {
     }
 
 
-    // ── ORDERS ─────────────────────────────────────────────
+    // ── ORDERS (logic in admin-orders.js)
 
     function getOrders() {
         return _get(KEYS.orders) || [];
@@ -390,7 +649,9 @@ var Store = (function () {
             return changedBy;
         }
 
-        var currentUser = getCurrentUser();
+        var currentUser = (typeof Auth !== "undefined" && Auth.getCurrentUser)
+            ? Auth.getCurrentUser()
+            : null;
         if (currentUser && (currentUser.role === "customer" || currentUser.role === "shop" || currentUser.role === "admin")) {
             return currentUser.role;
         }
@@ -507,7 +768,7 @@ var Store = (function () {
     }
 
 
-    // ── CART ───────────────────────────────────────────────
+    // ── CART (tested in shop.js) not official
 
     function getCart() {
         return _get(KEYS.cart) || [];
@@ -570,7 +831,7 @@ var Store = (function () {
     }
 
 
-    // ── STATS (for admin dashboard) ────────────────────────
+    //   STATS (for admin dashboard) 
 
     function getTotalRevenue() {
         var orders = getOrders();
@@ -646,52 +907,58 @@ var Store = (function () {
         resetAll:   resetAll,
 
         // Products
-        getProducts:            getProducts,
-        getApprovedProducts:    getApprovedProducts,
-        getProductById:         getProductById,
-        getProductsByCategory:  getProductsByCategory,
-        getProductsByShop:      getProductsByShop,
-        searchProducts:         searchProducts,
-        addProduct:             addProduct,
-        updateProduct:          updateProduct,
-        deleteProduct:          deleteProduct,
+        getProducts:             getProducts,
+        getApprovedProducts:     getApprovedProducts,
+        getProductById:          getProductById,
+        getProductsByStatus:     getProductsByStatus,
+        getProductsByCategory:   getProductsByCategory,
+        getProductsByShop:       getProductsByShop,
+        getProductStats:         getProductStats,
+        searchProducts:          searchProducts,
+        addProduct:              addProduct,
+        updateProduct:           updateProduct,
+        deleteProduct:           deleteProduct,
+        reviewProduct:           reviewProduct,
+        suspendProduct:          suspendProduct,
+        restoreProduct:          restoreProduct,
 
         // Users
-        getUsers:        getUsers,
-        getUserById:     getUserById,
-        getUserByEmail:     getUserByEmail,
-        getUserByUsername:   getUserByUsername,
-        addUser:             addUser,
-        updateUser:      updateUser,
-        deleteUser:      deleteUser,
-        authenticate:    authenticate,
-        getCurrentUser:  getCurrentUser,
-        logout:          logout,
+        getUsers:             getUsers,
+        getUserById:          getUserById,
+        getUserByEmail:       getUserByEmail,
+        getUserByUsername:    getUserByUsername,
+        addUser:              addUser,
+        updateUser:           updateUser,
+        deleteUser:           deleteUser,
 
         // Shops (filtered from users)
-        getShops:           getShops,
-        getShopById:        getShopById,
-        getCustomers:       getCustomers,
-        updateShopStatus:   updateShopStatus,
+        getShops:             getShops,
+        getShopById:          getShopById,
+        getCustomers:         getCustomers,
+        updateShopStatus:     updateShopStatus,
+
+        // Notifications
+        getNotifications:     getNotifications,
+        addNotification:      addNotification,
 
         // Orders
-        getOrders:          getOrders,
-        getOrderById:       getOrderById,
-        getOrdersByUser:    getOrdersByUser,
-        getOrdersByShop:    getOrdersByShop,
-        getOrdersByStatus:  getOrdersByStatus,
-        getOrderCustomerId: getOrderCustomerId,
-        addOrder:           addOrder,
-        updateOrderStatus:  updateOrderStatus,
-        deleteOrder:        deleteOrder,
+        getOrders:            getOrders,
+        getOrderById:         getOrderById,
+        getOrdersByUser:      getOrdersByUser,
+        getOrdersByShop:      getOrdersByShop,
+        getOrdersByStatus:    getOrdersByStatus,
+        getOrderCustomerId:   getOrderCustomerId,
+        addOrder:             addOrder,
+        updateOrderStatus:    updateOrderStatus,
+        deleteOrder:          deleteOrder,
 
         // Cart
-        getCart:        getCart,
-        addToCart:      addToCart,
-        updateCartQty:  updateCartQty,
-        removeFromCart:  removeFromCart,
-        clearCart:       clearCart,
-        getCartTotal:    getCartTotal,
+        getCart:              getCart,
+        addToCart:            addToCart,
+        updateCartQty:        updateCartQty,
+        removeFromCart:       removeFromCart,
+        clearCart:            clearCart,
+        getCartTotal:         getCartTotal,
 
         // Stats
         getTotalRevenue:          getTotalRevenue,

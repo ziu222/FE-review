@@ -2,7 +2,7 @@
 // admin-login.js - Admin Login Page Logic
 
 
-var currentUser = Store.getCurrentUser();
+var currentUser = Auth.getCurrentUser();
 if (currentUser && currentUser.role === "admin") {
     window.location.href = "dashboard.html";
 }
@@ -38,7 +38,7 @@ loginForm.addEventListener("submit", function (e) {
     loginError.classList.remove("show");
 
 
-    var session = Store.authenticate(identifier, password);
+    var session = Auth.authenticate(identifier, password);
 
     if (!session) {
         loginError.textContent = "Wrong username/email or password. Please try again.";
@@ -47,7 +47,7 @@ loginForm.addEventListener("submit", function (e) {
     }
 
     if (session.role !== "admin") {
-        Store.logout();
+        Auth.logout();
         loginError.textContent = "You do not have admin access.";
         loginError.classList.add("show");
         return;

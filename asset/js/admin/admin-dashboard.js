@@ -363,7 +363,7 @@
     //Nav bar user info
 
     function renderTopbarUser() {
-        var user = Store.getCurrentUser();
+        var user = Auth.getCurrentUser();
         if (!user) return;
 
         var nameEl = document.getElementById("topbarUserName");
