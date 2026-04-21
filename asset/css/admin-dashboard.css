@@ -742,8 +742,39 @@ body {
 .modal-btn.reactivate { background: #1a73e8; color: #fff; }
 .modal-btn.close      { background: #f0f0f0; color: #555; }
 
-.modal-panel-md {
-    width: 560px;
+.modal-panel-md { width: 560px; }
+.modal-panel-sm { width: 360px; }
+
+/* ── AdminModal: alert + confirm dialogs ── */
+.admin-modal-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin: 28px auto 0;
+}
+.admin-modal-icon.success { background: #e6f7ef; color: #27ae60; }
+.admin-modal-icon.error   { background: #fdecea; color: #e74c3c; }
+.admin-modal-icon.info    { background: #e8f0fe; color: #1a73e8; }
+
+.admin-modal-center {
+    text-align: center;
+    padding: 14px 24px 4px;
+}
+.admin-modal-center h3 {
+    font-family: "Manrope", sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: #191c1e;
+    margin-bottom: 6px;
+}
+.admin-modal-center p {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
 }
 
 

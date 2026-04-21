@@ -143,15 +143,29 @@ Auth.requireRole("admin", "admin-login.html");
             renderBanned();
             renderCustomers();
         } else if (action === "view") {
-            alert(
-                "Shop: " + (user.shopName || user.username) +
-                "\nOwner: " + user.name +
-                "\nEmail: " + user.email +
-                "\nStatus: " + (user.shopStatus || "pending") +
-                "\nJoined: " + formatDate(user.createdAt)
-            );
+            openShopViewModal(user);
         }
     });
+
+    // ── Shop View Modal ───────────────────────────────────────
+    var shopViewModal = document.getElementById("shopViewModal");
+    if (shopViewModal) {
+        document.getElementById("shopViewCloseBtn").addEventListener("click", function () { shopViewModal.classList.remove("show"); });
+        document.getElementById("shopViewOkBtn").addEventListener("click", function () { shopViewModal.classList.remove("show"); });
+        shopViewModal.addEventListener("click", function (e) { if (e.target === shopViewModal) shopViewModal.classList.remove("show"); });
+    }
+
+    function openShopViewModal(user) {
+        if (!shopViewModal) return;
+        document.getElementById("svShopName").textContent = user.shopName || user.username || "—";
+        document.getElementById("svOwner").textContent    = user.name || "—";
+        document.getElementById("svEmail").textContent    = user.email || "—";
+        document.getElementById("svPhone").textContent    = user.shopPhone || "—";
+        document.getElementById("svAddress").textContent  = user.shopAddress || "—";
+        document.getElementById("svStatus").textContent   = user.shopStatus || "pending";
+        document.getElementById("svJoined").textContent   = formatDate(user.createdAt);
+        shopViewModal.classList.add("show");
+    }
 
     // ── Shop filter tabs ──────────────────────────────────────
     var btnShopFilterAll     = document.getElementById("shopFilterAll");

@@ -563,16 +563,15 @@ var ProductAdminPage = (function () {
         var product = findProductById(productId);
         if (!product) return;
 
-        if (!window.confirm('Approve "' + product.name + '"?')) return;
-
-        var result = Store.reviewProduct(productId, "approved", null);
-        if (!result || !result.success) {
-            window.alert(result && result.error ? result.error : "Unable to approve this product.");
-            return;
-        }
-
-        window.alert("Product approved successfully.");
-        refresh();
+        AdminModal.confirm('Approve "' + product.name + '"?', function () {
+            var result = Store.reviewProduct(productId, "approved", null);
+            if (!result || !result.success) {
+                AdminModal.alert(result && result.error ? result.error : "Unable to approve this product.", "error");
+                return;
+            }
+            AdminModal.alert("Product approved successfully.", "success");
+            refresh();
+        });
     }
 
     function handleReject(productId) {
@@ -591,11 +590,10 @@ var ProductAdminPage = (function () {
         }, function (note) {
             var result = Store.reviewProduct(productId, "rejected", note);
             if (!result || !result.success) {
-                window.alert(result && result.error ? result.error : "Unable to reject this product.");
+                AdminModal.alert(result && result.error ? result.error : "Unable to reject this product.", "error");
                 return;
             }
-
-            window.alert("Product rejected successfully.");
+            AdminModal.alert("Product rejected successfully.", "success");
             refresh();
         });
     }
@@ -613,16 +611,15 @@ var ProductAdminPage = (function () {
             required: false,
             confirmLabel: "Continue"
         }, function (note) {
-            if (!window.confirm('Suspend "' + product.name + '"?' + (note ? '\nReason: ' + note : ''))) return;
-
-            var result = Store.suspendProduct(productId, note);
-            if (!result || !result.success) {
-                window.alert(result && result.error ? result.error : "Unable to suspend this product.");
-                return;
-            }
-
-            showStatusNotice("suspend", product.name, note);
-            refresh();
+            AdminModal.confirm('Suspend "' + product.name + '"?' + (note ? ' Reason: ' + note : ''), function () {
+                var result = Store.suspendProduct(productId, note);
+                if (!result || !result.success) {
+                    AdminModal.alert(result && result.error ? result.error : "Unable to suspend this product.", "error");
+                    return;
+                }
+                showStatusNotice("suspend", product.name, note);
+                refresh();
+            });
         });
     }
 
@@ -630,16 +627,15 @@ var ProductAdminPage = (function () {
         var product = findProductById(productId);
         if (!product) return;
 
-        if (!window.confirm('Restore "' + product.name + '"?')) return;
-
-        var result = Store.restoreProduct(productId);
-        if (!result || !result.success) {
-            window.alert(result && result.error ? result.error : "Unable to restore this product.");
-            return;
-        }
-
-        showStatusNotice("restore", product.name);
-        refresh();
+        AdminModal.confirm('Restore "' + product.name + '"?', function () {
+            var result = Store.restoreProduct(productId);
+            if (!result || !result.success) {
+                AdminModal.alert(result && result.error ? result.error : "Unable to restore this product.", "error");
+                return;
+            }
+            showStatusNotice("restore", product.name);
+            refresh();
+        });
     }
 
     function openProductModal(productId) {
