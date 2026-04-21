@@ -72,7 +72,7 @@
         </div>
     </section>
 
-    <div class="stats-row stats-row-4">
+    <div class="stats-row stats-row-5">
         <div class="stat-card">
             <div class="stat-card-header">
                 <span class="stat-card-label">Total Products</span>
@@ -102,6 +102,15 @@
 
         <div class="stat-card">
             <div class="stat-card-header">
+                <span class="stat-card-label">Suspended</span>
+                <div class="stat-card-icon orange"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            </div>
+            <div class="stat-card-value" id="statSuspendedProducts">0</div>
+            <div class="stat-card-sub">Temporarily taken down</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-header">
                 <span class="stat-card-label">Rejected</span>
                 <div class="stat-card-icon red"><i class="fa-solid fa-ban"></i></div>
             </div>
@@ -111,12 +120,23 @@
     </div>
 
     <div class="card">
+        <div class="tab-switcher">
+            <button class="tab-switch active" type="button" data-tab="queue">
+                🟡 Review Queue
+                <span class="tab-badge" id="queueBadge">0</span>
+            </button>
+            <button class="tab-switch" type="button" data-tab="all">
+                📦 All Products
+            </button>
+        </div>
+
         <div class="toolbar product-toolbar">
             <div class="toolbar-stack">
-                <div class="filter-tabs">
+                <div class="filter-tabs" id="filterTabsContainer">
                     <button class="filter-tab active" type="button" data-filter="all">All</button>
                     <button class="filter-tab" type="button" data-filter="pending">Pending</button>
                     <button class="filter-tab" type="button" data-filter="approved">Approved</button>
+                    <button class="filter-tab" type="button" data-filter="suspended">Suspended</button>
                     <button class="filter-tab" type="button" data-filter="rejected">Rejected</button>
                 </div>
                 <div class="product-filter-row">
@@ -269,6 +289,39 @@
         </div>
         <div class="modal-body" id="productModalBody"></div>
         <div class="modal-footer" id="productModalFooter"></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="statusNoticeModal">
+    <div class="modal-panel modal-panel-sm status-notice-panel" id="statusNoticePanel">
+        <div class="status-notice-icon" id="statusNoticeIcon">
+            <i class="fa-solid fa-circle-info"></i>
+        </div>
+        <h3 class="status-notice-title" id="statusNoticeTitle">Status Updated</h3>
+        <p class="status-notice-message" id="statusNoticeMessage">The product status has been updated successfully.</p>
+        <div class="status-notice-note" id="statusNoticeNote" style="display:none;"></div>
+        <div class="modal-footer status-notice-footer">
+            <button class="modal-btn close" type="button" id="statusNoticeCloseBtn">Close</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="reasonPromptModal">
+    <div class="modal-panel modal-panel-sm reason-prompt-panel">
+        <div class="modal-header">
+            <h3 id="reasonPromptTitle">Reason Required</h3>
+            <button class="modal-close" type="button" id="reasonPromptCloseBtn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p class="reason-prompt-description" id="reasonPromptDescription">Please provide a reason.</p>
+            <label class="reason-prompt-label" for="reasonPromptInput" id="reasonPromptLabel">Reason</label>
+            <textarea id="reasonPromptInput" class="reason-prompt-input" rows="4" placeholder="Type your reason here..."></textarea>
+            <div class="reason-prompt-error" id="reasonPromptError" style="display:none;"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn close" type="button" id="reasonPromptCancelBtn">Cancel</button>
+            <button class="modal-btn approve" type="button" id="reasonPromptConfirmBtn">Confirm</button>
+        </div>
     </div>
 </div>
 

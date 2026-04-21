@@ -6,6 +6,7 @@ var ProductAdminPage = (function () {
         products: [],
         filteredProducts: [],
         selectedProductId: null,
+        activeTab: "queue",
         statusFilter: "all",
         categoryFilter: "all",
         shopFilter: "all",
@@ -15,6 +16,8 @@ var ProductAdminPage = (function () {
         page: 1,
         pageSize: 5
     };
+
+    var reasonPromptContext = null;
 
     var els = {};
 
@@ -32,7 +35,10 @@ var ProductAdminPage = (function () {
         els.statTotalProducts = document.getElementById("statTotalProducts");
         els.statPendingProducts = document.getElementById("statPendingProducts");
         els.statApprovedProducts = document.getElementById("statApprovedProducts");
+        els.statSuspendedProducts = document.getElementById("statSuspendedProducts");
         els.statRejectedProducts = document.getElementById("statRejectedProducts");
+        els.tabSwitchers = document.querySelectorAll(".tab-switch");
+        els.queueBadge = document.getElementById("queueBadge");
         els.filterTabs = document.querySelectorAll(".filter-tab");
         els.categoryFilter = document.getElementById("categoryFilter");
         els.shopFilter = document.getElementById("shopFilter");
@@ -63,9 +69,29 @@ var ProductAdminPage = (function () {
         els.productModalTitle = document.getElementById("productModalTitle");
         els.productModalBody = document.getElementById("productModalBody");
         els.productModalFooter = document.getElementById("productModalFooter");
+        els.statusNoticeModal = document.getElementById("statusNoticeModal");
+        els.statusNoticePanel = document.getElementById("statusNoticePanel");
+        els.statusNoticeIcon = document.getElementById("statusNoticeIcon");
+        els.statusNoticeTitle = document.getElementById("statusNoticeTitle");
+        els.statusNoticeMessage = document.getElementById("statusNoticeMessage");
+        els.statusNoticeNote = document.getElementById("statusNoticeNote");
+        els.statusNoticeCloseBtn = document.getElementById("statusNoticeCloseBtn");
+        els.reasonPromptModal = document.getElementById("reasonPromptModal");
+        els.reasonPromptTitle = document.getElementById("reasonPromptTitle");
+        els.reasonPromptDescription = document.getElementById("reasonPromptDescription");
+        els.reasonPromptLabel = document.getElementById("reasonPromptLabel");
+        els.reasonPromptInput = document.getElementById("reasonPromptInput");
+        els.reasonPromptError = document.getElementById("reasonPromptError");
+        els.reasonPromptCloseBtn = document.getElementById("reasonPromptCloseBtn");
+        els.reasonPromptCancelBtn = document.getElementById("reasonPromptCancelBtn");
+        els.reasonPromptConfirmBtn = document.getElementById("reasonPromptConfirmBtn");
     }
 
     function bindEvents() {
+        for (var i = 0; i < els.tabSwitchers.length; i++) {
+            els.tabSwitchers[i].addEventListener("click", onTabSwitch);
+        }
+        
         for (var i = 0; i < els.filterTabs.length; i++) {
             els.filterTabs[i].addEventListener("click", onFilterTabClick);
         }
@@ -125,6 +151,38 @@ var ProductAdminPage = (function () {
             els.productModal.addEventListener("click", function (event) {
                 if (event.target === els.productModal) {
                     closeProductModal();
+                }
+            });
+        }
+
+        if (els.statusNoticeCloseBtn) {
+            els.statusNoticeCloseBtn.addEventListener("click", closeStatusNoticeModal);
+        }
+
+        if (els.statusNoticeModal) {
+            els.statusNoticeModal.addEventListener("click", function (event) {
+                if (event.target === els.statusNoticeModal) {
+                    closeStatusNoticeModal();
+                }
+            });
+        }
+
+        if (els.reasonPromptCloseBtn) {
+            els.reasonPromptCloseBtn.addEventListener("click", closeReasonPromptModal);
+        }
+
+        if (els.reasonPromptCancelBtn) {
+            els.reasonPromptCancelBtn.addEventListener("click", closeReasonPromptModal);
+        }
+
+        if (els.reasonPromptConfirmBtn) {
+            els.reasonPromptConfirmBtn.addEventListener("click", submitReasonPrompt);
+        }
+
+        if (els.reasonPromptModal) {
+            els.reasonPromptModal.addEventListener("click", function (event) {
+                if (event.target === els.reasonPromptModal) {
+                    closeReasonPromptModal();
                 }
             });
         }
@@ -195,10 +253,11 @@ var ProductAdminPage = (function () {
     }
 
     function renderStats() {
-        var stats = Store.getProductStats ? Store.getProductStats() : { total: 0, pending: 0, approved: 0, rejected: 0 };
+        var stats = Store.getProductStats ? Store.getProductStats() : { total: 0, pending: 0, approved: 0, rejected: 0, suspended: 0 };
         if (els.statTotalProducts) els.statTotalProducts.textContent = stats.total || 0;
         if (els.statPendingProducts) els.statPendingProducts.textContent = stats.pending || 0;
         if (els.statApprovedProducts) els.statApprovedProducts.textContent = stats.approved || 0;
+        if (els.statSuspendedProducts) els.statSuspendedProducts.textContent = stats.suspended || 0;
         if (els.statRejectedProducts) els.statRejectedProducts.textContent = stats.rejected || 0;
     }
 
@@ -210,11 +269,24 @@ var ProductAdminPage = (function () {
 
         for (var i = 0; i < state.products.length; i++) {
             var product = state.products[i];
-            var shop = Store.getShopById(product.shopId);
-            var shopName = shop ? (shop.shopName || shop.name || "") : "";
             var match = true;
 
-            if (state.statusFilter !== "all" && product.adminStatus !== state.statusFilter) match = false;
+            // Tab 1: Only pending products
+            if (state.activeTab === "queue") {
+                if (product.adminStatus !== "pending") continue;
+            }
+
+            // Tab 2: All except pending, with status filters
+            if (state.activeTab === "all") {
+                if (product.adminStatus === "pending") continue;
+                // Apply status filter only in "all" tab
+                if (state.statusFilter !== "all" && product.adminStatus !== state.statusFilter) match = false;
+            }
+
+            // Common filters for both tabs
+            var shop = Store.getShopById(product.shopId);
+            var shopName = shop ? (shop.shopName || shop.name || "") : "";
+
             if (match && state.categoryFilter !== "all" && product.category !== state.categoryFilter) match = false;
             if (match && state.shopFilter !== "all" && String(product.shopId) !== String(state.shopFilter)) match = false;
             if (match && minPrice !== null && Number(product.price) < minPrice) match = false;
@@ -229,6 +301,7 @@ var ProductAdminPage = (function () {
         }
 
         state.filteredProducts = result;
+        updateQueueBadge();
 
         var isSelectedInFiltered = false;
         for (var j = 0; j < state.filteredProducts.length; j++) {
@@ -296,6 +369,8 @@ var ProductAdminPage = (function () {
                             '<button class="btn-reset" type="button" data-action="view" data-id="' + product.id + '">View</button>' +
                             (isPending ? '<button class="btn-reset" type="button" data-action="approve" data-id="' + product.id + '">Approve</button>' : '') +
                             (isPending ? '<button class="btn-reset" type="button" data-action="reject" data-id="' + product.id + '">Reject</button>' : '') +
+                            (product.adminStatus === 'approved' ? '<button class="btn-reset" type="button" data-action="suspend" data-id="' + product.id + '">Suspend</button>' : '') +
+                            (product.adminStatus === 'suspended' ? '<button class="btn-reset" type="button" data-action="restore" data-id="' + product.id + '">Restore</button>' : '') +
                         '</div>' +
                     '</td>' +
                 '</tr>';
@@ -395,6 +470,41 @@ var ProductAdminPage = (function () {
         applyFilters();
     }
 
+    function onTabSwitch(event) {
+        var tab = event.currentTarget;
+        state.activeTab = tab.getAttribute("data-tab") || "queue";
+        state.statusFilter = "all";
+        state.page = 1;
+
+        for (var i = 0; i < els.tabSwitchers.length; i++) {
+            els.tabSwitchers[i].classList.remove("active");
+        }
+        tab.classList.add("active");
+
+        // Reset filter tabs to "all" when switching main tabs
+        for (var j = 0; j < els.filterTabs.length; j++) {
+            els.filterTabs[j].classList.toggle("active", els.filterTabs[j].getAttribute("data-filter") === "all");
+        }
+
+        // Hide status filter tabs when in Review Queue
+        var filterTabsContainer = document.getElementById("filterTabsContainer");
+        if (filterTabsContainer) {
+            filterTabsContainer.style.display = state.activeTab === "queue" ? "none" : "flex";
+        }
+
+        applyFilters();
+    }
+
+    function updateQueueBadge() {
+        if (!els.queueBadge) return;
+        var pendingCount = 0;
+        for (var i = 0; i < state.products.length; i++) {
+            if (state.products[i].adminStatus === "pending") pendingCount++;
+        }
+        els.queueBadge.textContent = pendingCount;
+        els.queueBadge.style.display = pendingCount > 0 ? "inline-flex" : "none";
+    }
+
     function onFormFiltersChange() {
         state.categoryFilter = els.categoryFilter ? els.categoryFilter.value : "all";
         state.shopFilter = els.shopFilter ? els.shopFilter.value : "all";
@@ -438,6 +548,8 @@ var ProductAdminPage = (function () {
             if (action === "view") openProductModal(productId);
             if (action === "approve") handleApprove(productId);
             if (action === "reject") handleReject(productId);
+            if (action === "suspend") handleSuspend(productId);
+            if (action === "restore") handleRestore(productId);
             return;
         }
 
@@ -454,7 +566,7 @@ var ProductAdminPage = (function () {
 
         if (!window.confirm('Approve "' + product.name + '"?')) return;
 
-        var result = Store.reviewProduct(productId, "approved", "");
+        var result = Store.reviewProduct(productId, "approved", null);
         if (!result || !result.success) {
             window.alert(result && result.error ? result.error : "Unable to approve this product.");
             return;
@@ -468,22 +580,66 @@ var ProductAdminPage = (function () {
         var product = findProductById(productId);
         if (!product) return;
 
-        var note = window.prompt('Enter rejection reason for "' + product.name + '":', product.adminNote || "");
-        if (note === null) return;
-        note = note.trim();
+        openReasonPromptModal({
+            title: "Reject Product",
+            description: 'Provide a rejection reason for "' + product.name + '".',
+            label: "Rejection reason",
+            placeholder: "Explain what needs to be fixed before approval...",
+            defaultValue: product.adminNote || "",
+            required: true,
+            errorMessage: "A rejection reason is required.",
+            confirmLabel: "Reject"
+        }, function (note) {
+            var result = Store.reviewProduct(productId, "rejected", note);
+            if (!result || !result.success) {
+                window.alert(result && result.error ? result.error : "Unable to reject this product.");
+                return;
+            }
 
-        if (!note) {
-            window.alert("A rejection reason is required.");
-            return;
-        }
+            window.alert("Product rejected successfully.");
+            refresh();
+        });
+    }
 
-        var result = Store.reviewProduct(productId, "rejected", note);
+    function handleSuspend(productId) {
+        var product = findProductById(productId);
+        if (!product) return;
+
+        openReasonPromptModal({
+            title: "Suspend Product",
+            description: 'Optionally enter a suspension reason for "' + product.name + '".',
+            label: "Suspension reason",
+            placeholder: "Reason (optional)",
+            defaultValue: "",
+            required: false,
+            confirmLabel: "Continue"
+        }, function (note) {
+            if (!window.confirm('Suspend "' + product.name + '"?' + (note ? '\nReason: ' + note : ''))) return;
+
+            var result = Store.suspendProduct(productId, note);
+            if (!result || !result.success) {
+                window.alert(result && result.error ? result.error : "Unable to suspend this product.");
+                return;
+            }
+
+            showStatusNotice("suspend", product.name, note);
+            refresh();
+        });
+    }
+
+    function handleRestore(productId) {
+        var product = findProductById(productId);
+        if (!product) return;
+
+        if (!window.confirm('Restore "' + product.name + '"?')) return;
+
+        var result = Store.restoreProduct(productId);
         if (!result || !result.success) {
-            window.alert(result && result.error ? result.error : "Unable to reject this product.");
+            window.alert(result && result.error ? result.error : "Unable to restore this product.");
             return;
         }
 
-        window.alert("Product rejected successfully.");
+        showStatusNotice("restore", product.name);
         refresh();
     }
 
@@ -514,26 +670,48 @@ var ProductAdminPage = (function () {
                     '<div class="modal-detail-row"><span>Stock</span><strong>' + product.stock + '</strong></div>' +
                     '<div class="modal-detail-row"><span>Submitted</span><strong>' + escapeHtml(formatDateLabel(product.submittedAt || product.createdAt)) + '</strong></div>' +
                     '<div class="modal-detail-row"><span>Reviewed by</span><strong>' + escapeHtml(product.reviewedBy || "-") + '</strong></div>' +
-                    '<div class="modal-detail-row"><span>Admin note</span><strong>' + escapeHtml(product.adminNote || "-") + '</strong></div>' +
+                    '<div class="modal-detail-row">' +
+                        '<span>Admin Note</span>' +
+                        '<strong style="color:' + (product.adminNote ? '#f87272' : '#9ca3af') + ';">' +
+                            escapeHtml(product.adminNote || "—") +
+                        '</strong>' +
+                    '</div>' +
                     '<div style="padding-top:8px; color:#475467; line-height:1.6;">' + escapeHtml(product.description || "No description.") + '</div>' +
                 '</div>';
         }
 
         if (els.productModalFooter) {
             var footerHtml = '<button class="modal-btn close" type="button" id="productModalCloseBtn">Close</button>';
+
             if (product.adminStatus === "pending") {
-                footerHtml += '<button class="modal-btn suspend" type="button" id="productModalRejectBtn">Reject</button>';
+                footerHtml += '<button class="modal-btn reject"  type="button" id="productModalRejectBtn">Reject</button>';
                 footerHtml += '<button class="modal-btn approve" type="button" id="productModalApproveBtn">Approve</button>';
             }
+
+            if (product.adminStatus === "approved") {
+                footerHtml += '<button class="modal-btn suspend" type="button" id="productModalSuspendBtn">Suspend</button>';
+            }
+
+            if (product.adminStatus === "suspended") {
+                footerHtml += '<button class="modal-btn restore" type="button" id="productModalRestoreBtn">Restore</button>';
+            }
+
+            // rejected → only has Close, no additional buttons
+
             els.productModalFooter.innerHTML = footerHtml;
 
-            var closeBtn = document.getElementById("productModalCloseBtn");
-            var rejectBtn = document.getElementById("productModalRejectBtn");
+            // Bind events
+            var closeBtn   = document.getElementById("productModalCloseBtn");
+            var rejectBtn  = document.getElementById("productModalRejectBtn");
             var approveBtn = document.getElementById("productModalApproveBtn");
+            var suspendBtn = document.getElementById("productModalSuspendBtn");
+            var restoreBtn = document.getElementById("productModalRestoreBtn");
 
-            if (closeBtn) closeBtn.addEventListener("click", closeProductModal);
-            if (rejectBtn) rejectBtn.addEventListener("click", function () { closeProductModal(); handleReject(product.id); });
+            if (closeBtn)   closeBtn.addEventListener("click", closeProductModal);
+            if (rejectBtn)  rejectBtn.addEventListener("click",  function () { closeProductModal(); handleReject(product.id); });
             if (approveBtn) approveBtn.addEventListener("click", function () { closeProductModal(); handleApprove(product.id); });
+            if (suspendBtn) suspendBtn.addEventListener("click", function () { closeProductModal(); handleSuspend(product.id); });
+            if (restoreBtn) restoreBtn.addEventListener("click", function () { closeProductModal(); handleRestore(product.id); });
         }
 
         els.productModal.classList.add("show");
@@ -543,6 +721,117 @@ var ProductAdminPage = (function () {
         if (els.productModal) {
             els.productModal.classList.remove("show");
         }
+    }
+
+    function showStatusNotice(type, productName, note) {
+        if (!els.statusNoticeModal || !els.statusNoticePanel) return;
+
+        var safeName = productName || "This product";
+        var isSuspend = type === "suspend";
+
+        els.statusNoticePanel.classList.toggle("suspend", isSuspend);
+        els.statusNoticePanel.classList.toggle("restore", !isSuspend);
+
+        if (els.statusNoticeIcon) {
+            els.statusNoticeIcon.innerHTML = isSuspend
+                ? '<i class="fa-solid fa-triangle-exclamation"></i>'
+                : '<i class="fa-solid fa-arrow-rotate-left"></i>';
+        }
+
+        if (els.statusNoticeTitle) {
+            els.statusNoticeTitle.textContent = isSuspend ? "Product Suspended" : "Product Restored";
+        }
+
+        if (els.statusNoticeMessage) {
+            els.statusNoticeMessage.textContent = isSuspend
+                ? '"' + safeName + '" has been suspended and is now hidden from customer view.'
+                : '"' + safeName + '" has been restored and is active in the marketplace again.';
+        }
+
+        if (els.statusNoticeNote) {
+            if (isSuspend && note) {
+                els.statusNoticeNote.style.display = "block";
+                els.statusNoticeNote.innerHTML = "<strong>Suspension reason:</strong> " + escapeHtml(note);
+            } else {
+                els.statusNoticeNote.style.display = "none";
+                els.statusNoticeNote.innerHTML = "";
+            }
+        }
+
+        els.statusNoticeModal.classList.add("show");
+    }
+
+    function closeStatusNoticeModal() {
+        if (els.statusNoticeModal) {
+            els.statusNoticeModal.classList.remove("show");
+        }
+    }
+
+    function openReasonPromptModal(config, onConfirm) {
+        if (!els.reasonPromptModal || !els.reasonPromptInput) return;
+
+        reasonPromptContext = {
+            required: !!config.required,
+            errorMessage: config.errorMessage || "This field is required.",
+            onConfirm: onConfirm
+        };
+
+        if (els.reasonPromptTitle) {
+            els.reasonPromptTitle.textContent = config.title || "Provide a reason";
+        }
+        if (els.reasonPromptDescription) {
+            els.reasonPromptDescription.textContent = config.description || "Please provide a note before continuing.";
+        }
+        if (els.reasonPromptLabel) {
+            els.reasonPromptLabel.textContent = config.label || "Reason";
+        }
+        if (els.reasonPromptInput) {
+            els.reasonPromptInput.value = config.defaultValue || "";
+            els.reasonPromptInput.placeholder = config.placeholder || "Type here...";
+        }
+        if (els.reasonPromptConfirmBtn) {
+            els.reasonPromptConfirmBtn.textContent = config.confirmLabel || "Confirm";
+        }
+        if (els.reasonPromptError) {
+            els.reasonPromptError.style.display = "none";
+            els.reasonPromptError.textContent = "";
+        }
+
+        els.reasonPromptModal.classList.add("show");
+        els.reasonPromptInput.focus();
+        els.reasonPromptInput.select();
+    }
+
+    function submitReasonPrompt() {
+        if (!reasonPromptContext || !els.reasonPromptInput) return;
+
+        var value = els.reasonPromptInput.value.trim();
+        if (reasonPromptContext.required && !value) {
+            if (els.reasonPromptError) {
+                els.reasonPromptError.textContent = reasonPromptContext.errorMessage;
+                els.reasonPromptError.style.display = "block";
+            }
+            els.reasonPromptInput.focus();
+            return;
+        }
+
+        if (els.reasonPromptError) {
+            els.reasonPromptError.style.display = "none";
+            els.reasonPromptError.textContent = "";
+        }
+
+        var callback = reasonPromptContext.onConfirm;
+        closeReasonPromptModal();
+        if (typeof callback === "function") {
+            callback(value);
+        }
+    }
+
+    function closeReasonPromptModal() {
+        if (els.reasonPromptModal) {
+            els.reasonPromptModal.classList.remove("show");
+        }
+        reasonPromptContext = null;
     }
 
     function getSelectedProduct() {
@@ -584,8 +873,8 @@ var ProductAdminPage = (function () {
 
     function getStatusClass(status) {
         if (status === "approved") return "badge-approved";
-        if (status === "rejected") return "badge-suspended";
         if (status === "suspended") return "badge-suspended";
+        if (status === "rejected") return "badge-rejected";
         return "badge-pending-review";
     }
 
