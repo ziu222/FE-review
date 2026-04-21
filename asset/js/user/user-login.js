@@ -5,7 +5,7 @@ function getUsers() {
 
 // ===== USER SESSION =====
 function getCurrentUser() {
-  return JSON.parse(localStorage.getItem("currentUser"));
+  return JSON.parse(localStorage.getItem("ecshop_currentUser"));
 }
 
 function renderUser() {
@@ -56,7 +56,7 @@ document.addEventListener("click", () => {
 });
 
 function logout() {
-  localStorage.removeItem("currentUser");
+  localStorage.removeItem("ecshop_currentUser");
   location.reload();
 }
 
@@ -97,7 +97,7 @@ if (loginForm) {
       alert("Đăng nhập thành công!");
 
       // lưu session
-      localStorage.setItem("currentUser", JSON.stringify(user));
+      localStorage.setItem("ecshop_currentUser", JSON.stringify(user));
 
       // chuyển trang (bạn có thể đổi)
       window.location.href = "home.html";
