@@ -17,6 +17,18 @@ var SEED_USERS = [
         email: "admin@ecshop.com",
         password: "123",
         role: "admin",
+        adminLevel: 1,
+        avatar: "",
+        createdAt: "2025-01-01"
+    },
+    {
+        id: 10,
+        name: "Super Admin",
+        username: "admin2",
+        email: "superadmin@ecshop.com",
+        password: "123",
+        role: "admin",
+        adminLevel: 2,
         avatar: "",
         createdAt: "2025-01-01"
     },

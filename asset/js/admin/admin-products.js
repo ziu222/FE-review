@@ -1,5 +1,4 @@
 Store.seed();
-Auth.requireRole("admin", "admin-login.html");
 
 var ProductAdminPage = (function () {
     var state = {
