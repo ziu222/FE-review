@@ -9,28 +9,6 @@
     <link rel="stylesheet" href="../asset/css/admin-dashboard.css">
     <style>
         /* ── Tabs ───────────────────────────────────────────── */
-        .tab-bar {
-            display: flex;
-            gap: 4px;
-            border-bottom: 2px solid var(--border-color, #e5e7eb);
-            margin-bottom: 20px;
-        }
-        .tab-btn {
-            padding: 10px 22px;
-            background: none;
-            border: none;
-            border-bottom: 2px solid transparent;
-            margin-bottom: -2px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-muted, #6b7280);
-            cursor: pointer;
-            transition: color .15s, border-color .15s;
-        }
-        .tab-btn.active {
-            color: var(--primary, #6366f1);
-            border-bottom-color: var(--primary, #6366f1);
-        }
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
 
@@ -191,14 +169,17 @@
 <main class="main-content">
 
     <!-- Tab bar -->
-    <div class="tab-bar">
-        <button class="tab-btn active" data-tab="customers">
+    <div class="filter-tabs" style="margin-bottom:20px;">
+        <button class="filter-tab active" data-tab="customers">
             <i class="fa-solid fa-user"></i> Customers
         </button>
-        <button class="tab-btn" data-tab="admins">
+        <button class="filter-tab" data-tab="shops">
+            <i class="fa-solid fa-store"></i> Shops
+        </button>
+        <button class="filter-tab" data-tab="admins">
             <i class="fa-solid fa-user-shield"></i> Admins
         </button>
-        <button class="tab-btn" data-tab="banned">
+        <button class="filter-tab" data-tab="banned">
             <i class="fa-solid fa-ban"></i> Banned
         </button>
     </div>
@@ -218,6 +199,7 @@
                         <th>Email</th>
                         <th>Status</th>
                         <th>Joined</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="bodyCustomers"></tbody>
@@ -225,6 +207,39 @@
         </div>
         <p class="empty-state" id="emptyCustomers" style="display:none; color:#9ca3af; text-align:center; padding:32px 0;">
             No customers yet.
+        </p>
+    </div>
+
+    <!-- ── Tab 2: Shops ───────────────────────────────────────── -->
+    <div class="tab-panel" id="panel-shops">
+        <div class="section-header">
+            <h2>Shops (<span id="countShops">0</span>)</h2>
+            <div class="filter-tabs">
+                <button class="filter-tab active" id="shopFilterAll">All</button>
+                <button class="filter-tab" id="shopFilterPending">
+                    <i class="fa-solid fa-hourglass-half"></i> Pending Applications
+                    <span class="badge badge-pending" id="countPendingShops" style="margin-left:4px;">0</span>
+                </button>
+            </div>
+        </div>
+        <div class="users-table-wrap">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Owner</th>
+                        <th>Shop Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="bodyShops"></tbody>
+            </table>
+        </div>
+        <p class="empty-state" id="emptyShops" style="display:none; color:#9ca3af; text-align:center; padding:32px 0;">
+            No shops yet.
         </p>
     </div>
 
@@ -271,6 +286,7 @@
                         <th>Role</th>
                         <th>Email</th>
                         <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="bodyBanned"></tbody>
@@ -314,6 +330,45 @@
         <div class="modal-actions">
             <button class="btn-cancel-modal" id="btnCancelCreateAdmin">Cancel</button>
             <button class="btn-submit-modal" id="btnSubmitCreateAdmin">Create</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── Create Shop Modal ──────────────────────────────────────── -->
+<div class="modal-overlay" id="createShopModal">
+    <div class="modal-box">
+        <h3><i class="fa-solid fa-store"></i> Create Shop</h3>
+        <p class="modal-error" id="createShopError"></p>
+        <div class="form-group">
+            <label for="csName">Owner Name</label>
+            <input type="text" id="csName" placeholder="Nguyen Van B" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="csShopName">Shop Name</label>
+            <input type="text" id="csShopName" placeholder="My Awesome Store" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="csEmail">Email</label>
+            <input type="email" id="csEmail" placeholder="shop@ecshop.vn" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="csUsername">Username</label>
+            <input type="text" id="csUsername" placeholder="mystore" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="csPassword">Password <span style="color:#9ca3af;font-weight:400">(min 6 chars)</span></label>
+            <input type="password" id="csPassword" autocomplete="new-password">
+        </div>
+        <div class="form-group">
+            <label for="csStatus">Initial Status</label>
+            <select id="csStatus">
+                <option value="active">Active (approved immediately)</option>
+                <option value="pending">Pending (requires approval)</option>
+            </select>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-cancel-modal" id="btnCancelCreateShop">Cancel</button>
+            <button class="btn-submit-modal" id="btnSubmitCreateShop">Create</button>
         </div>
     </div>
 </div>

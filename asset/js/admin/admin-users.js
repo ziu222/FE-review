@@ -1,11 +1,12 @@
 // admin-users.js — Users Management Page Logic
 
 Store.seed();
+Auth.requireRole("admin", "admin-login.html");
 
 (function () {
 
     // ── Tab switching ────────────────────────────────────────
-    var tabBtns   = document.querySelectorAll(".tab-btn");
+    var tabBtns   = document.querySelectorAll(".filter-tab[data-tab]");
     var tabPanels = document.querySelectorAll(".tab-panel");
 
     for (var i = 0; i < tabBtns.length; i++) {
@@ -40,10 +41,10 @@ Store.seed();
 
     // ── Data helpers ─────────────────────────────────────────
     function getAllUsers() {
-        return Store.getUsers ? Store.getUsers() : (Store.users || []);
+        return Store.getUsers();
     }
 
-    // ── Render Tab 1: Customers ──────────────────────────────
+    // ── Render Tab 1: Customers ─────────────────────────────
     function renderCustomers() {
         var users     = getAllUsers().filter(function (u) { return u.role === "customer" && u.status !== "banned" && u.status !== "suspended"; });
         var tbody     = document.getElementById("bodyCustomers");
@@ -64,12 +65,177 @@ Store.seed();
                 "<td>" + esc(u.username) + "</td>" +
                 "<td>" + esc(u.email) + "</td>" +
                 "<td><span class='badge badge-active'>Active</span></td>" +
-                "<td>" + formatDate(u.createdAt) + "</td>";
+                "<td>" + formatDate(u.createdAt) + "</td>" +
+                "<td><button class='icon-btn icon-btn-suspend' title='Suspend' data-id='" + u.id + "'><i class='fa-solid fa-ban'></i></button></td>";
             tbody.appendChild(tr);
         });
     }
 
-    // ── Render Tab 2: Admins ─────────────────────────────────
+    document.getElementById("bodyCustomers").addEventListener("click", function (e) {
+        var btn = e.target.closest(".icon-btn-suspend");
+        if (!btn) return;
+        var id = parseInt(btn.dataset.id, 10);
+        Store.updateUser(id, { status: "suspended" });
+        renderCustomers();
+        renderBanned();
+    });
+
+    // ── Render Tab 2: Shops ──────────────────────────────────
+    var shopStatusFilter = "all";
+
+    function renderShops() {
+        var all = getAllUsers().filter(function (u) { return u.role === "shop" && u.status !== "banned" && u.shopStatus !== "suspended"; });
+        var pendingCount = all.filter(function (u) { return u.shopStatus === "pending"; }).length;
+        var pendingBadge = document.getElementById("countPendingShops");
+        if (pendingBadge) pendingBadge.textContent = pendingCount;
+        var users = shopStatusFilter === "pending"
+            ? all.filter(function (u) { return u.shopStatus === "pending"; })
+            : all;
+        var tbody    = document.getElementById("bodyShops");
+        var emptyMsg = document.getElementById("emptyShops");
+        var countEl  = document.getElementById("countShops");
+
+        countEl.textContent = users.length;
+        tbody.innerHTML = "";
+
+        if (!users.length) { emptyMsg.style.display = ""; return; }
+        emptyMsg.style.display = "none";
+
+        users.forEach(function (u, idx) {
+            var isPending = u.shopStatus === "pending";
+            var statusBadge = isPending
+                ? "<span class='badge badge-pending'>Pending</span>"
+                : "<span class='badge badge-active'>Active</span>";
+            var actions =
+                "<button class='icon-btn icon-btn-view' title='View' data-shop-action='view' data-id='" + u.id + "'><i class='fa-solid fa-eye'></i></button>" +
+                (isPending
+                    ? "<button class='icon-btn icon-btn-approve' title='Approve' data-shop-action='approve' data-id='" + u.id + "'><i class='fa-solid fa-circle-check'></i></button>"
+                    : "<button class='icon-btn icon-btn-suspend' title='Suspend' data-shop-action='suspend' data-id='" + u.id + "'><i class='fa-solid fa-ban'></i></button>");
+            var tr = document.createElement("tr");
+            tr.innerHTML =
+                "<td>" + (idx + 1) + "</td>" +
+                "<td>" + esc(u.name) + "</td>" +
+                "<td>" + esc(u.shopName || u.username) + "</td>" +
+                "<td>" + esc(u.email) + "</td>" +
+                "<td>" + statusBadge + "</td>" +
+                "<td>" + formatDate(u.createdAt) + "</td>" +
+                "<td><div class='icon-btn-group'>" + actions + "</div></td>";
+            tbody.appendChild(tr);
+        });
+    }
+
+    document.getElementById("bodyShops").addEventListener("click", function (e) {
+        var btn = e.target.closest("[data-shop-action]");
+        if (!btn) return;
+        var action = btn.dataset.shopAction;
+        var id     = parseInt(btn.dataset.id, 10);
+        var all    = getAllUsers();
+        var user   = all.filter(function (u) { return u.id === id; })[0];
+        if (!user) return;
+
+        if (action === "approve") {
+            Store.updateUser(id, { shopStatus: "active" });
+            renderShops();
+            renderCustomers();
+        } else if (action === "suspend") {
+            Store.updateUser(id, { shopStatus: "suspended" });
+            renderShops();
+            renderBanned();
+            renderCustomers();
+        } else if (action === "view") {
+            alert(
+                "Shop: " + (user.shopName || user.username) +
+                "\nOwner: " + user.name +
+                "\nEmail: " + user.email +
+                "\nStatus: " + (user.shopStatus || "pending") +
+                "\nJoined: " + formatDate(user.createdAt)
+            );
+        }
+    });
+
+    // ── Shop filter tabs ──────────────────────────────────────
+    var btnShopFilterAll     = document.getElementById("shopFilterAll");
+    var btnShopFilterPending = document.getElementById("shopFilterPending");
+
+    if (btnShopFilterAll) {
+        btnShopFilterAll.addEventListener("click", function () {
+            shopStatusFilter = "all";
+            btnShopFilterAll.classList.add("active");
+            btnShopFilterPending.classList.remove("active");
+            renderShops();
+        });
+    }
+    if (btnShopFilterPending) {
+        btnShopFilterPending.addEventListener("click", function () {
+            shopStatusFilter = "pending";
+            btnShopFilterPending.classList.add("active");
+            btnShopFilterAll.classList.remove("active");
+            renderShops();
+        });
+    }
+
+    // ── Create Shop Modal ────────────────────────────────────
+    var shopModal     = document.getElementById("createShopModal");
+    var btnCancelShop = document.getElementById("btnCancelCreateShop");
+    var btnSubmitShop = document.getElementById("btnSubmitCreateShop");
+    var shopErrorEl   = document.getElementById("createShopError");
+
+    function closeShopModal() { shopModal.classList.remove("show"); }
+
+    if (btnCancelShop) btnCancelShop.addEventListener("click", closeShopModal);
+    if (shopModal) shopModal.addEventListener("click", function (e) { if (e.target === shopModal) closeShopModal(); });
+
+    if (btnSubmitShop) {
+        btnSubmitShop.addEventListener("click", function () {
+            shopErrorEl.classList.remove("show");
+
+            var data = {
+                name:       document.getElementById("csName").value.trim(),
+                shopName:   document.getElementById("csShopName").value.trim(),
+                email:      document.getElementById("csEmail").value.trim(),
+                username:   document.getElementById("csUsername").value.trim(),
+                password:   document.getElementById("csPassword").value,
+                shopStatus: document.getElementById("csStatus").value
+            };
+
+            if (!data.name || !data.shopName || !data.email || !data.username || !data.password) {
+                shopErrorEl.textContent = "All fields are required.";
+                shopErrorEl.classList.add("show");
+                return;
+            }
+            if (Store.getUserByEmail(data.email)) {
+                shopErrorEl.textContent = "Email already in use.";
+                shopErrorEl.classList.add("show");
+                return;
+            }
+            if (Store.getUserByUsername(data.username)) {
+                shopErrorEl.textContent = "Username already taken.";
+                shopErrorEl.classList.add("show");
+                return;
+            }
+            if (data.password.length < 6) {
+                shopErrorEl.textContent = "Password must be at least 6 characters.";
+                shopErrorEl.classList.add("show");
+                return;
+            }
+
+            Store.addUser({
+                name:       data.name,
+                shopName:   data.shopName,
+                email:      data.email,
+                username:   data.username,
+                password:   data.password,
+                role:       "shop",
+                shopStatus: data.shopStatus
+            });
+
+            closeShopModal();
+            renderShops();
+            renderCustomers();
+        });
+    }
+
+    // ── Render Tab 3: Admins ─────────────────────────────────
     function renderAdmins() {
         var users    = getAllUsers().filter(function (u) { return u.role === "admin"; });
         var tbody    = document.getElementById("bodyAdmins");
@@ -117,10 +283,26 @@ Store.seed();
                 "<td>" + esc(u.name) + "</td>" +
                 "<td>" + esc(u.role) + "</td>" +
                 "<td>" + esc(u.email) + "</td>" +
-                "<td>" + statusLabel + "</td>";
+                "<td>" + statusLabel + "</td>" +
+                "<td><button class='icon-btn icon-btn-restore' title='Restore' data-id='" + u.id + "'><i class='fa-solid fa-rotate-left'></i></button></td>";
             tbody.appendChild(tr);
         });
     }
+
+    document.getElementById("bodyBanned").addEventListener("click", function (e) {
+        var btn = e.target.closest(".icon-btn-restore");
+        if (!btn) return;
+        var id = parseInt(btn.dataset.id, 10);
+        var all = getAllUsers();
+        var user = all.filter(function (u) { return u.id === id; })[0];
+        if (!user) return;
+        var update = { status: "active" };
+        if (user.role === "shop") update.shopStatus = "active";
+        Store.updateUser(id, update);
+        renderBanned();
+        renderCustomers();
+        renderShops();
+    });
 
     // ── Create Admin Modal ───────────────────────────────────
     var modal          = document.getElementById("createAdminModal");
@@ -145,6 +327,7 @@ Store.seed();
     }
 
     if (btnOpen)   btnOpen.addEventListener("click", openModal);
+    if (btnOpen && !Auth.isSuperAdmin()) btnOpen.style.display = "none";
     if (btnCancel) btnCancel.addEventListener("click", closeModal);
 
     modal.addEventListener("click", function (e) {
@@ -184,6 +367,7 @@ Store.seed();
 
     // ── Init ─────────────────────────────────────────────────
     renderCustomers();
+    renderShops();
     renderAdmins();
     renderBanned();
 

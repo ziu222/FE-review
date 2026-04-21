@@ -138,7 +138,7 @@
                 + "<td>" + formatCurrency(order.total) + "</td>"
                 + '<td><span class="badge badge-' + order.status + '">' + escapeHtml(order.status) + "</span></td>"
                 + "<td>" + formatDate(order.createdAt) + "</td>"
-                + '<td><button class="modal-btn approve js-view-order" data-order-id="' + order.id + '">View</button></td>'
+                + '<td><div class="icon-btn-group"><button class="icon-btn icon-btn-view js-view-order" title="View" data-order-id="' + order.id + '"><i class="fa-solid fa-eye"></i></button></div></td>'
                 + "</tr>";
         }
 

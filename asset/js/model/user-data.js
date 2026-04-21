@@ -149,5 +149,21 @@ var SEED_USERS = [
         shopStatus: "active",
         shopAvatar: "",
         createdAt: "2025-03-15"
+    },
+    {
+        id: 11,
+        name: "Tran Van Flagship",
+        username: "flagshipstore",
+        email: "flagship@shop.com",
+        password: "shop123",
+        role: "shop",
+        avatar: "",
+        shopName: "Flagship Store",
+        shopDescription: "Chuyen hang chinh hang cao cap - Dien tu, thoi trang, phu kien",
+        shopAddress: "100 Le Loi, Q1, HCM",
+        shopPhone: "0901000010",
+        shopStatus: "pending",
+        shopAvatar: "",
+        createdAt: "2026-04-21"
     }
 ];

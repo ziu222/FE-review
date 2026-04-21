@@ -364,12 +364,12 @@ var ProductAdminPage = (function () {
                     '<td><span class="badge ' + getStatusClass(product.adminStatus) + '">' + escapeHtml(capitalize(product.adminStatus)) + '</span></td>' +
                     '<td>' + escapeHtml(formatDateLabel(product.updatedAt || product.submittedAt)) + '</td>' +
                     '<td>' +
-                        '<div style="display:flex; gap:6px; flex-wrap:wrap;">' +
-                            '<button class="btn-reset" type="button" data-action="view" data-id="' + product.id + '">View</button>' +
-                            (isPending ? '<button class="btn-reset" type="button" data-action="approve" data-id="' + product.id + '">Approve</button>' : '') +
-                            (isPending ? '<button class="btn-reset" type="button" data-action="reject" data-id="' + product.id + '">Reject</button>' : '') +
-                            (product.adminStatus === 'approved' ? '<button class="btn-reset" type="button" data-action="suspend" data-id="' + product.id + '">Suspend</button>' : '') +
-                            (product.adminStatus === 'suspended' ? '<button class="btn-reset" type="button" data-action="restore" data-id="' + product.id + '">Restore</button>' : '') +
+                        '<div class="icon-btn-group">' +
+                            '<button class="icon-btn icon-btn-view" type="button" title="View" data-action="view" data-id="' + product.id + '"><i class="fa-solid fa-eye"></i></button>' +
+                            (isPending ? '<button class="icon-btn icon-btn-approve" type="button" title="Approve" data-action="approve" data-id="' + product.id + '"><i class="fa-solid fa-circle-check"></i></button>' : '') +
+                            (isPending ? '<button class="icon-btn icon-btn-reject" type="button" title="Reject" data-action="reject" data-id="' + product.id + '"><i class="fa-solid fa-circle-xmark"></i></button>' : '') +
+                            (product.adminStatus === 'approved' ? '<button class="icon-btn icon-btn-suspend" type="button" title="Suspend" data-action="suspend" data-id="' + product.id + '"><i class="fa-solid fa-ban"></i></button>' : '') +
+                            (product.adminStatus === 'suspended' ? '<button class="icon-btn icon-btn-restore" type="button" title="Restore" data-action="restore" data-id="' + product.id + '"><i class="fa-solid fa-rotate-left"></i></button>' : '') +
                         '</div>' +
                     '</td>' +
                 '</tr>';
