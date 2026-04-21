@@ -14,7 +14,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="../asset/css/main.css">
-    <link rel="stylesheet" href="../asset/css/product.css"
+    <link rel="stylesheet" href="../asset/css/product.css">
 </head>
 
 <body>
@@ -68,9 +68,13 @@
                             </button>
                         </div>
                     </el-dropdown>
-                    <button
+                    <button id="cart-btn"
                         class="p-2 text-teal-900 dark:text-teal-400 hover:bg-teal-50/50 dark:hover:bg-teal-900/20 rounded-full transition-all duration-300 active:scale-95 relative">
                         <span class="material-symbols-outlined">shopping_cart</span>
+                        <span id="cart-count"
+                            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 rounded-full">
+                            0
+                        </span>
                     </button>
                 </div>
             </div>
@@ -91,6 +95,9 @@
     </main>
 
     <script src="../asset/js/user/shop-product.js"></script>
+    <script src="../asset/js/user/addtocart.js"></script>
+    <script src="../asset/js/user/user-login.js"></script>
+    <script src="../asset/js/user/cart.js"></script>
 </body>
 
 </html>

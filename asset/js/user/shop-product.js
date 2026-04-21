@@ -1,5 +1,4 @@
 const PRODUCT_KEY = "ecshop_products";
-const CART_KEY = "ecshop_cart";
 
 function getProducts() {
     return JSON.parse(localStorage.getItem(PRODUCT_KEY)) || [];
@@ -43,7 +42,7 @@ function renderProducts() {
                     class="cart-btn"
                     ${p.stock === 0 ? "disabled" : ""}
                 >
-                    🛒 Add to Cart
+                    <i class="fa-solid fa-cart-shopping"></i> Thêm vào giỏ hàng <i class="fa-jelly fa-regular fa-heart"></i>
                 </button>
 
             </div>
@@ -52,4 +51,9 @@ function renderProducts() {
 
     container.innerHTML = html;
 }
+
+document.getElementById("cart-btn").addEventListener("click", function () {
+    window.location.href = "cart.html";
+});
+
 document.addEventListener("DOMContentLoaded", renderProducts);

@@ -89,3 +89,16 @@ body {
     padding: 8px 12px;
     cursor: pointer;
 }
+
+#cart-count{
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #555;
+    border-radius: 50%;
+    top: 0;
+}
