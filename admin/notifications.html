@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EC SHOP - Notifications</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="../asset/css/admin-dashboard.css">
+    <link rel="stylesheet" href="../asset/css/admin-notifications.css">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <a href="dashboard.html" class="sidebar-logo-text">EC SHOP</a>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Main</div>
+        <a href="dashboard.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i> Dashboard
+        </a>
+        <a href="shops-manage.html" class="nav-item">
+            <i class="fa-solid fa-store"></i> Shops
+        </a>
+        <a href="products.html" class="nav-item">
+            <i class="fa-solid fa-box-open"></i> Products
+        </a>
+        <a href="orders-manage.html" class="nav-item">
+            <i class="fa-solid fa-clipboard-list"></i> Orders
+        </a>
+        <a href="users-manage.html" class="nav-item">
+            <i class="fa-solid fa-users"></i> Users
+        </a>
+        <a href="notifications.html" class="nav-item active">
+            <i class="fa-solid fa-bell"></i> Notifications
+        </a>
+        <div class="nav-section-label">Support</div>
+        <a href="#" class="nav-item">
+            <i class="fa-solid fa-gear"></i> Settings
+        </a>
+    </nav>
+</aside>
+
+<header class="topbar">
+    <h1 class="topbar-title">Notifications</h1>
+    <div class="topbar-right">
+        <div class="topbar-user">
+            <div class="topbar-avatar" id="topbarAvatar">A</div>
+            <span id="topbarUserName">Admin</span>
+        </div>
+        <button class="btn-logout" id="logoutBtn">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+    </div>
+</header>
+
+<main class="main-content">
+
+    <!-- Tab bar -->
+    <div class="filter-tabs" style="margin-bottom:24px;">
+        <button class="filter-tab active" data-tab="customers">
+            <i class="fa-solid fa-user"></i> Send to Customers
+        </button>
+        <button class="filter-tab" data-tab="shops">
+            <i class="fa-solid fa-store"></i> Send to Shops
+        </button>
+        <button class="filter-tab" data-tab="history">
+            <i class="fa-solid fa-clock-rotate-left"></i> History
+        </button>
+    </div>
+
+    <!-- ── Tab: Send to Customers ──────────────────────────── -->
+    <div class="tab-panel active" id="panel-customers">
+        <div class="notif-form-card">
+            <h3><i class="fa-solid fa-paper-plane" style="margin-right:8px;color:var(--primary,#6366f1)"></i>Send to Customers</h3>
+
+            <div class="form-group">
+                <label>Recipient</label>
+                <select id="cRecipient">
+                    <option value="all">All Customers</option>
+                    <option value="specific">Specific customers...</option>
+                </select>
+            </div>
+            <div id="cSpecificWrap" style="display:none;" class="form-group">
+                <label>Select customers <span style="color:#9ca3af;font-weight:400">(hold Ctrl/Cmd for multi)</span></label>
+                <select id="cSpecificList" class="select-multi" multiple></select>
+            </div>
+
+            <div class="form-group">
+                <label>Type</label>
+                <select id="cType">
+                    <option value="info">Info</option>
+                    <option value="promo">Promo</option>
+                    <option value="warning">Warning</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="cTitle" placeholder="Notification title">
+            </div>
+            <div class="form-group">
+                <label>Message</label>
+                <textarea id="cMessage" placeholder="Write your message here..."></textarea>
+            </div>
+
+            <div class="form-error" id="cError"></div>
+            <button class="btn-send" id="cSendBtn">
+                <i class="fa-solid fa-paper-plane"></i> Send Notification
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Tab: Send to Shops ──────────────────────────────── -->
+    <div class="tab-panel" id="panel-shops">
+        <div class="notif-form-card">
+            <h3><i class="fa-solid fa-paper-plane" style="margin-right:8px;color:var(--primary,#6366f1)"></i>Send to Shops</h3>
+
+            <div class="form-group">
+                <label>Recipient</label>
+                <select id="sRecipient">
+                    <option value="all">All Shops</option>
+                    <option value="specific">Specific shops...</option>
+                </select>
+            </div>
+            <div id="sSpecificWrap" style="display:none;" class="form-group">
+                <label>Select shops <span style="color:#9ca3af;font-weight:400">(hold Ctrl/Cmd for multi)</span></label>
+                <select id="sSpecificList" class="select-multi" multiple></select>
+            </div>
+
+            <div class="form-group">
+                <label>Type</label>
+                <select id="sType">
+                    <option value="info">Info</option>
+                    <option value="promo">Promo</option>
+                    <option value="warning">Warning</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="sTitle" placeholder="Notification title">
+            </div>
+            <div class="form-group">
+                <label>Message</label>
+                <textarea id="sMessage" placeholder="Write your message here..."></textarea>
+            </div>
+
+            <div class="form-error" id="sError"></div>
+            <button class="btn-send" id="sSendBtn">
+                <i class="fa-solid fa-paper-plane"></i> Send Notification
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Tab: History ───────────────────────────────────── -->
+    <div class="tab-panel" id="panel-history">
+        <div class="card">
+            <div class="history-toolbar">
+                <select class="filter-select" id="histRoleFilter">
+                    <option value="all">All Roles</option>
+                    <option value="customer">Customer</option>
+                    <option value="shop">Shop</option>
+                </select>
+                <select class="filter-select" id="histTypeFilter">
+                    <option value="all">All Types</option>
+                    <option value="info">Info</option>
+                    <option value="promo">Promo</option>
+                    <option value="warning">Warning</option>
+                </select>
+                <input type="date" class="filter-select" id="histDateFrom" aria-label="From date">
+                <input type="date" class="filter-select" id="histDateTo" aria-label="To date">
+                <button class="btn-reset" type="button" id="histResetBtn">
+                    <i class="fa-solid fa-rotate-left"></i> Reset
+                </button>
+            </div>
+
+            <div style="overflow-x:auto;">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Target</th>
+                            <th>Recipients</th>
+                            <th>Sent by</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyBody"></tbody>
+                </table>
+            </div>
+            <div class="table-empty" id="historyEmpty" style="display:none;">
+                <i class="fa-solid fa-bell-slash"></i>
+                <p>No notifications sent yet</p>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<div class="toast" id="toastMsg"></div>
+
+<script src="../asset/js/model/product-data.js"></script>
+<script src="../asset/js/model/user-data.js"></script>
+<script src="../asset/js/model/order-data.js"></script>
+<script src="../asset/js/model/notification-data.js"></script>
+<script src="../asset/js/core/storage.js"></script>
+<script src="../asset/js/core/auth.js"></script>
+<script src="../asset/js/admin/admin-common.js"></script>
+<script src="../asset/js/admin/admin-notifications.js"></script>
+
+</body>
+</html>

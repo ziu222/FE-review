@@ -47,11 +47,11 @@ var Store = (function () {
             return;
         }
 
-        _set(KEYS.products, typeof SEED_PRODUCTS !== "undefined" ? SEED_PRODUCTS : []);
-        _set(KEYS.users,    typeof SEED_USERS    !== "undefined" ? SEED_USERS    : []);
-        _set(KEYS.orders,   typeof SEED_ORDERS   !== "undefined" ? SEED_ORDERS   : []);
+        _set(KEYS.products,       typeof SEED_PRODUCTS       !== "undefined" ? SEED_PRODUCTS       : []);
+        _set(KEYS.users,           typeof SEED_USERS          !== "undefined" ? SEED_USERS          : []);
+        _set(KEYS.orders,          typeof SEED_ORDERS         !== "undefined" ? SEED_ORDERS         : []);
         _set(KEYS.cart, []);
-        _set(KEYS.notifications, []);
+        _set(KEYS.notifications,   typeof SEED_NOTIFICATIONS  !== "undefined" ? SEED_NOTIFICATIONS  : []);
 
         localStorage.setItem(KEYS.seeded, "true");
         migrateProductSchema();
@@ -555,10 +555,12 @@ var Store = (function () {
         var notifications = getNotifications();
         var item = {
             id:         _nextId(KEYS.notifications),
-            targetId:   data.targetId || 0,
+            targetId:   data.targetId !== undefined ? data.targetId : 0,
             targetRole: data.targetRole || "customer",
             orderId:    data.orderId || null,
             sentBy:     data.sentBy || "system",
+            source:     data.source || "auto",
+            batchId:    data.batchId || null,
             type:       data.type || "info",
             title:      data.title || "Notification",
             message:    data.message || "",
@@ -569,6 +571,50 @@ var Store = (function () {
         notifications.unshift(item);
         _set(KEYS.notifications, notifications);
         return item;
+    }
+
+    function getNotificationsByTarget(targetRole, targetId) {
+        return getNotifications().filter(function (n) {
+            return n.targetRole === targetRole &&
+                (n.targetId === "all" || n.targetId === targetId);
+        });
+    }
+
+    function markNotificationRead(id, targetRole, targetId) {
+        var notifications = getNotifications();
+        var changed = false;
+        for (var i = 0; i < notifications.length; i++) {
+            var n = notifications[i];
+            if (n.id === id && n.targetRole === targetRole &&
+                (n.targetId === "all" || n.targetId === targetId)) {
+                n.isRead = true;
+                changed = true;
+                break;
+            }
+        }
+        if (changed) _set(KEYS.notifications, notifications);
+        return changed;
+    }
+
+    function getUnreadCount(targetRole, targetId) {
+        return getNotificationsByTarget(targetRole, targetId)
+            .filter(function (n) { return !n.isRead; }).length;
+    }
+
+    function markAllNotificationsRead(targetRole, targetId) {
+        var notifications = getNotifications();
+        var changed = false;
+        for (var i = 0; i < notifications.length; i++) {
+            var n = notifications[i];
+            if (n.targetRole === targetRole &&
+                (n.targetId === "all" || n.targetId === targetId) &&
+                !n.isRead) {
+                n.isRead = true;
+                changed = true;
+            }
+        }
+        if (changed) _set(KEYS.notifications, notifications);
+        return changed;
     }
 
     function getOrderCustomerId(order) {
@@ -938,8 +984,12 @@ var Store = (function () {
         updateShopStatus:     updateShopStatus,
 
         // Notifications
-        getNotifications:     getNotifications,
-        addNotification:      addNotification,
+        getNotifications:             getNotifications,
+        addNotification:              addNotification,
+        getNotificationsByTarget:     getNotificationsByTarget,
+        markNotificationRead:         markNotificationRead,
+        getUnreadCount:               getUnreadCount,
+        markAllNotificationsRead:     markAllNotificationsRead,
 
         // Orders
         getOrders:            getOrders,

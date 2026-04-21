@@ -1,6 +1,4 @@
 // admin-common.js — Page guard + logout for all protected admin pages
-// Loaded as the 3rd script (after storage.js + auth.js) on every admin page
-// Login pages MUST NOT load this file
 
 (function () {
     // Tầng 1: guard — chạy trước khi DOM parse
