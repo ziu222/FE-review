@@ -10,7 +10,8 @@
         dateTo: null,
         page: 1,
         pageSize: 10,
-        shopsLoaded: false
+        shopsLoaded: false,
+        _cachedOrders: []
     };
 
     var revenueChartInstance = null;
@@ -366,8 +367,7 @@
         renderRevenueChart(rows);
     }
 
-    function renderTransactions(filters) {
-        var orders = Store.getTransactions(filters);
+    function renderTransactions(orders, filters) {
         var tbody = document.getElementById("financeTransactionsBody");
         var info = document.getElementById("financePaginationInfo");
         var pageLabel = document.getElementById("financePaginationPage");
@@ -412,9 +412,6 @@
         pageLabel.textContent = "Page " + financeState.page + " / " + totalPages;
         prevBtn.disabled = financeState.page <= 1;
         nextBtn.disabled = financeState.page >= totalPages;
-
-        renderTrendChart(orders, financeState.timeRange);
-        return orders;
     }
 
     function exportFinanceCsv(orders) {
@@ -475,9 +472,12 @@
 
     function refreshFinance() {
         var filters = getFinanceFilters();
+        var orders  = Store.getTransactions(filters);
+        financeState._cachedOrders = orders;
         renderFinanceStats(filters);
         renderRevenueByShop(filters);
-        return renderTransactions(filters);
+        renderTrendChart(orders, financeState.timeRange);
+        renderTransactions(orders, filters);
     }
 
     function bindFinanceEvents() {
@@ -504,18 +504,22 @@
         });
 
         exportBtn.addEventListener("click", function () {
-            exportFinanceCsv(Store.getTransactions(getFinanceFilters()));
+            exportFinanceCsv(financeState._cachedOrders || []);
         });
 
         prevBtn.addEventListener("click", function () {
             if (financeState.page <= 1) return;
             financeState.page -= 1;
-            renderTransactions(getFinanceFilters());
+            renderTransactions(financeState._cachedOrders, getFinanceFilters());
         });
 
         nextBtn.addEventListener("click", function () {
+            var totalPages = Math.max(1, Math.ceil(
+                (financeState._cachedOrders || []).length / financeState.pageSize
+            ));
+            if (financeState.page >= totalPages) return;
             financeState.page += 1;
-            renderTransactions(getFinanceFilters());
+            renderTransactions(financeState._cachedOrders, getFinanceFilters());
         });
     }
 
@@ -632,6 +636,10 @@
                 }
                 refreshFinance();
             }
+
+            if (tab === "reports") {
+                renderReportsTab();
+            }
         }
 
         for (var i = 0; i < buttons.length; i++) {
@@ -639,6 +647,8 @@
                 activateTab(this.getAttribute("data-tab"));
             });
         }
+
+        activateTab("overview");
     }
 
 
@@ -654,9 +664,6 @@
         nameEl.textContent = user.name;
         avatarEl.textContent = user.name.charAt(0).toUpperCase();
     }
-
-
-    // 
 
     function escapeHtml(str) {
         var div = document.createElement("div");
