@@ -1,6 +1,5 @@
 {
   "buildCommand": "npm run build:tw",
-  "public": ".",
   "trailingSlash": false,
   "rewrites": [
     {
