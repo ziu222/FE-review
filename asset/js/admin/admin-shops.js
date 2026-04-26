@@ -112,27 +112,28 @@
     }
 
     function getActionButtons(shop) {
-        var btns = "";
+        var btns = '<div class="icon-btn-group">';
 
         if (shop.shopStatus === "pending") {
-            btns += '<button class="action-btn-sm approve" data-id="' + shop.id + '" title="Approve">'
-                + '<i class="fa-solid fa-check"></i></button>';
+            btns += '<button class="icon-btn icon-btn-approve" data-id="' + shop.id + '" title="Approve">'
+                + '<i class="fa-solid fa-circle-check"></i></button>';
         }
         if (shop.shopStatus === "active") {
-            btns += '<button class="action-btn-sm suspend" data-id="' + shop.id + '" title="Suspend">'
+            btns += '<button class="icon-btn icon-btn-suspend" data-id="' + shop.id + '" title="Suspend">'
                 + '<i class="fa-solid fa-ban"></i></button>';
         }
         if (shop.shopStatus === "suspended") {
-            btns += '<button class="action-btn-sm reactivate" data-id="' + shop.id + '" title="Reactivate">'
+            btns += '<button class="icon-btn icon-btn-restore" data-id="' + shop.id + '" title="Reactivate">'
                 + '<i class="fa-solid fa-rotate-left"></i></button>';
         }
 
-        btns += '<button class="action-btn-sm edit" data-id="' + shop.id + '" title="Edit">'
+        btns += '<button class="icon-btn icon-btn-edit" data-id="' + shop.id + '" title="Edit">'
             + '<i class="fa-solid fa-pen"></i></button>';
 
-        btns += '<button class="action-btn-sm view" data-id="' + shop.id + '" title="View Details">'
+        btns += '<button class="icon-btn icon-btn-view" data-id="' + shop.id + '" title="View Details">'
             + '<i class="fa-solid fa-eye"></i></button>';
 
+        btns += '</div>';
         return btns;
     }
 
@@ -140,7 +141,7 @@
     // ── Table event binding ────────────────────────────────
 
     function bindTableEvents() {
-        var approveButtons = document.querySelectorAll(".action-btn-sm.approve");
+        var approveButtons = document.querySelectorAll(".icon-btn-approve");
         for (var i = 0; i < approveButtons.length; i++) {
             approveButtons[i].addEventListener("click", function () {
                 var id = Number(this.getAttribute("data-id"));
@@ -149,7 +150,7 @@
             });
         }
 
-        var suspendButtons = document.querySelectorAll(".action-btn-sm.suspend");
+        var suspendButtons = document.querySelectorAll(".icon-btn-suspend");
         for (var i = 0; i < suspendButtons.length; i++) {
             suspendButtons[i].addEventListener("click", function () {
                 var id = Number(this.getAttribute("data-id"));
@@ -158,7 +159,7 @@
             });
         }
 
-        var reactivateButtons = document.querySelectorAll(".action-btn-sm.reactivate");
+        var reactivateButtons = document.querySelectorAll(".icon-btn-restore");
         for (var i = 0; i < reactivateButtons.length; i++) {
             reactivateButtons[i].addEventListener("click", function () {
                 var id = Number(this.getAttribute("data-id"));
@@ -167,14 +168,14 @@
             });
         }
 
-        var editButtons = document.querySelectorAll(".action-btn-sm.edit");
+        var editButtons = document.querySelectorAll(".icon-btn-edit");
         for (var i = 0; i < editButtons.length; i++) {
             editButtons[i].addEventListener("click", function () {
                 openFormModal(Number(this.getAttribute("data-id")));
             });
         }
 
-        var viewButtons = document.querySelectorAll(".action-btn-sm.view");
+        var viewButtons = document.querySelectorAll(".icon-btn-view");
         for (var i = 0; i < viewButtons.length; i++) {
             viewButtons[i].addEventListener("click", function () {
                 openDetailModal(Number(this.getAttribute("data-id")));

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EC SHOP - Users Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="../asset/css/admin-dashboard.css">
+    <style>
+        /* ── Tabs ───────────────────────────────────────────── */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* ── Table ──────────────────────────────────────────── */
+        .users-table-wrap { overflow-x: auto; }
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+        }
+        .users-table th,
+        .users-table td {
+            padding: 11px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color, #e5e7eb);
+        }
+        .users-table th {
+            font-weight: 600;
+            color: var(--text-muted, #6b7280);
+            background: var(--bg-soft, #f9fafb);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+        .users-table tr:hover td { background: var(--bg-soft, #f9fafb); }
+
+        /* ── Badges ─────────────────────────────────────────── */
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-active   { background: #d1fae5; color: #065f46; }
+        .badge-banned   { background: #fee2e2; color: #991b1b; }
+        .badge-level1   { background: #dbeafe; color: #1e40af; }
+        .badge-level2   { background: #ede9fe; color: #5b21b6; }
+
+        /* ── Header row ─────────────────────────────────────── */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .section-header h2 {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* ── Create Admin Modal ─────────────────────────────── */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,.45);
+            z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity .2s;
+        }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .modal-box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 28px 32px;
+            width: 420px;
+            max-width: calc(100vw - 32px);
+            box-shadow: 0 8px 32px rgba(0,0,0,.18);
+        }
+        .modal-box h3 { margin: 0 0 20px; font-size: 17px; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+        .form-group input,
+        .form-group select {
+            width: 100%; padding: 9px 12px;
+            border: 1.5px solid #d1d5db;
+            border-radius: 7px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: border-color .15s;
+        }
+        .form-group input:focus,
+        .form-group select:focus { border-color: var(--primary, #6366f1); outline: none; }
+        .modal-error {
+            color: #dc2626; font-size: 13px; margin-bottom: 12px;
+            display: none;
+        }
+        .modal-error.show { display: block; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+        .btn-cancel-modal {
+            padding: 8px 18px; border: 1.5px solid #d1d5db;
+            background: none; border-radius: 7px; cursor: pointer; font-size: 14px;
+        }
+        .btn-submit-modal {
+            padding: 8px 20px;
+            background: var(--primary, #6366f1); color: #fff;
+            border: none; border-radius: 7px; cursor: pointer; font-size: 14px; font-weight: 600;
+        }
+        .btn-submit-modal:hover { opacity: .88; }
+
+        .btn-create-admin {
+            display: flex; align-items: center; gap: 7px;
+            padding: 8px 18px;
+            background: var(--primary, #6366f1); color: #fff;
+            border: none; border-radius: 8px; cursor: pointer;
+            font-size: 13.5px; font-weight: 600;
+        }
+        .btn-create-admin:hover { opacity: .88; }
+    </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <a href="dashboard.html" class="sidebar-logo-text">EC SHOP</a>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Main</div>
+        <a href="dashboard.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i> Dashboard
+        </a>
+        <a href="shops-manage.html" class="nav-item">
+            <i class="fa-solid fa-store"></i> Shops
+        </a>
+        <a href="products.html" class="nav-item">
+            <i class="fa-solid fa-box-open"></i> Products
+        </a>
+        <a href="orders-manage.html" class="nav-item">
+            <i class="fa-solid fa-clipboard-list"></i> Orders
+        </a>
+        <a href="users-manage.html" class="nav-item active">
+            <i class="fa-solid fa-users"></i> Users
+        </a>
+        <a href="notifications.html" class="nav-item">
+            <i class="fa-solid fa-bell"></i> Notifications
+        </a>
+        <div class="nav-section-label">Support</div>
+        <a href="#" class="nav-item">
+            <i class="fa-solid fa-gear"></i> Settings
+        </a>
+    </nav>
+</aside>
+
+<header class="topbar">
+    <h1 class="topbar-title">Users Management</h1>
+    <div class="topbar-right">
+        <div class="topbar-user">
+            <div class="topbar-avatar" id="topbarAvatar">A</div>
+            <span id="topbarUserName">Admin</span>
+        </div>
+        <button class="btn-logout" id="logoutBtn">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+    </div>
+</header>
+
+<main class="main-content">
+
+    <!-- Tab bar -->
+    <div class="filter-tabs" style="margin-bottom:20px;">
+        <button class="filter-tab active" data-tab="customers">
+            <i class="fa-solid fa-user"></i> Customers
+        </button>
+        <button class="filter-tab" data-tab="shops">
+            <i class="fa-solid fa-store"></i> Shops
+        </button>
+        <button class="filter-tab" data-tab="admins">
+            <i class="fa-solid fa-user-shield"></i> Admins
+        </button>
+        <button class="filter-tab" data-tab="banned">
+            <i class="fa-solid fa-ban"></i> Banned
+        </button>
+    </div>
+
+    <!-- ── Tab 1: Customers ─────────────────────────────────── -->
+    <div class="tab-panel active" id="panel-customers">
+        <div class="section-header">
+            <h2>Customers (<span id="countCustomers">0</span>)</h2>
+        </div>
+        <div class="users-table-wrap">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="bodyCustomers"></tbody>
+            </table>
+        </div>
+        <p class="empty-state" id="emptyCustomers" style="display:none; color:#9ca3af; text-align:center; padding:32px 0;">
+            No customers yet.
+        </p>
+    </div>
+
+    <!-- ── Tab 2: Shops ───────────────────────────────────────── -->
+    <div class="tab-panel" id="panel-shops">
+        <div class="section-header">
+            <h2>Shops (<span id="countShops">0</span>)</h2>
+            <div class="filter-tabs">
+                <button class="filter-tab active" id="shopFilterAll">All</button>
+                <button class="filter-tab" id="shopFilterPending">
+                    <i class="fa-solid fa-hourglass-half"></i> Pending Applications
+                    <span class="badge badge-pending" id="countPendingShops" style="margin-left:4px;">0</span>
+                </button>
+            </div>
+        </div>
+        <div class="users-table-wrap">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Owner</th>
+                        <th>Shop Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="bodyShops"></tbody>
+            </table>
+        </div>
+        <p class="empty-state" id="emptyShops" style="display:none; color:#9ca3af; text-align:center; padding:32px 0;">
+            No shops yet.
+        </p>
+    </div>
+
+    <!-- ── Tab 2: Admins ────────────────────────────────────── -->
+    <div class="tab-panel" id="panel-admins">
+        <div class="section-header">
+            <h2>Admins (<span id="countAdmins">0</span>)</h2>
+            <!-- Only visible to Super Admin (level 2) -->
+            <button class="btn-create-admin" id="btnCreateAdmin" data-permission="level2">
+                <i class="fa-solid fa-plus"></i> Create Admin
+            </button>
+        </div>
+        <div class="users-table-wrap">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Level</th>
+                        <th>Joined</th>
+                    </tr>
+                </thead>
+                <tbody id="bodyAdmins"></tbody>
+            </table>
+        </div>
+        <p class="empty-state" id="emptyAdmins" style="display:none; color:#9ca3af; text-align:center; padding:32px 0;">
+            No admins found.
+        </p>
+    </div>
+
+    <!-- ── Tab 3: Banned ────────────────────────────────────── -->
+    <div class="tab-panel" id="panel-banned">
+        <div class="section-header">
+            <h2>Banned / Suspended (<span id="countBanned">0</span>)</h2>
+        </div>
+        <div class="users-table-wrap">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Role</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="bodyBanned"></tbody>
+            </table>
+        </div>
+        <p class="empty-state" id="emptyBanned" style="display:none; color:#9ca3af; text-align:center; padding:32px 0;">
+            No banned users.
+        </p>
+    </div>
+
+</main>
+
+<!-- ── Create Admin Modal ─────────────────────────────────────── -->
+<div class="modal-overlay" id="createAdminModal">
+    <div class="modal-box">
+        <h3><i class="fa-solid fa-user-shield"></i> Create Admin</h3>
+        <p class="modal-error" id="createAdminError"></p>
+        <div class="form-group">
+            <label for="caName">Full Name</label>
+            <input type="text" id="caName" placeholder="Nguyen Van A" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="caEmail">Email</label>
+            <input type="email" id="caEmail" placeholder="admin@ecshop.vn" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="caUsername">Username</label>
+            <input type="text" id="caUsername" placeholder="nguyenvana" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="caPassword">Password <span style="color:#9ca3af;font-weight:400">(min 6 chars)</span></label>
+            <input type="password" id="caPassword" autocomplete="new-password">
+        </div>
+        <div class="form-group">
+            <label for="caLevel">Level</label>
+            <select id="caLevel">
+                <option value="1">Staff (Level 1)</option>
+                <option value="2">Super Admin (Level 2)</option>
+            </select>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-cancel-modal" id="btnCancelCreateAdmin">Cancel</button>
+            <button class="btn-submit-modal" id="btnSubmitCreateAdmin">Create</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── Create Shop Modal ──────────────────────────────────────── -->
+<div class="modal-overlay" id="createShopModal">
+    <div class="modal-box">
+        <h3><i class="fa-solid fa-store"></i> Create Shop</h3>
+        <p class="modal-error" id="createShopError"></p>
+        <div class="form-group">
+            <label for="csName">Owner Name</label>
+            <input type="text" id="csName" placeholder="Nguyen Van B" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="csShopName">Shop Name</label>
+            <input type="text" id="csShopName" placeholder="My Awesome Store" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="csEmail">Email</label>
+            <input type="email" id="csEmail" placeholder="shop@ecshop.vn" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="csUsername">Username</label>
+            <input type="text" id="csUsername" placeholder="mystore" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="csPassword">Password <span style="color:#9ca3af;font-weight:400">(min 6 chars)</span></label>
+            <input type="password" id="csPassword" autocomplete="new-password">
+        </div>
+        <div class="form-group">
+            <label for="csStatus">Initial Status</label>
+            <select id="csStatus">
+                <option value="active">Active (approved immediately)</option>
+                <option value="pending">Pending (requires approval)</option>
+            </select>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-cancel-modal" id="btnCancelCreateShop">Cancel</button>
+            <button class="btn-submit-modal" id="btnSubmitCreateShop">Create</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── Shop View Modal ───────────────────────────────────────── -->
+<div class="modal-overlay" id="shopViewModal">
+    <div class="modal-panel modal-panel-sm">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-store" style="margin-right:8px;color:#004c4c;"></i> Shop Details</h3>
+            <button class="modal-close" type="button" id="shopViewCloseBtn">&times;</button>
+        </div>
+        <div class="modal-body" style="padding-top:16px;">
+            <div class="modal-detail-row">
+                <span class="modal-detail-label">Shop Name</span>
+                <strong class="modal-detail-value" id="svShopName">—</strong>
+            </div>
+            <div class="modal-detail-row">
+                <span class="modal-detail-label">Owner</span>
+                <span class="modal-detail-value" id="svOwner">—</span>
+            </div>
+            <div class="modal-detail-row">
+                <span class="modal-detail-label">Email</span>
+                <span class="modal-detail-value" id="svEmail">—</span>
+            </div>
+            <div class="modal-detail-row">
+                <span class="modal-detail-label">Phone</span>
+                <span class="modal-detail-value" id="svPhone">—</span>
+            </div>
+            <div class="modal-detail-row">
+                <span class="modal-detail-label">Address</span>
+                <span class="modal-detail-value" id="svAddress">—</span>
+            </div>
+            <div class="modal-detail-row">
+                <span class="modal-detail-label">Status</span>
+                <span class="modal-detail-value" id="svStatus">—</span>
+            </div>
+            <div class="modal-detail-row">
+                <span class="modal-detail-label">Joined</span>
+                <span class="modal-detail-value" id="svJoined">—</span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn close" id="shopViewOkBtn">Close</button>
+        </div>
+    </div>
+</div>
+
+<script src="../asset/js/model/product-data.js"></script>
+<script src="../asset/js/model/user-data.js"></script>
+<script src="../asset/js/model/order-data.js"></script>
+<script src="../asset/js/model/notification-data.js"></script>
+<script src="../asset/js/core/storage.js"></script>
+<script src="../asset/js/core/auth.js"></script>
+<script src="../asset/js/admin/admin-common.js"></script>
+<script src="../asset/js/admin/admin-users.js"></script>
+
+</body>
+</html>

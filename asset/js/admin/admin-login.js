@@ -38,16 +38,16 @@ loginForm.addEventListener("submit", function (e) {
     loginError.classList.remove("show");
 
 
-    var session = Auth.authenticate(identifier, password);
+    var result = Auth.authenticate(identifier, password);
 
-    if (!session) {
+    if (result.error) {
         loginError.textContent = "Wrong username/email or password. Please try again.";
         loginError.classList.add("show");
         return;
     }
 
-    if (session.role !== "admin") {
-        Auth.logout();
+    if (result.session.role !== "admin") {
+        Auth.logout("admin-login.html");
         loginError.textContent = "You do not have admin access.";
         loginError.classList.add("show");
         return;

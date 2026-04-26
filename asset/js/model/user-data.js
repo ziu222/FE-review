@@ -17,6 +17,18 @@ var SEED_USERS = [
         email: "admin@ecshop.com",
         password: "123",
         role: "admin",
+        adminLevel: 1,
+        avatar: "",
+        createdAt: "2025-01-01"
+    },
+    {
+        id: 10,
+        name: "Super Admin",
+        username: "admin2",
+        email: "superadmin@ecshop.com",
+        password: "123",
+        role: "admin",
+        adminLevel: 2,
         avatar: "",
         createdAt: "2025-01-01"
     },
@@ -137,5 +149,21 @@ var SEED_USERS = [
         shopStatus: "active",
         shopAvatar: "",
         createdAt: "2025-03-15"
+    },
+    {
+        id: 11,
+        name: "Tran Van Flagship",
+        username: "flagshipstore",
+        email: "flagship@shop.com",
+        password: "shop123",
+        role: "shop",
+        avatar: "",
+        shopName: "Flagship Store",
+        shopDescription: "Chuyen hang chinh hang cao cap - Dien tu, thoi trang, phu kien",
+        shopAddress: "100 Le Loi, Q1, HCM",
+        shopPhone: "0901000010",
+        shopStatus: "pending",
+        shopAvatar: "",
+        createdAt: "2026-04-21"
     }
 ];

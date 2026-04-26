@@ -172,7 +172,10 @@ function searchProducts(query) {
 // -- View Product -----------------------------------------------
 
 function viewProduct(productId) {
-    alert("Product details page coming soon!");
+    var toastEl = document.getElementById("comingSoonToast");
+    if (toastEl && window.bootstrap) {
+        bootstrap.Toast.getOrCreateInstance(toastEl).show();
+    }
 }
 
 
