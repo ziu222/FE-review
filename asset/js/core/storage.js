@@ -690,6 +690,34 @@ var Store = (function () {
         return result;
     }
 
+    function getFilteredFinanceOrders(filters) {
+        filters = filters || {};
+
+        var orders = getOrders();
+        var result = [];
+
+        for (var i = 0; i < orders.length; i++) {
+            var order = orders[i];
+            if (order.status !== "delivered") continue;
+
+            if (filters.shopId && filters.shopId !== "all" && String(order.shopId) !== String(filters.shopId)) {
+                continue;
+            }
+
+            if (filters.dateFrom && new Date(order.createdAt) < new Date(filters.dateFrom)) {
+                continue;
+            }
+
+            if (filters.dateTo && new Date(order.createdAt) > new Date(filters.dateTo)) {
+                continue;
+            }
+
+            result.push(order);
+        }
+
+        return result;
+    }
+
     function normalizeChangedBy(changedBy) {
         if (changedBy === "customer" || changedBy === "shop" || changedBy === "admin") {
             return changedBy;
@@ -945,6 +973,79 @@ var Store = (function () {
         return counts;
     }
 
+    function getFinanceSummary(filters) {
+        var orders = getFilteredFinanceOrders(filters);
+        var activeShopMap = {};
+        var totalRevenue = 0;
+
+        for (var i = 0; i < orders.length; i++) {
+            totalRevenue += Number(orders[i].total) || 0;
+
+            var shop = getShopById(orders[i].shopId);
+            if (shop && shop.shopStatus === "active") {
+                activeShopMap[shop.id] = true;
+            }
+        }
+
+        return {
+            totalRevenue: totalRevenue,
+            paidOrders: orders.length,
+            avgOrderValue: orders.length ? Math.round(totalRevenue / orders.length) : 0,
+            activeShops: Object.keys(activeShopMap).length
+        };
+    }
+
+    function getRevenueByShop(filters) {
+        var orders = getFilteredFinanceOrders(filters);
+        var shopMap = {};
+        var grandTotal = 0;
+        var result = [];
+        var i;
+
+        for (i = 0; i < orders.length; i++) {
+            var order = orders[i];
+            var shop = getShopById(order.shopId);
+            var shopName = shop ? (shop.shopName || shop.name) : ("Shop #" + order.shopId);
+            var revenue = Number(order.total) || 0;
+
+            if (!shopMap[order.shopId]) {
+                shopMap[order.shopId] = {
+                    shopId: order.shopId,
+                    shopName: shopName,
+                    orderCount: 0,
+                    revenue: 0,
+                    percentage: 0
+                };
+            }
+
+            shopMap[order.shopId].orderCount += 1;
+            shopMap[order.shopId].revenue += revenue;
+            grandTotal += revenue;
+        }
+
+        for (var key in shopMap) {
+            if (!Object.prototype.hasOwnProperty.call(shopMap, key)) continue;
+            shopMap[key].percentage = grandTotal
+                ? Math.round((shopMap[key].revenue / grandTotal) * 1000) / 10
+                : 0;
+            result.push(shopMap[key]);
+        }
+
+        result.sort(function (a, b) {
+            return b.revenue - a.revenue;
+        });
+
+        return result;
+    }
+
+    function getTransactions(filters) {
+        var orders = getFilteredFinanceOrders(filters).slice();
+        orders.sort(function (a, b) {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+        return orders;
+    }
+
 
     // Public API 
 
@@ -1015,7 +1116,12 @@ var Store = (function () {
         getShopRevenue:           getShopRevenue,
         getOrderCountByStatus:    getOrderCountByStatus,
         getTopProducts:           getTopProducts,
-        getProductCountByCategory: getProductCountByCategory
+        getProductCountByCategory: getProductCountByCategory,
+
+        // Finance
+        getFinanceSummary:       getFinanceSummary,
+        getRevenueByShop:        getRevenueByShop,
+        getTransactions:         getTransactions
     };
 
 })();
