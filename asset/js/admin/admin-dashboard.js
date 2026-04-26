@@ -3,6 +3,20 @@
 
 (function () {
 
+    var financeState = {
+        timeRange: "week",
+        shopFilter: "all",
+        dateFrom: null,
+        dateTo: null,
+        page: 1,
+        pageSize: 10,
+        shopsLoaded: false,
+        _cachedOrders: []
+    };
+
+    var revenueChartInstance = null;
+    var trendChartInstance = null;
+
 
     function formatCurrency(amount) {
         return "$" + amount.toLocaleString("en-US");
@@ -19,6 +33,49 @@
     function getTodayKey() {
         var now = new Date();
         return now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0");
+    }
+
+    function getDateRange(range) {
+        var now = new Date();
+        var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+        if (range === "today") {
+            return { dateFrom: today.toISOString(), dateTo: now.toISOString() };
+        }
+
+        if (range === "week") {
+            var weekAgo = new Date(today);
+            weekAgo.setDate(today.getDate() - 7);
+            return { dateFrom: weekAgo.toISOString(), dateTo: now.toISOString() };
+        }
+
+        if (range === "month") {
+            var monthAgo = new Date(today);
+            monthAgo.setMonth(today.getMonth() - 1);
+            return { dateFrom: monthAgo.toISOString(), dateTo: now.toISOString() };
+        }
+
+        if (range === "year") {
+            var yearAgo = new Date(today);
+            yearAgo.setFullYear(today.getFullYear() - 1);
+            return { dateFrom: yearAgo.toISOString(), dateTo: now.toISOString() };
+        }
+
+        return { dateFrom: null, dateTo: null };
+    }
+
+    function syncFinanceDateRange() {
+        var range = getDateRange(financeState.timeRange);
+        financeState.dateFrom = range.dateFrom;
+        financeState.dateTo = range.dateTo;
+    }
+
+    function getFinanceFilters() {
+        return {
+            shopId: financeState.shopFilter,
+            dateFrom: financeState.dateFrom,
+            dateTo: financeState.dateTo
+        };
     }
 
 
@@ -172,76 +229,298 @@
         tbody.innerHTML = html;
     }
 
-    function renderFinanceTab() {
-        var orders = Store.getOrders();
-        var shops = Store.getShops();
-        var todayKey = getTodayKey();
-        var totalRevenue = 0;
-        var todayRevenue = 0;
-        var activeShops = 0;
-        var financeRows = [];
+    function renderFinanceStats(filters) {
+        var summary = Store.getFinanceSummary(filters);
 
-        for (var i = 0; i < shops.length; i++) {
-            var shop = shops[i];
-            if (shop.shopStatus === "active") {
-                activeShops++;
+        document.getElementById("financeTotalRevenue").textContent = formatCurrency(summary.totalRevenue);
+        document.getElementById("financePaidOrders").textContent = summary.paidOrders;
+        document.getElementById("financeAvgOrder").textContent = formatCurrency(summary.avgOrderValue);
+        document.getElementById("financeActiveShops").textContent = summary.activeShops;
+    }
+
+    function groupOrdersByPeriod(orders, range) {
+        var totals = {};
+
+        for (var i = 0; i < orders.length; i++) {
+            var order = orders[i];
+            var date = new Date(order.createdAt);
+            var key;
+
+            if (range === "year" || range === "all") {
+                key = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0");
+            } else {
+                key = date.toISOString().slice(0, 10);
             }
 
-            var shopOrders = Store.getOrdersByShop(shop.id);
-            var validOrderCount = 0;
-            for (var x = 0; x < shopOrders.length; x++) {
-                if (shopOrders[x].status !== "cancelled") {
-                    validOrderCount++;
-                }
-            }
-
-            financeRows.push({
-                shopName: shop.shopName,
-                ownerName: shop.name,
-                status: shop.shopStatus || "pending",
-                orders: validOrderCount,
-                revenue: Store.getShopRevenue(shop.id)
-            });
+            totals[key] = (totals[key] || 0) + (Number(order.total) || 0);
         }
 
-        for (var j = 0; j < orders.length; j++) {
-            var order = orders[j];
-            if (order.status !== "cancelled") {
-                totalRevenue += order.total;
+        var labels = Object.keys(totals).sort();
+        return {
+            labels: labels,
+            values: labels.map(function (label) {
+                return totals[label];
+            })
+        };
+    }
 
-                var orderDateKey = new Date(order.createdAt).toISOString().slice(0, 10);
-                if (orderDateKey === todayKey) {
-                    todayRevenue += order.total;
-                }
-            }
+    function renderTrendChart(orders, timeRange) {
+        var canvas = document.getElementById("revenueTrendChart");
+        if (!canvas || typeof Chart === "undefined") return;
+
+        if (trendChartInstance) {
+            trendChartInstance.destroy();
         }
 
-        financeRows.sort(function (a, b) {
-            return b.revenue - a.revenue;
+        var grouped = groupOrdersByPeriod(orders, timeRange);
+
+        trendChartInstance = new Chart(canvas.getContext("2d"), {
+            type: "line",
+            data: {
+                labels: grouped.labels,
+                datasets: [{
+                    label: "Revenue",
+                    data: grouped.values,
+                    borderColor: "rgba(0, 76, 76, 1)",
+                    backgroundColor: "rgba(0, 76, 76, 0.1)",
+                    tension: 0.35,
+                    fill: true,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        ticks: {
+                            callback: function (value) {
+                                return "$" + Number(value).toLocaleString("en-US");
+                            }
+                        }
+                    }
+                }
+            }
         });
+    }
 
-        document.getElementById("financeTotalRevenue").textContent = formatCurrency(totalRevenue);
-        document.getElementById("financeTodayRevenue").textContent = formatCurrency(todayRevenue);
-        document.getElementById("financeActiveShops").textContent = activeShops;
+    function renderRevenueChart(data) {
+        var canvas = document.getElementById("revenueByShopChart");
+        if (!canvas || typeof Chart === "undefined") return;
 
-        var tbody = document.getElementById("financeTableBody");
-        if (financeRows.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="table-empty">No shop data yet.</td></tr>';
+        if (revenueChartInstance) {
+            revenueChartInstance.destroy();
+        }
+
+        revenueChartInstance = new Chart(canvas.getContext("2d"), {
+            type: "bar",
+            data: {
+                labels: data.map(function (item) { return item.shopName; }),
+                datasets: [{
+                    data: data.map(function (item) { return item.revenue; }),
+                    backgroundColor: "rgba(0, 76, 76, 0.75)",
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                indexAxis: "y",
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: {
+                        ticks: {
+                            callback: function (value) {
+                                return "$" + Number(value).toLocaleString("en-US");
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function renderRevenueByShop(filters) {
+        var rows = Store.getRevenueByShop(filters);
+        var tbody = document.getElementById("financeRevenueBody");
+
+        if (!tbody) return;
+
+        if (rows.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="table-empty">No delivered revenue found for the selected filters.</td></tr>';
+            renderRevenueChart([]);
             return;
         }
 
         var html = "";
-        for (var k = 0; k < financeRows.length; k++) {
-            var row = financeRows[k];
+        for (var i = 0; i < rows.length; i++) {
             html += "<tr>"
-                + '<td>' + escapeHtml(row.shopName || "Unknown") + '</td>'
-                + '<td>' + escapeHtml(row.ownerName || "Unknown") + '</td>'
-                + '<td><span class="badge badge-' + row.status + '">' + row.status + '</span></td>'
-                + '<td>' + row.orders + '</td>'
-                + '<td>' + formatCurrency(row.revenue) + '</td>'
+                + '<td>' + escapeHtml(rows[i].shopName || "Unknown") + '</td>'
+                + '<td>' + rows[i].orderCount + '</td>'
+                + '<td>' + formatCurrency(rows[i].revenue) + '</td>'
+                + '<td>' + rows[i].percentage.toFixed(1) + '%</td>'
                 + "</tr>";
         }
+
         tbody.innerHTML = html;
+        renderRevenueChart(rows);
+    }
+
+    function renderTransactions(orders, filters) {
+        var tbody = document.getElementById("financeTransactionsBody");
+        var info = document.getElementById("financePaginationInfo");
+        var pageLabel = document.getElementById("financePaginationPage");
+        var prevBtn = document.getElementById("financePrevPage");
+        var nextBtn = document.getElementById("financeNextPage");
+        var totalPages = Math.max(1, Math.ceil(orders.length / financeState.pageSize));
+
+        if (financeState.page > totalPages) {
+            financeState.page = totalPages;
+        }
+
+        var start = (financeState.page - 1) * financeState.pageSize;
+        var pageOrders = orders.slice(start, start + financeState.pageSize);
+
+        if (pageOrders.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="table-empty">No transactions found for the selected filters.</td></tr>';
+        } else {
+            var html = "";
+            for (var i = 0; i < pageOrders.length; i++) {
+                var order = pageOrders[i];
+                var customer = Store.getUserById(Store.getOrderCustomerId(order));
+                var shop = Store.getShopById(order.shopId);
+
+                html += "<tr>"
+                    + '<td><span class="order-id">#' + order.id + '</span></td>'
+                    + '<td>' + escapeHtml(customer ? customer.name : "Unknown") + '</td>'
+                    + '<td>' + escapeHtml(shop ? (shop.shopName || shop.name) : "Unknown") + '</td>'
+                    + '<td>' + ((order.items && order.items.length) || 0) + '</td>'
+                    + '<td>' + formatCurrency(Number(order.total) || 0) + '</td>'
+                    + '<td>' + formatDate(order.createdAt) + '</td>'
+                    + "</tr>";
+            }
+            tbody.innerHTML = html;
+        }
+
+        if (orders.length === 0) {
+            info.textContent = "Showing 0-0 of 0";
+        } else {
+            info.textContent = "Showing " + (start + 1) + "-" + (start + pageOrders.length) + " of " + orders.length;
+        }
+
+        pageLabel.textContent = "Page " + financeState.page + " / " + totalPages;
+        prevBtn.disabled = financeState.page <= 1;
+        nextBtn.disabled = financeState.page >= totalPages;
+    }
+
+    function exportFinanceCsv(orders) {
+        var header = ["Order ID", "Customer", "Shop", "Items", "Total", "Status", "Date"];
+        var rows = [];
+
+        for (var i = 0; i < orders.length; i++) {
+            var order = orders[i];
+            var customer = Store.getUserById(Store.getOrderCustomerId(order));
+            var shop = Store.getShopById(order.shopId);
+
+            rows.push([
+                "#" + order.id,
+                customer ? customer.name : "Unknown",
+                shop ? (shop.shopName || shop.name) : "Unknown",
+                (order.items && order.items.length) || 0,
+                "$" + (Number(order.total) || 0),
+                order.status,
+                order.createdAt ? order.createdAt.split("T")[0] : ""
+            ]);
+        }
+
+        var allRows = [header].concat(rows);
+        var csvLines = [];
+
+        for (var j = 0; j < allRows.length; j++) {
+            var cells = [];
+            for (var k = 0; k < allRows[j].length; k++) {
+                cells.push('"' + String(allRows[j][k]).replace(/"/g, '""') + '"');
+            }
+            csvLines.push(cells.join(","));
+        }
+
+        var blob = new Blob([csvLines.join("\n")], { type: "text/csv;charset=utf-8;" });
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement("a");
+        link.href = url;
+        link.download = "transactions-" + new Date().toISOString().split("T")[0] + ".csv";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    function populateFinanceShopFilter() {
+        var select = document.getElementById("financeShopFilter");
+        var revenueRows = Store.getRevenueByShop({ shopId: "all", dateFrom: null, dateTo: null });
+        var options = ['<option value="all">All Shops</option>'];
+
+        for (var i = 0; i < revenueRows.length; i++) {
+            options.push('<option value="' + revenueRows[i].shopId + '">' + escapeHtml(revenueRows[i].shopName) + '</option>');
+        }
+
+        select.innerHTML = options.join("");
+        select.value = financeState.shopFilter;
+        financeState.shopsLoaded = true;
+    }
+
+    function refreshFinance() {
+        var filters = getFinanceFilters();
+        var orders  = Store.getTransactions(filters);
+        financeState._cachedOrders = orders;
+        renderFinanceStats(filters);
+        renderRevenueByShop(filters);
+        renderTrendChart(orders, financeState.timeRange);
+        renderTransactions(orders, filters);
+    }
+
+    function bindFinanceEvents() {
+        var timeRange = document.getElementById("financeTimeRange");
+        var shopFilter = document.getElementById("financeShopFilter");
+        var exportBtn = document.getElementById("btnExportFinanceCsv");
+        var prevBtn = document.getElementById("financePrevPage");
+        var nextBtn = document.getElementById("financeNextPage");
+
+        syncFinanceDateRange();
+        timeRange.value = financeState.timeRange;
+
+        timeRange.addEventListener("change", function () {
+            financeState.timeRange = this.value;
+            financeState.page = 1;
+            syncFinanceDateRange();
+            refreshFinance();
+        });
+
+        shopFilter.addEventListener("change", function () {
+            financeState.shopFilter = this.value;
+            financeState.page = 1;
+            refreshFinance();
+        });
+
+        exportBtn.addEventListener("click", function () {
+            exportFinanceCsv(financeState._cachedOrders || []);
+        });
+
+        prevBtn.addEventListener("click", function () {
+            if (financeState.page <= 1) return;
+            financeState.page -= 1;
+            renderTransactions(financeState._cachedOrders, getFinanceFilters());
+        });
+
+        nextBtn.addEventListener("click", function () {
+            var totalPages = Math.max(1, Math.ceil(
+                (financeState._cachedOrders || []).length / financeState.pageSize
+            ));
+            if (financeState.page >= totalPages) return;
+            financeState.page += 1;
+            renderTransactions(financeState._cachedOrders, getFinanceFilters());
+        });
     }
 
     function renderReportsTab() {
@@ -350,6 +629,17 @@
                 var button = buttons[i];
                 button.classList.toggle("active", button.getAttribute("data-tab") === tab);
             }
+
+            if (tab === "finance") {
+                if (!financeState.shopsLoaded) {
+                    populateFinanceShopFilter();
+                }
+                refreshFinance();
+            }
+
+            if (tab === "reports") {
+                renderReportsTab();
+            }
         }
 
         for (var i = 0; i < buttons.length; i++) {
@@ -357,6 +647,8 @@
                 activateTab(this.getAttribute("data-tab"));
             });
         }
+
+        activateTab("overview");
     }
 
 
@@ -373,9 +665,6 @@
         avatarEl.textContent = user.name.charAt(0).toUpperCase();
     }
 
-
-    // 
-
     function escapeHtml(str) {
         var div = document.createElement("div");
         div.appendChild(document.createTextNode(str));
@@ -391,9 +680,9 @@
     renderTopProducts();
     renderCategoryBreakdown();
     renderRecentOrders();
-    renderFinanceTab();
     renderReportsTab();
     bindDashboardTabs();
+    bindFinanceEvents();
     bindReportActions();
 
 })();

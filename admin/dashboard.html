@@ -7,10 +7,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="../asset/css/admin-dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-<!-- ── SIDEBAR ──────────────────────────────────────────── -->
 <aside class="sidebar">
     <div class="sidebar-logo">
         <a href="dashboard.html" class="sidebar-logo-text">EC SHOP</a>
@@ -170,23 +170,50 @@
     </section>
 
     <section class="dashboard-tab-panel" id="tabFinance">
-        <div class="stats-row">
+        <div class="toolbar finance-toolbar">
+            <div class="finance-filter-group">
+                <select class="filter-select" id="financeTimeRange">
+                    <option value="today">Today</option>
+                    <option value="week" selected>This Week</option>
+                    <option value="month">This Month</option>
+                    <option value="year">This Year</option>
+                    <option value="all">All Time</option>
+                </select>
+                <select class="filter-select" id="financeShopFilter">
+                    <option value="all">All Shops</option>
+                </select>
+            </div>
+            <button class="btn-primary" type="button" id="btnExportFinanceCsv">
+                <i class="fa-solid fa-file-csv"></i> Export CSV
+            </button>
+        </div>
+
+        <div class="stats-row finance-stats-row">
             <div class="stat-card">
                 <div class="stat-card-header">
-                    <span class="stat-card-label">Total Marketplace Revenue</span>
+                    <span class="stat-card-label">Total Revenue</span>
                     <div class="stat-card-icon green"><i class="fa-solid fa-coins"></i></div>
                 </div>
                 <div class="stat-card-value" id="financeTotalRevenue">$0</div>
-                <div class="stat-card-sub">Excluding cancelled orders</div>
+                <div class="stat-card-sub">Delivered orders only</div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-card-header">
-                    <span class="stat-card-label">Revenue Today</span>
-                    <div class="stat-card-icon blue"><i class="fa-solid fa-calendar-day"></i></div>
+                    <span class="stat-card-label">Paid Orders</span>
+                    <div class="stat-card-icon blue"><i class="fa-solid fa-receipt"></i></div>
                 </div>
-                <div class="stat-card-value" id="financeTodayRevenue">$0</div>
-                <div class="stat-card-sub">Based on today's paid orders</div>
+                <div class="stat-card-value" id="financePaidOrders">0</div>
+                <div class="stat-card-sub">Filtered delivered orders</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <span class="stat-card-label">Avg Order</span>
+                    <div class="stat-card-icon orange"><i class="fa-solid fa-chart-simple"></i></div>
+                </div>
+                <div class="stat-card-value" id="financeAvgOrder">$0</div>
+                <div class="stat-card-sub">Average delivered order value</div>
             </div>
 
             <div class="stat-card">
@@ -195,25 +222,67 @@
                     <div class="stat-card-icon teal"><i class="fa-solid fa-store"></i></div>
                 </div>
                 <div class="stat-card-value" id="financeActiveShops">0</div>
-                <div class="stat-card-sub">Shops contributing to marketplace</div>
+                <div class="stat-card-sub">Shops with delivered revenue</div>
+            </div>
+        </div>
+
+        <div class="finance-chart-grid">
+            <div class="card">
+                <h2 class="card-title">Revenue Trend</h2>
+                <div class="finance-chart-wrap">
+                    <canvas id="revenueTrendChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Revenue by Shop</h2>
+                <div class="finance-chart-wrap">
+                    <canvas id="revenueByShopChart"></canvas>
+                </div>
             </div>
         </div>
 
         <div class="card">
-            <h2 class="card-title">Shop Revenue Overview</h2>
+            <h2 class="card-title">Revenue by Shop</h2>
             <div style="overflow-x: auto;">
                 <table class="orders-table">
                     <thead>
                         <tr>
                             <th>Shop</th>
-                            <th>Owner</th>
-                            <th>Status</th>
                             <th>Orders</th>
                             <th>Revenue</th>
+                            <th>Share</th>
                         </tr>
                     </thead>
-                    <tbody id="financeTableBody"></tbody>
+                    <tbody id="financeRevenueBody"></tbody>
                 </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Transactions</h2>
+            <div style="overflow-x: auto;">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Shop</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="financeTransactionsBody"></tbody>
+                </table>
+            </div>
+            <div class="table-pagination">
+                <div class="pagination-info" id="financePaginationInfo">Showing 0-0 of 0</div>
+                <div class="pagination-actions">
+                    <button class="btn-reset" type="button" id="financePrevPage">Prev</button>
+                    <div class="pagination-page" id="financePaginationPage">Page 1</div>
+                    <button class="btn-reset" type="button" id="financeNextPage">Next</button>
+                </div>
             </div>
         </div>
     </section>
