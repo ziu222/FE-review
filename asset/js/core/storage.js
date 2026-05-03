@@ -737,7 +737,7 @@ var Store = (function () {
         if (fromStatus === toStatus) return false;
 
         if (changedBy === "admin") {
-            return toStatus === "cancelled" && fromStatus !== "cancelled";
+            return allowedStatuses[newStatus] === true;
         }
 
         if (changedBy === "shop") {
