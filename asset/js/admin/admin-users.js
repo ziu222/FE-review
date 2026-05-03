@@ -262,15 +262,19 @@ Auth.requireRole("admin", "admin-login.html");
         if (!users.length) { emptyMsg.style.display = ""; return; }
         emptyMsg.style.display = "none";
 
+        var adminRoles = Auth.getAdminRoles();
         users.forEach(function (u, idx) {
-            var levelLabel = u.adminLevel === 2 ? "<span class='badge badge-level2'>Super Admin</span>" : "<span class='badge badge-level1'>Staff</span>";
+            var roleKey   = u.adminRole || (u.adminLevel === 2 ? "super_admin" : "staff");
+            var roleLabel = (adminRoles[roleKey] && adminRoles[roleKey].label) || "Staff";
+            var badgeCls  = roleKey === "super_admin" ? "badge-level2" : "badge-level1";
+            var roleHtml  = "<span class='badge " + badgeCls + "'>" + esc(roleLabel) + "</span>";
             var tr = document.createElement("tr");
             tr.innerHTML =
                 "<td>" + (idx + 1) + "</td>" +
                 "<td>" + esc(u.name) + "</td>" +
                 "<td>" + esc(u.username) + "</td>" +
                 "<td>" + esc(u.email) + "</td>" +
-                "<td>" + levelLabel + "</td>" +
+                "<td>" + roleHtml + "</td>" +
                 "<td>" + formatDate(u.createdAt) + "</td>";
             tbody.appendChild(tr);
         });
@@ -330,7 +334,7 @@ Auth.requireRole("admin", "admin-login.html");
         document.getElementById("caEmail").value    = "";
         document.getElementById("caUsername").value = "";
         document.getElementById("caPassword").value = "";
-        document.getElementById("caLevel").value    = "1";
+        document.getElementById("caRole").value     = "staff";
         errorEl.textContent = "";
         errorEl.classList.remove("show");
         modal.classList.add("show");
@@ -341,7 +345,7 @@ Auth.requireRole("admin", "admin-login.html");
     }
 
     if (btnOpen)   btnOpen.addEventListener("click", openModal);
-    if (btnOpen && !Auth.isSuperAdmin()) btnOpen.style.display = "none";
+    if (btnOpen && !Auth.hasPermission("users.admin")) btnOpen.style.display = "none";
     if (btnCancel) btnCancel.addEventListener("click", closeModal);
 
     modal.addEventListener("click", function (e) {
@@ -353,11 +357,11 @@ Auth.requireRole("admin", "admin-login.html");
             errorEl.classList.remove("show");
 
             var data = {
-                name:       document.getElementById("caName").value.trim(),
-                email:      document.getElementById("caEmail").value.trim(),
-                username:   document.getElementById("caUsername").value.trim(),
-                password:   document.getElementById("caPassword").value,
-                adminLevel: parseInt(document.getElementById("caLevel").value, 10)
+                name:      document.getElementById("caName").value.trim(),
+                email:     document.getElementById("caEmail").value.trim(),
+                username:  document.getElementById("caUsername").value.trim(),
+                password:  document.getElementById("caPassword").value,
+                adminRole: document.getElementById("caRole").value
             };
 
             if (!data.name || !data.email || !data.username || !data.password) {
