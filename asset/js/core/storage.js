@@ -37,11 +37,33 @@ var Store = (function () {
 
 
     // Seed data (khởi tạo dữ liệu mẫu)
+    function migrateSeedProductStatuses() {
+        if (localStorage.getItem("ecshop_product_seed_v2")) return;
+        if (typeof SEED_PRODUCTS === "undefined") return;
+        var products = _get(KEYS.products) || [];
+        var changed = false;
+        for (var i = 0; i < products.length; i++) {
+            for (var j = 0; j < SEED_PRODUCTS.length; j++) {
+                if (SEED_PRODUCTS[j].id === products[i].id) {
+                    var seedStatus = SEED_PRODUCTS[j].adminStatus || "approved";
+                    if (products[i].adminStatus !== seedStatus && products[i].adminStatus === "pending") {
+                        products[i].adminStatus = seedStatus;
+                        changed = true;
+                    }
+                    break;
+                }
+            }
+        }
+        if (changed) _set(KEYS.products, products);
+        localStorage.setItem("ecshop_product_seed_v2", "true");
+    }
+
     function seed() {
         if (localStorage.getItem(KEYS.seeded)) {
             if (!_get(KEYS.notifications)) {
                 _set(KEYS.notifications, []);
             }
+            migrateSeedProductStatuses();
             migrateProductSchema();
             migrateOrderSchema();
             return;

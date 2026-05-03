@@ -1,12 +1,4 @@
-const CART_KEY = "ecshop_cart";
-
-function getCart() {
-    return JSON.parse(localStorage.getItem(CART_KEY)) || [];
-}
-
-function saveCart(cart) {
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
-}
+// getCart / saveCart / CART_KEY are defined in addtocart.js (loaded before this file)
 
 function renderCart() {
     const cart = getCart();
