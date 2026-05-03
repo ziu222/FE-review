@@ -2,6 +2,8 @@
 // admin-shops.js — Shops Management Page Logic
 // ============================================================
 
+Auth.requirePermission("shops.view");
+
 (function () {
 
     var currentFilter = "all";

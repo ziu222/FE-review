@@ -2,6 +2,7 @@
 
 Store.seed();
 Auth.requireRole("admin", "admin-login.html");
+Auth.requirePermission("users.view");
 
 (function () {
 

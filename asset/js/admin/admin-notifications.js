@@ -1,6 +1,7 @@
 // admin-notifications.js — Quản lý Notifications (Manual send + History)
 
 Store.seed();
+Auth.requirePermission("notifications.view");
 
 (function () {
 
