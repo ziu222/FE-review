@@ -1,4 +1,4 @@
-// core/auth.js — Shared Auth for all roles (Admin / Shop / Customer)
+// core/auth.js — Auth dùng chung cho mọi role (Admin / Shop / Customer)
 var Auth = (function () {
 
     var CURRENT_USER_KEY = "ecshop_currentUser";
@@ -17,7 +17,7 @@ var Auth = (function () {
         }
     };
 
-    // ── Private ──────────────────────────────────────────────
+    // ── Private (internal) ───────────────────────────────────
 
     function _readSession() {
         try {
@@ -30,7 +30,7 @@ var Auth = (function () {
         localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(session));
     }
 
-    // ── Public ───────────────────────────────────────────────
+    // ── Public API ───────────────────────────────────────────
 
     // Đăng nhập — trả về { success, session } hoặc { error }
     function authenticate(identifier, password) {
@@ -40,7 +40,7 @@ var Auth = (function () {
         if (!user)                      return { error: "Tài khoản không tồn tại" };
         if (user.password !== password) return { error: "Mật khẩu không đúng" };
 
-        // Shop: check status trước khi cho login
+    // Shop: check shopStatus trước khi cho login
         if (user.role === "shop") {
             if (user.shopStatus === "pending")   return { error: "pending" };
             if (user.shopStatus === "suspended") return { error: "suspended" };
@@ -62,12 +62,12 @@ var Auth = (function () {
         return { success: true, session: session };
     }
 
-    // Lấy user hiện tại
+    // Lấy user hiện tại (current session)
     function getCurrentUser() {
         return _readSession();
     }
 
-    // Đăng xuất + tự redirect về login page đúng của role
+    // Đăng xuất + auto redirect về đúng login page theo role
     function logout(redirectPath) {
         var user = getCurrentUser();
         localStorage.removeItem(CURRENT_USER_KEY);
@@ -85,7 +85,7 @@ var Auth = (function () {
         window.location.href = "admin/login.html";
     }
 
-    // Tầng 1 — Page guard
+    // Tầng 1 — Page guard (route protection)
     function requireRole(role, redirectPath) {
         var user = getCurrentUser();
 
@@ -95,7 +95,7 @@ var Auth = (function () {
             return false;
         }
 
-        // Shop: check thêm shopStatus mỗi lần load page
+    // Shop: check thêm shopStatus mỗi lần load page (pending/suspended)
         if (role === "shop") {
             if (user.shopStatus === "pending") {
                 window.location.href = ROLE_CONFIG.shop.waitingPage;
@@ -110,7 +110,7 @@ var Auth = (function () {
         return true;
     }
 
-    // Tầng 2 — Action guard (trả về true/false, caller tự xử lý UI)
+    // Tầng 2 — Action guard (return true/false, caller tự xử lý UI)
     function requireLevel(minLevel) {
         var user = getCurrentUser();
         if (!user) return false;
@@ -121,7 +121,7 @@ var Auth = (function () {
         return requireLevel(2);
     }
 
-    // Đăng ký customer — auto login sau khi tạo
+    // Đăng ký customer — auto login sau khi tạo (better UX)
     function registerCustomer(data) {
         if (typeof Store === "undefined") return { error: "Store not available" };
         if (Store.getUserByEmail(data.email))       return { error: "Email đã được sử dụng" };

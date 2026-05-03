@@ -1,9 +1,9 @@
-// ===== LẤY DỮ LIỆU USER =====
+// ===== Lấy dữ liệu User (LocalStorage) =====
 function getUsers() {
   return JSON.parse(localStorage.getItem("ecshop_users")) || [];
 }
 
-// ===== USER SESSION =====
+// ===== User Session (phiên đăng nhập) =====
 function getCurrentUser() {
   return JSON.parse(localStorage.getItem("ecshop_currentUser"));
 }
@@ -60,7 +60,7 @@ function logout() {
   location.reload();
 }
 
-// ===== CHUYỂN TRANG =====
+// ===== Điều hướng (navigation) =====
 const signupTab = document.querySelector(".auth-links span:first-child");
 const loginTab = document.querySelector(".auth-links span:last-child");
 
@@ -74,7 +74,7 @@ if (signupTab && loginTab) {
   });
 }
 
-// ===== LOGIN =====
+// ===== Login flow =====
 const loginForm = document.getElementById("loginForm");
 
 if (loginForm) {
@@ -96,10 +96,10 @@ if (loginForm) {
     if (user) {
       alert("Đăng nhập thành công!");
 
-      // lưu session
+      // Lưu session (save currentUser)
       localStorage.setItem("ecshop_currentUser", JSON.stringify(user));
 
-      // chuyển trang (bạn có thể đổi)
+      // Điều hướng sau login (redirect)
       window.location.href = "home.html";
     } else {
       alert("Sai tên hoặc mật khẩu!");

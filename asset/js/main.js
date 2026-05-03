@@ -1,5 +1,4 @@
-// ============================================================
-// main.js - Customer Home Page Logic
+// main.js — Trang Home của Customer (page logic)
 
 var allProducts = [];
 var filteredProducts = [];
@@ -7,10 +6,10 @@ var currentCategory = "all";
 var hasShownPromotionPopup = false;
 
 
-// -- Init -------------------------------------------------------
+// -- Init (khởi tạo) --------------------------------------------
 
 function initializeApp() {
-    // Customer pages should only show products that were approved by admin.
+    // Customer pages chỉ hiển thị products đã được admin approve (adminStatus="approved").
     allProducts = Store.getApprovedProducts ? Store.getApprovedProducts() : Store.getProducts();
     filteredProducts = allProducts.slice();
 
@@ -23,7 +22,7 @@ function initializeApp() {
 }
 
 
-// -- Promotion Modal --------------------------------------------
+// -- Promotion Modal (khuyến mãi) --------------------------------
 
 function showPromotionPopup() {
     if (hasShownPromotionPopup) return;
@@ -35,7 +34,7 @@ function showPromotionPopup() {
 }
 
 
-// -- Price Helpers ----------------------------------------------
+// -- Price Helpers (tiện ích về giá) -----------------------------
 
 function calculateDiscount(oldPrice, newPrice) {
     if (!oldPrice || oldPrice <= newPrice) return 0;
@@ -47,7 +46,7 @@ function formatPrice(price) {
 }
 
 
-// -- Image Fallback ---------------------------------------------
+// -- Image Fallback (ảnh fallback) -------------------------------
 
 function handleProductImageError(imageEl) {
     if (!imageEl) return;
@@ -57,7 +56,7 @@ function handleProductImageError(imageEl) {
 }
 
 
-// -- Star Rating ------------------------------------------------
+// -- Star Rating (đánh giá sao) 
 
 function generateStarRating(rating) {
     var stars = "";

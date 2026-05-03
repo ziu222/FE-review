@@ -1,6 +1,6 @@
-// admin-common.js — Page guard + logout for all protected admin pages
+// admin-common.js — Page guard + logout cho mọi trang admin (protected pages)
 
-// ── AdminModal — shared alert + confirm dialogs ───────────────
+// ── AdminModal — shared dialogs (alert + confirm) ─────────────
 var AdminModal = (function () {
     var _confirmCallbacks = null;
 
