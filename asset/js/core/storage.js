@@ -1,4 +1,4 @@
-//Data storage layer using LocalStorage
+// Data layer (storage) dùng LocalStorage
 var Store = (function () {
 
     var KEYS = {
@@ -36,7 +36,7 @@ var Store = (function () {
     }
 
 
-    // Seed 
+    // Seed data (khởi tạo dữ liệu mẫu)
     function seed() {
         if (localStorage.getItem(KEYS.seeded)) {
             if (!_get(KEYS.notifications)) {
@@ -72,7 +72,7 @@ var Store = (function () {
     }
 
 
-    // PRODUCTS 
+    // PRODUCTS (Sản phẩm)
 
     function getSeedProductTemplate(productId) {
         if (typeof SEED_PRODUCTS === "undefined" || !SEED_PRODUCTS) return null;
@@ -737,7 +737,7 @@ var Store = (function () {
         if (fromStatus === toStatus) return false;
 
         if (changedBy === "admin") {
-            return toStatus === "cancelled" && fromStatus !== "cancelled";
+            return allowedStatuses[newStatus] === true;
         }
 
         if (changedBy === "shop") {

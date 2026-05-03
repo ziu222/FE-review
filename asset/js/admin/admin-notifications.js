@@ -1,10 +1,10 @@
-// admin-notifications.js — Notifications Management Page Logic
+// admin-notifications.js — Quản lý Notifications (Manual send + History)
 
 Store.seed();
 
 (function () {
 
-    // ── Tab switching ────────────────────────────────────────
+    // ── Tab switching (chuyển tab) ───────────────────────────
     var tabBtns   = document.querySelectorAll(".filter-tab[data-tab]");
     var tabPanels = document.querySelectorAll(".tab-panel");
 
@@ -21,7 +21,7 @@ Store.seed();
         });
     }
 
-    // ── Helpers ──────────────────────────────────────────────
+    // ── Helpers (tiện ích) ───────────────────────────────────
     function formatDate(iso) {
         if (!iso) return "—";
         var d = new Date(iso);
@@ -48,7 +48,7 @@ Store.seed();
         el.classList.remove("show");
     }
 
-    // ── Populate specific recipient lists ────────────────────
+    // ── Populate specific recipient lists (list người nhận cụ thể) ──
     function populateSpecificList(listId, role) {
         var select = document.getElementById(listId);
         select.innerHTML = "";
@@ -76,7 +76,7 @@ Store.seed();
             this.value === "specific" ? "" : "none";
     });
 
-    // ── Send logic ───────────────────────────────────────────
+    // ── Send logic 
     function sendNotification(config) {
         // config: { recipientSelectId, specificListId, typeId, titleId, messageId, errorId, targetRole }
         clearError(config.errorId);
@@ -169,7 +169,7 @@ Store.seed();
         });
     });
 
-    // ── History ──────────────────────────────────────────────
+    // ── History
     var histRoleFilter = document.getElementById("histRoleFilter");
     var histTypeFilter = document.getElementById("histTypeFilter");
     var histDateFrom   = document.getElementById("histDateFrom");

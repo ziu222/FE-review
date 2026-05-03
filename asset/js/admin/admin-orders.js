@@ -1,6 +1,8 @@
 // ============================================================
 // admin-orders.js — Orders Management Logic
 
+Auth.requirePermission("orders.view");
+
 (function () {
 
     var state = {
@@ -172,6 +174,21 @@
         return html;
     }
 
+    var ORDER_STATUSES = ["pending", "confirmed", "shipped", "delivered", "cancelled"];
+
+    function buildStatusChangeHtml(currentStatus) {
+        if (!Auth.hasPermission("orders.manage")) return "";
+        var options = ORDER_STATUSES.map(function(s) {
+            return '<option value="' + s + '"' + (s === currentStatus ? " selected" : "") + ">" + s + "</option>";
+        }).join("");
+        return '<div style="margin-top:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'
+            + '<label style="font-size:13px;font-weight:600;">Change Status:</label>'
+            + '<select id="orderStatusSelect" style="padding:4px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;">' + options + "</select>"
+            + '<button id="btnUpdateOrderStatus" class="btn-submit-modal" style="padding:4px 14px;font-size:13px;">Update</button>'
+            + '<span id="orderStatusMsg" style="font-size:12px;color:#10b981;display:none;">Status updated.</span>'
+            + "</div>";
+    }
+
     function openOrderModal(orderId) {
         var order = Store.getOrderById(Number(orderId));
         if (!order) return;
@@ -196,9 +213,30 @@
             + '<div><strong>Total:</strong> ' + escapeHtml(formatCurrency(order.total)) + "</div>"
             + '<div><strong>Status:</strong> <span class="badge badge-' + order.status + '">' + escapeHtml(order.status) + "</span></div>"
             + "</div>"
+            + buildStatusChangeHtml(order.status)
             + '<div style="margin-top:16px;"><h4 style="margin-bottom:8px;">Items</h4>' + buildOrderItemsHtml(order) + "</div>";
 
         document.getElementById("orderModalBody").innerHTML = bodyHtml;
+
+        var btnUpdate = document.getElementById("btnUpdateOrderStatus");
+        if (btnUpdate) {
+            btnUpdate.addEventListener("click", function() {
+                var newStatus = document.getElementById("orderStatusSelect").value;
+                var updated = Store.updateOrderStatus(state.selectedOrderId, newStatus, "admin");
+                if (updated) {
+                    var badge = document.querySelector("#orderModalBody .badge");
+                    if (badge) {
+                        badge.className = "badge badge-" + newStatus;
+                        badge.textContent = newStatus;
+                    }
+                    var msg = document.getElementById("orderStatusMsg");
+                    if (msg) { msg.style.display = ""; setTimeout(function() { msg.style.display = "none"; }, 2000); }
+                    renderStats();
+                    renderOrdersTable();
+                }
+            });
+        }
+
         document.getElementById("orderModal").classList.add("show");
     }
 

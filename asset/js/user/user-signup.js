@@ -1,13 +1,13 @@
-// ===== LẤY DỮ LIỆU USER =====
+// ===== Lấy dữ liệu User (LocalStorage) =====
 function getUsers() {
   return JSON.parse(localStorage.getItem("ecshop_users")) || [];
 }
 
-// ===== LƯU USER =====
+// ===== Lưu User (persist) =====
 function saveUsers(users) {
   localStorage.setItem("ecshop_users", JSON.stringify(users));
 }
-// ===== SIGN UP =====
+// ===== Sign up flow =====
 
 const signupForm = document.getElementById("signupForm");
 if (signupForm) {
@@ -22,7 +22,7 @@ if (signupForm) {
     const password = inputs[3].value.trim();
 
     let users = getUsers();
-    // kiểm tra email tồn tại
+    // Kiểm tra email đã tồn tại (duplicate check)
     const userExists = users.find(user => user.email === email);
     if (userExists) {
       alert("Email đã tồn tại!");
@@ -46,7 +46,7 @@ console.log(4);
     saveUsers(users);
     alert("Đăng ký thành công!");
 
-    // chuyển sang login
+    // Điều hướng sang trang login (redirect)
     window.location.href = "login.html";
   });
 }

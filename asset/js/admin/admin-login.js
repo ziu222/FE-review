@@ -1,5 +1,5 @@
 // ============================================================
-// admin-login.js - Admin Login Page Logic
+// admin-login.js — Trang đăng nhập Admin (login flow)
 
 
 var currentUser = Auth.getCurrentUser();
@@ -24,7 +24,7 @@ toggleBtn.addEventListener("click", function () {
 });
 
 
-// login submit
+// Form submit (handle login)
 var loginForm = document.getElementById("loginForm");
 var loginError = document.getElementById("loginError");
 
@@ -34,7 +34,7 @@ loginForm.addEventListener("submit", function (e) {
     var identifier = document.getElementById("identifier").value.trim();
     var password = document.getElementById("password").value;
 
-    // Hide previous error
+    // Ẩn lỗi cũ (clear previous error)
     loginError.classList.remove("show");
 
 
@@ -53,6 +53,6 @@ loginForm.addEventListener("submit", function (e) {
         return;
     }
 
-    // direct to dashboard
+    // Redirect về dashboard
     window.location.href = "dashboard.html";
 });

@@ -50,7 +50,7 @@ function updateCartBadge() {
 
     badge.innerText = count;
 
-    // Ẩn nếu = 0
+    // Ẩn badge nếu count = 0
     badge.style.display = count > 0 ? "inline-block" : "none";
 }
 

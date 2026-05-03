@@ -1,6 +1,6 @@
-// admin-common.js — Page guard + logout for all protected admin pages
+// admin-common.js — Page guard + logout cho mọi trang admin (protected pages)
 
-// ── AdminModal — shared alert + confirm dialogs ───────────────
+// ── AdminModal — shared dialogs (alert + confirm) ─────────────
 var AdminModal = (function () {
     var _confirmCallbacks = null;
 
@@ -104,21 +104,45 @@ var AdminModal = (function () {
             });
         }
 
-        // Hiện tên + avatar của admin đang login
+        // Hiện tên + avatar + role badge của admin đang login
         var user = Auth.getCurrentUser();
         var topbarName   = document.getElementById("topbarUserName");
         var topbarAvatar = document.getElementById("topbarAvatar");
 
         if (user) {
-            if (topbarName)   topbarName.textContent   = user.name || user.username || "Admin";
+            if (topbarName) {
+                var roles      = Auth.getAdminRoles();
+                var roleLabel  = (user.adminRole && roles[user.adminRole]) ? roles[user.adminRole].label : "Admin";
+                topbarName.textContent = (user.name || user.username || "Admin") + " (" + roleLabel + ")";
+            }
             if (topbarAvatar) topbarAvatar.textContent = (user.name || user.username || "A").charAt(0).toUpperCase();
         }
 
-        // Ẩn/hiện các element theo permission level
-        var isSuperAdmin  = Auth.isSuperAdmin();
-        var level2Els     = document.querySelectorAll("[data-permission='level2']");
-        for (var i = 0; i < level2Els.length; i++) {
-            level2Els[i].style.display = isSuperAdmin ? "" : "none";
+        // Ẩn/hiện các element theo permission
+        // Supports data-permission="level2" (legacy) and any permission key e.g. "users.admin"
+        var permEls = document.querySelectorAll("[data-permission]");
+        for (var i = 0; i < permEls.length; i++) {
+            var perm  = permEls[i].getAttribute("data-permission");
+            var allow = perm === "level2" ? Auth.isSuperAdmin() : Auth.hasPermission(perm);
+            permEls[i].style.display = allow ? "" : "none";
+        }
+
+        // Hide sidebar nav links for pages this role cannot access
+        var NAV_PERMISSIONS = {
+            "shops-manage.html": "shops.view",
+            "products.html":     "products.view",
+            "orders-manage.html":"orders.view",
+            "users-manage.html": "users.view",
+            "notifications.html":"notifications.view"
+        };
+        var navLinks = document.querySelectorAll(".nav-item[href]");
+        for (var j = 0; j < navLinks.length; j++) {
+            var href     = navLinks[j].getAttribute("href");
+            var filename = href.split("/").pop().split("?")[0];
+            var reqPerm  = NAV_PERMISSIONS[filename];
+            if (reqPerm && !Auth.hasPermission(reqPerm)) {
+                navLinks[j].style.display = "none";
+            }
         }
     });
 })();
