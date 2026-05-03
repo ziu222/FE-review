@@ -19,7 +19,9 @@ function renderUser() {
 
   if (!user) {
     userBtn.classList.remove("user-btn--logged-in");
-    userContent.innerHTML = '<span class="material-symbols-outlined">person</span>';
+    // Restore icon font so "person" renders as a symbol
+    userContent.className = "material-symbols-outlined";
+    userContent.textContent = "person";
     if (userMenu) { userMenu.classList.add("hidden"); userMenu.style.display = ""; }
     userBtn.onclick = () => { window.location.href = "login.html"; };
     return;
@@ -33,10 +35,12 @@ function renderUser() {
     : initial;
 
   userBtn.classList.add("user-btn--logged-in");
+  // Remove material-symbols-outlined so the font's ligature engine doesn't mangle display text
+  userContent.className = "user-content-pill";
   userContent.innerHTML = `
     <span class="user-avatar">${avatarInner}</span>
     <span class="user-display-name">${displayName}</span>
-    <span class="material-symbols-outlined" style="font-size:1rem;opacity:0.55;flex-shrink:0;transition:transform 0.2s;" id="userChevron">expand_more</span>`;
+    <span class="material-symbols-outlined user-chevron" id="userChevron">expand_more</span>`;
 
   if (userMenu) {
     userMenu.style.display = "";
@@ -57,8 +61,8 @@ function renderUser() {
         View Profile
       </button>
       <button class="udm-item" onclick="window.location.href='cart.html'">
-        <span class="material-symbols-outlined udm-icon">shopping_cart</span>
-        My Cart
+        <span class="material-symbols-outlined udm-icon">account_balance_wallet</span>
+        Wallet
       </button>
       <div class="udm-divider"></div>
       <button class="udm-item udm-item--danger" onclick="logout()">
