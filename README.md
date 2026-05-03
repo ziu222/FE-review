@@ -34,6 +34,9 @@ npm run build:tw
 - Run `Store.resetAll()` in the browser console to reset seeded data.
 - Currency: USD (`$`).
 References:
+
 https://github.com/topics/csv-export
+
 https://www.youtube.com/live/An7BNKwPhhE?si=iX4jBOulmipVK1eR
- Reops from: https://github.com/topics/ecommerce-website
+
+Repos from: https://github.com/topics/ecommerce-website
