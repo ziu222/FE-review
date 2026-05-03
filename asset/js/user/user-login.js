@@ -11,48 +11,62 @@ function getCurrentUser() {
 function renderUser() {
   const user = getCurrentUser();
 
-  const userBtn = document.getElementById("userBtn");
+  const userBtn     = document.getElementById("userBtn");
   const userContent = document.getElementById("userContent");
-  const userMenu = document.getElementById("userMenu");
+  const userMenu    = document.getElementById("userMenu");
 
-  if (!userBtn || !userContent || !userMenu) return;
-  userMenu.classList.add("hidden");
+  if (!userBtn || !userContent) return;
 
   if (!user) {
-    userContent.textContent = "person";
-    userContent.classList.add("material-symbols-outlined");
-
-    userBtn.onclick = () => {
-      window.location.href = "login.html";
-    };
-
+    userBtn.classList.remove("user-btn--logged-in");
+    userContent.innerHTML = '<span class="material-symbols-outlined">person</span>';
+    if (userMenu) { userMenu.classList.add("hidden"); userMenu.style.display = ""; }
+    userBtn.onclick = () => { window.location.href = "login.html"; };
     return;
+  }
+
+  const displayName = user.name || user.username || "User";
+  const initial     = displayName.charAt(0).toUpperCase();
+
+  const avatarInner = user.avatar
+    ? `<img src="${user.avatar}" alt="${initial}" />`
+    : initial;
+
+  userBtn.classList.add("user-btn--logged-in");
+  userContent.innerHTML = `
+    <span class="user-avatar">${avatarInner}</span>
+    <span class="user-display-name">${displayName}</span>
+    <span class="material-symbols-outlined" style="font-size:1rem;opacity:0.6;flex-shrink:0;">expand_more</span>`;
+
+  if (userMenu) {
+    userMenu.style.display = "";
+    userMenu.innerHTML = `
+      <div class="user-menu-header">
+        <div class="umh-name">${displayName}</div>
+        <div class="umh-sub">${user.email || user.username}</div>
+      </div>
+      <button class="user-menu-item" onclick="window.location.href='profile.html'">
+        <span class="material-symbols-outlined">account_circle</span>
+        Tài khoản
+      </button>
+      <button class="user-menu-item user-menu-item--danger" onclick="logout()">
+        <span class="material-symbols-outlined">logout</span>
+        Đăng xuất
+      </button>`;
+    userMenu.classList.add("hidden");
   }
 
   userBtn.onclick = (e) => {
     e.stopPropagation();
-    userMenu.classList.toggle("hidden");
+    const menu = document.getElementById("userMenu");
+    if (menu) menu.classList.toggle("hidden");
   };
-
-  
-  if (user.avatar) {
-    userContent.innerHTML = "";
-
-    const img = document.createElement("img");
-    img.src = user.avatar;
-    img.className = "w-8 h-8 rounded-full object-cover";
-
-    userContent.appendChild(img);
-    userContent.classList.remove("material-symbols-outlined");
-  } else {
-    userContent.textContent = "person";
-    userContent.classList.add("material-symbols-outlined");
-  }
 }
 
-document.addEventListener("click", () => {
+document.addEventListener("click", (e) => {
   const menu = document.getElementById("userMenu");
-  if (menu) menu.classList.add("hidden");
+  const btn  = document.getElementById("userBtn");
+  if (menu && btn && !btn.contains(e.target)) menu.classList.add("hidden");
 });
 
 function logout() {

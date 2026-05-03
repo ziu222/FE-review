@@ -4,16 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giỏ hàng - EC SHOP</title>
+    <title>Chi tiết sản phẩm - EC SHOP</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../asset/css/tailwind-built.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../asset/css/main.css">
-    <link rel="stylesheet" href="../asset/css/cart.css">
+    <link rel="stylesheet" href="../asset/css/product-detail.css">
+    <link rel="stylesheet" href="../asset/css/product.css">
 </head>
 
-<body class="cart-page">
+<body class="detail-page">
 
     <!-- ── Navbar ──────────────────────────────────────────── -->
     <nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-xl shadow-sm">
@@ -51,60 +52,31 @@
 
     <main class="pt-[72px]">
 
-        <!-- Back link -->
-        <div class="cart-back">
-            <button class="btn-back" onclick="window.location.href='product.html'">
-                <i class="fa-solid fa-arrow-left"></i> Tiếp tục mua sắm
-            </button>
+        <!-- Breadcrumb -->
+        <div class="breadcrumb-bar">
+            <a href="home.html">Home</a>
+            <span class="sep">/</span>
+            <a href="product.html">Products</a>
+            <span class="sep">/</span>
+            <span class="current" id="breadcrumb-name">Loading...</span>
         </div>
 
-        <!-- Two-column layout -->
-        <div class="cart-wrapper">
+        <!-- Detail content injected by JS -->
+        <div class="detail-wrapper" id="detail-content"></div>
 
-            <!-- LEFT: Items -->
-            <div class="cart-panel">
-                <div class="cart-panel-header">
-                    <h1>Giỏ hàng</h1>
-                    <p class="cart-count-label" id="cart-count-label">0 sản phẩm</p>
-                </div>
-                <div id="cart-items"></div>
-            </div>
-
-            <!-- RIGHT: Summary -->
-            <div class="summary-panel">
-                <h2>Tóm tắt đơn hàng</h2>
-
-                <div class="summary-row">
-                    <span>Tổng sản phẩm</span>
-                    <span id="total-items">0</span>
-                </div>
-                <div class="summary-row">
-                    <span>Phí vận chuyển</span>
-                    <span style="color: var(--success-color); font-weight: 600;">Miễn phí</span>
-                </div>
-                <div class="summary-row total">
-                    <span>Thành tiền</span>
-                    <span id="total-price">$0</span>
-                </div>
-
-                <div class="discount-wrap">
-                    <input type="text" class="discount-input" placeholder="Mã giảm giá" />
-                    <button class="btn-apply">Áp dụng</button>
-                </div>
-
-                <button class="btn-checkout">
-                    <i class="fa-solid fa-lock"></i>
-                    Thanh toán
-                </button>
-
-                <div class="secure-badge">
-                    <i class="fa-solid fa-shield-halved"></i>
-                    Thanh toán an toàn &amp; bảo mật
-                </div>
-            </div>
-
+        <!-- Related products -->
+        <div class="related-section" id="related-section" style="display:none;">
+            <h3>Sản phẩm liên quan</h3>
+            <div class="related-grid product-grid" id="related-list"></div>
         </div>
+
     </main>
+
+    <!-- Cart toast -->
+    <div class="cart-toast" id="cartToast">
+        <i class="fa-solid fa-circle-check"></i>
+        <span>Đã thêm vào giỏ hàng!</span>
+    </div>
 
     <!-- Scripts -->
     <script src="../asset/js/model/product-data.js"></script>
@@ -115,7 +87,7 @@
     <script src="../asset/js/core/auth.js"></script>
     <script src="../asset/js/user/user-login.js"></script>
     <script src="../asset/js/user/addtocart.js"></script>
-    <script src="../asset/js/user/cart.js"></script>
+    <script src="../asset/js/user/product-detail.js"></script>
 </body>
 
 </html>

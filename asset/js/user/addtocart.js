@@ -1,5 +1,9 @@
 const CART_KEY = "ecshop_cart";
 
+function getProducts() {
+    return JSON.parse(localStorage.getItem("ecshop_products")) || [];
+}
+
 function getCart() {
     return JSON.parse(localStorage.getItem(CART_KEY)) || [];
 }
@@ -21,36 +25,27 @@ function addToCart(productId) {
         existingItem.quantity += 1;
     } else {
         cart.push({
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            image: product.image,
+            id:       product.id,
+            name:     product.name,
+            price:    product.price,
+            image:    product.image,
             quantity: 1
         });
     }
 
     saveCart(cart);
     updateCartBadge();
-    alert("Thêm sản phẩm thành công !!!");
 }
 
 function getCartCount() {
-    const cart = getCart();
-
-    return cart.reduce((total, item) => {
-        return total + item.quantity;
-    }, 0);
+    return getCart().reduce((total, item) => total + item.quantity, 0);
 }
 
 function updateCartBadge() {
     const count = getCartCount();
     const badge = document.getElementById("cart-count");
-
     if (!badge) return;
-
-    badge.innerText = count;
-
-    // Ẩn badge nếu count = 0
+    badge.textContent = count;
     badge.style.display = count > 0 ? "inline-block" : "none";
 }
 

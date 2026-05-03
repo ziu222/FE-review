@@ -181,6 +181,12 @@ function viewProduct(productId) {
 // -- Event Listeners --------------------------------------------
 
 function initializeEventListeners() {
+    // Cart button → navigate to cart
+    var cartBtn = document.getElementById("cart-btn");
+    if (cartBtn) cartBtn.addEventListener("click", function () {
+        window.location.href = "cart.html";
+    });
+
     // Category sidebar clicks
     var categoryItems = document.querySelectorAll(".category-item");
     for (var i = 0; i < categoryItems.length; i++) {
@@ -241,3 +247,27 @@ window.viewProduct = viewProduct;
 window.filterProducts = filterProducts;
 window.searchProducts = searchProducts;
 window.handleProductImageError = handleProductImageError;
+
+// ── Scroll-reveal (Intersection Observer) ───────────────────────
+(function () {
+    var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("revealed");
+                io.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.12 });
+
+    function observeRevealElements() {
+        document.querySelectorAll(".reveal, .reveal-fade").forEach(function (el) {
+            io.observe(el);
+        });
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", observeRevealElements);
+    } else {
+        observeRevealElements();
+    }
+})();

@@ -1141,3 +1141,201 @@ button, a {
         display: none;
     }
 }
+
+/* ── Scroll-reveal animations ────────────────────────────── */
+@keyframes revealFadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes revealFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes revealSlideLeft {
+    from { opacity: 0; transform: translateX(28px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Elements marked for reveal start hidden */
+.reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.55s cubic-bezier(0.16,1,0.3,1),
+                transform 0.55s cubic-bezier(0.16,1,0.3,1);
+}
+
+.reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.reveal-fade {
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.reveal-fade.revealed { opacity: 1; }
+
+/* Stagger helpers */
+.reveal-delay-1 { transition-delay: 0.07s; }
+.reveal-delay-2 { transition-delay: 0.14s; }
+.reveal-delay-3 { transition-delay: 0.21s; }
+.reveal-delay-4 { transition-delay: 0.28s; }
+
+/* ── Category card hover ─────────────────────────────────── */
+.category-item {
+    transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
+                box-shadow 0.22s ease,
+                background 0.2s ease;
+}
+
+.category-item:hover {
+    transform: translateX(6px) scale(1.01);
+    box-shadow: 2px 0 12px rgba(15, 118, 110, 0.12);
+}
+
+/* ── Flash-sale card hover ───────────────────────────────── */
+.flash-product-card {
+    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1),
+                box-shadow 0.25s ease;
+}
+
+.flash-product-card:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 16px 32px rgba(15, 23, 42, 0.13);
+}
+
+/* ── Stat/feature card pulse on hover ────────────────────── */
+.stat-card, .feature-card {
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.stat-card:hover, .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+/* ── Button press ripple ─────────────────────────────────── */
+.btn-primary, .btn-teal {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::after, .btn-teal::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.15);
+    opacity: 0;
+    transition: opacity 0.15s;
+    border-radius: inherit;
+}
+
+.btn-primary:active::after, .btn-teal:active::after { opacity: 1; }
+
+
+/* ── User nav button (logged-in pill) ──────────────────────── */
+#userBtn.user-btn--logged-in {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 12px 5px 5px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 999px;
+    background: #fff;
+    height: auto;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+#userBtn.user-btn--logged-in:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(15,118,110,0.1);
+}
+
+/* ── User avatar circle ───────────────────────────────────── */
+.user-avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-color);
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+.user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.user-display-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #1e293b;
+}
+
+/* ── User dropdown menu ───────────────────────────────────── */
+#userMenu {
+    min-width: 220px !important;
+    width: auto !important;
+    border-radius: 14px !important;
+    box-shadow: 0 8px 32px rgba(15,23,42,0.14) !important;
+    border: 1px solid #f1f5f9;
+    padding: 0;
+    overflow: hidden;
+}
+#userMenu:not(.hidden) {
+    animation: dropdownIn 0.18s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes dropdownIn {
+    from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)   scale(1);    }
+}
+
+.user-menu-header {
+    padding: 14px 16px 12px;
+    background: linear-gradient(135deg, #f0fdf4, #fff7ed);
+    border-bottom: 1px solid #f1f5f9;
+}
+.user-menu-header .umh-name {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #0f172a;
+}
+.user-menu-header .umh-sub {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.user-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    width: 100%;
+    border: none;
+    background: none;
+    text-align: left;
+    font-size: 0.875rem;
+    color: #374151;
+    cursor: pointer;
+    transition: background 0.14s, color 0.14s;
+    font-family: inherit;
+}
+.user-menu-item:hover {
+    background: #f0fdf4;
+    color: var(--primary-color);
+}
+.user-menu-item .material-symbols-outlined {
+    font-size: 1.1rem;
+    opacity: 0.75;
+}
+.user-menu-item--danger { color: #ef4444; }
+.user-menu-item--danger:hover { background: #fef2f2 !important; color: #dc2626 !important; }
