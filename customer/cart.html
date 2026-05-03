@@ -1,58 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
-    <title>Cart</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng - EC SHOP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../asset/css/tailwind-built.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="../asset/css/main.css">
+    <link rel="stylesheet" href="../asset/css/cart.css">
 </head>
 
-<body class="bg-gray-200 min-h-screen flex items-center justify-center " >
+<body class="cart-page">
 
-    <div class="w-full max-w-6xl bg-white rounded-xl shadow-lg grid md:grid-cols-3 overflow-hidden relative overflow-visible">
-
-        <!-- LEFT: CART ITEMS -->
-        <div class="md:col-span-2 bg-white p-6">
-
-            <h1 class="text-2xl font-bold mb-6">Giỏ hàng</h1>
-
-            <!-- CART LIST (JS will render here) -->
-            <div id="cart-items" class="space-y-4"></div>
-
+    <!-- ── Navbar ──────────────────────────────────────────── -->
+    <nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-xl shadow-sm">
+        <div class="flex justify-between items-center px-8 py-4 max-w-screen-2xl mx-auto w-full">
+            <div class="flex items-center gap-12">
+                <a class="text-2xl font-bold tracking-tighter text-teal-900 font-headline no-underline hover:no-underline flex items-center gap-3"
+                    href="home.html">
+                    <span>EC SHOP</span>
+                </a>
+                <div class="hidden lg:flex items-center gap-8">
+                    <a class="text-slate-600 hover:text-teal-800 transition-colors text-sm font-medium tracking-wide no-underline hover:no-underline" href="home.html">Home</a>
+                    <a class="text-slate-600 hover:text-teal-800 transition-colors text-sm font-medium tracking-wide no-underline hover:no-underline" href="product.html">Product</a>
+                    <a class="text-slate-600 hover:text-teal-800 transition-colors text-sm font-medium tracking-wide no-underline hover:no-underline" href="#">About</a>
+                    <a class="text-slate-600 hover:text-teal-800 transition-colors text-sm font-medium tracking-wide no-underline hover:no-underline" href="#">Contact</a>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <el-dropdown class="inline-block relative">
+                    <button id="userBtn" class="p-2 text-teal-900 hover:bg-teal-50/50 rounded-full transition-all duration-300 active:scale-95">
+                        <span id="userContent" class="material-symbols-outlined">person</span>
+                    </button>
+                    <div id="userMenu" class="hidden absolute right-0 mt-2 w-36 bg-white shadow rounded-lg overflow-hidden z-50">
+                        <button onclick="logout()" class="block w-full text-left px-5 py-2 text-sm hover:bg-gray-100">Đăng xuất</button>
+                        <button class="block w-full text-left px-5 py-2 text-sm hover:bg-gray-100">Tài khoản</button>
+                        <button class="block w-full text-left px-5 py-2 text-sm hover:bg-gray-100">Hỗ trợ</button>
+                    </div>
+                </el-dropdown>
+                <button id="cart-btn" class="p-2 text-teal-900 hover:bg-teal-50/50 rounded-full transition-all duration-300 active:scale-95 relative">
+                    <span class="material-symbols-outlined">shopping_cart</span>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 rounded-full" style="display:none;">0</span>
+                </button>
+            </div>
         </div>
+    </nav>
 
-        <!-- RIGHT: SUMMARY -->
-        <div class="bg-gray-100 p-6">
+    <main class="pt-[72px]">
 
-            <h2 class="text-xl font-bold mb-6">Chi tiết</h2>
-
-            <div class="flex justify-between mb-2">
-                <span class="text-gray-600">Tổng sản phẩm</span>
-                <span id="total-items">0</span>
-            </div>
-
-            <div class="flex justify-between mb-4">
-                <span class="text-gray-600">Thành tiền</span>
-                <span id="total-price">$0</span>
-            </div>
-
-            <hr class="my-4">
-
-            <input type="text" placeholder="Mã giảm giá"
-                class="w-full p-2 border rounded mb-4 outline-none focus:ring-2 focus:ring-gray-400" />
-
-            <button class="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition">
-                Thanh toán
+        <!-- Back link -->
+        <div class="cart-back">
+            <button class="btn-back" onclick="window.location.href='product.html'">
+                <i class="fa-solid fa-arrow-left"></i> Tiếp tục mua sắm
             </button>
         </div>
-        <div id="back" class="absolute -bottom-12 left-1/2 -translate-x-1/2">
-            <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                Back to shop
-            </button>
+
+        <!-- Two-column layout -->
+        <div class="cart-wrapper">
+
+            <!-- LEFT: Items -->
+            <div class="cart-panel">
+                <div class="cart-panel-header">
+                    <h1>Giỏ hàng</h1>
+                    <p class="cart-count-label" id="cart-count-label">0 sản phẩm</p>
+                </div>
+                <div id="cart-items"></div>
+            </div>
+
+            <!-- RIGHT: Summary -->
+            <div class="summary-panel">
+                <h2>Tóm tắt đơn hàng</h2>
+
+                <div class="summary-row">
+                    <span>Tổng sản phẩm</span>
+                    <span id="total-items">0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Phí vận chuyển</span>
+                    <span style="color: var(--success-color); font-weight: 600;">Miễn phí</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Thành tiền</span>
+                    <span id="total-price">$0</span>
+                </div>
+
+                <div class="discount-wrap">
+                    <input type="text" class="discount-input" placeholder="Mã giảm giá" />
+                    <button class="btn-apply">Áp dụng</button>
+                </div>
+
+                <button class="btn-checkout">
+                    <i class="fa-solid fa-lock"></i>
+                    Thanh toán
+                </button>
+
+                <div class="secure-badge">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    Thanh toán an toàn &amp; bảo mật
+                </div>
+            </div>
+
         </div>
-    </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="../asset/js/model/product-data.js"></script>
+    <script src="../asset/js/model/user-data.js"></script>
+    <script src="../asset/js/model/order-data.js"></script>
+    <script src="../asset/js/model/notification-data.js"></script>
+    <script src="../asset/js/core/storage.js"></script>
+    <script src="../asset/js/core/auth.js"></script>
+    <script src="../asset/js/user/user-login.js"></script>
+    <script src="../asset/js/user/addtocart.js"></script>
     <script src="../asset/js/user/cart.js"></script>
 </body>
 
