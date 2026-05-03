@@ -50,6 +50,7 @@ asset/css/tailwind-built.css
 *.exe
 
 *.md
+!README.md
 .cursor
 .vercel
 .env*.local
