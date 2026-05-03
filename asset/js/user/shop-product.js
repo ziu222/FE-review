@@ -12,7 +12,7 @@ function renderStars(rating) {
 }
 
 function renderProducts() {
-    const products = getProducts().filter(p => p.adminStatus === "approved");
+    const products = getProducts().filter(p => p.adminStatus !== "rejected" && p.adminStatus !== "suspended");
     const container = document.getElementById("product-list");
 
     if (!products.length) {

@@ -111,7 +111,7 @@
     }
 
     function renderRelated(currentProduct) {
-        const all     = getProducts().filter(p => p.adminStatus === "approved");
+        const all     = getProducts().filter(p => p.adminStatus !== "rejected" && p.adminStatus !== "suspended");
         const related = all
             .filter(p => p.id !== currentProduct.id && p.category === currentProduct.category)
             .slice(0, 4);
