@@ -18,6 +18,7 @@ var SEED_USERS = [
         password: "123",
         role: "admin",
         adminLevel: 1,
+        adminRole: "staff",
         avatar: "",
         createdAt: "2025-01-01"
     },
@@ -29,8 +30,45 @@ var SEED_USERS = [
         password: "123",
         role: "admin",
         adminLevel: 2,
+        adminRole: "super_admin",
         avatar: "",
         createdAt: "2025-01-01"
+    },
+    {
+        id: 12,
+        name: "BA Analyst",
+        username: "ba_user",
+        email: "ba@ecshop.com",
+        password: "123",
+        role: "admin",
+        adminLevel: 1,
+        adminRole: "ba",
+        avatar: "",
+        createdAt: "2025-01-02"
+    },
+    {
+        id: 13,
+        name: "PM Manager",
+        username: "pm_user",
+        email: "pm@ecshop.com",
+        password: "123",
+        role: "admin",
+        adminLevel: 1,
+        adminRole: "pm",
+        avatar: "",
+        createdAt: "2025-01-02"
+    },
+    {
+        id: 14,
+        name: "HR Manager",
+        username: "hr_user",
+        email: "hr@ecshop.com",
+        password: "123",
+        role: "admin",
+        adminLevel: 1,
+        adminRole: "hr",
+        avatar: "",
+        createdAt: "2025-01-02"
     },
 
     // -- CUSTOMERS ------------------------------------------
