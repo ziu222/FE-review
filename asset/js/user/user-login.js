@@ -11,43 +11,38 @@ function getCurrentUser() {
 function renderUser() {
   const user = getCurrentUser();
 
-  const userBtn = document.getElementById("userBtn");
+  const userBtn    = document.getElementById("userBtn");
   const userContent = document.getElementById("userContent");
-  const userMenu = document.getElementById("userMenu");
+  const userMenu   = document.getElementById("userMenu");
 
-  if (!userBtn || !userContent || !userMenu) return;
-  userMenu.classList.add("hidden");
+  if (!userBtn || !userContent) return;
 
   if (!user) {
-    userContent.textContent = "person";
-    userContent.classList.add("material-symbols-outlined");
-
-    userBtn.onclick = () => {
-      window.location.href = "login.html";
-    };
-
+    // Not logged in: person icon → login page
+    userContent.innerHTML = '<span class="material-symbols-outlined">person</span>';
+    if (userMenu) userMenu.classList.add("hidden");
+    userBtn.onclick = () => { window.location.href = "login.html"; };
     return;
   }
 
-  userBtn.onclick = (e) => {
-    e.stopPropagation();
-    userMenu.classList.toggle("hidden");
-  };
+  // Logged in: show initials avatar, click → profile (placeholder)
+  const initial = (user.name || user.username || "U").charAt(0).toUpperCase();
 
-  
   if (user.avatar) {
-    userContent.innerHTML = "";
-
-    const img = document.createElement("img");
-    img.src = user.avatar;
-    img.className = "w-8 h-8 rounded-full object-cover";
-
-    userContent.appendChild(img);
-    userContent.classList.remove("material-symbols-outlined");
+    userContent.innerHTML = `<img src="${user.avatar}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;" alt="${initial}" />`;
   } else {
-    userContent.textContent = "person";
-    userContent.classList.add("material-symbols-outlined");
+    userContent.innerHTML = `<span style="
+      display:inline-flex;align-items:center;justify-content:center;
+      width:32px;height:32px;border-radius:50%;
+      background:var(--primary-color);color:#fff;
+      font-size:0.875rem;font-weight:700;font-family:inherit;
+    ">${initial}</span>`;
   }
+
+  // Hide old dropdown — profile page will handle account actions
+  if (userMenu) userMenu.style.display = "none";
+
+  userBtn.onclick = () => { window.location.href = "profile.html"; };
 }
 
 document.addEventListener("click", () => {
