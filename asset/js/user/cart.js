@@ -11,44 +11,54 @@ function saveCart(cart) {
 function renderCart() {
     const cart = getCart();
     const container = document.getElementById("cart-items");
+    const countLabel = document.getElementById("cart-count-label");
 
     let totalItems = 0;
     let totalPrice = 0;
 
-    container.innerHTML = "";
+    if (cart.length === 0) {
+        container.innerHTML = `
+            <div class="cart-empty">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <p>Giỏ hàng của bạn đang trống</p>
+                <button class="btn-shop" onclick="window.location.href='product.html'">
+                    <i class="fa-solid fa-arrow-left"></i> Tiếp tục mua sắm
+                </button>
+            </div>`;
+        if (countLabel) countLabel.textContent = "0 sản phẩm";
+        document.getElementById("total-items").textContent = "0";
+        document.getElementById("total-price").textContent = "$0";
+        return;
+    }
 
-    cart.forEach(item => {
+    container.innerHTML = cart.map(item => {
         totalItems += item.quantity;
         totalPrice += item.price * item.quantity;
+        return cartItem(item);
+    }).join("");
 
-        container.innerHTML += cartItem(item);
-    });
-
-    document.getElementById("total-items").innerText = totalItems;
-    document.getElementById("total-price").innerText = "$" + totalPrice;
+    if (countLabel) countLabel.textContent = totalItems + " sản phẩm";
+    document.getElementById("total-items").textContent = totalItems;
+    document.getElementById("total-price").textContent = "$" + totalPrice.toLocaleString("en-US");
 }
 
 function cartItem(item) {
     return `
-    <div class="flex items-center gap-4 border-b pb-4">
-
-      <img src="${item.image}" class="w-20 h-20 object-cover rounded" />
-
-      <div class="flex-1">
-        <h3 class="font-semibold">${item.name}</h3>
-        <p class="text-gray-500 text-sm">$${item.price}</p>
-      </div>
-
-      <div class="flex items-center gap-2">
-        <button class="dec px-2 bg-gray-200 rounded" data-id="${item.id}">-</button>
-        <span>${item.quantity}</span>
-        <button class="inc px-2 bg-gray-200 rounded" data-id="${item.id}">+</button>
-      </div>
-
-      <button class="remove text-red-500" data-id="${item.id}"><i class="fa-solid fa-x"></i></button>
-
-    </div>
-  `;
+    <div class="cart-item">
+        <img src="${item.image}" class="cart-item-img" onerror="this.src='../asset/img/placeholder.png'" />
+        <div class="cart-item-info">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-price">$${Number(item.price).toLocaleString("en-US")}</div>
+        </div>
+        <div class="qty-controls">
+            <button class="qty-btn dec" data-id="${item.id}">−</button>
+            <span class="qty-display">${item.quantity}</span>
+            <button class="qty-btn inc" data-id="${item.id}">+</button>
+        </div>
+        <button class="remove-btn remove" data-id="${item.id}" title="Xóa">
+            <i class="fa-solid fa-trash-can"></i>
+        </button>
+    </div>`;
 }
 
 document.getElementById("cart-items").addEventListener("click", (e) => {
@@ -60,18 +70,16 @@ document.getElementById("cart-items").addEventListener("click", (e) => {
 
     let cart = getCart();
 
-    if (e.target.classList.contains("inc")) {
+    if (btn.classList.contains("inc")) {
         const item = cart.find(i => i.id === id);
         if (item) item.quantity++;
     }
 
-    if (e.target.classList.contains("dec")) {
+    if (btn.classList.contains("dec")) {
         const item = cart.find(i => i.id === id);
         if (item) {
             item.quantity--;
-            if (item.quantity <= 0) {
-                cart = cart.filter(i => i.id !== id);
-            }
+            if (item.quantity <= 0) cart = cart.filter(i => i.id !== id);
         }
     }
 
@@ -81,10 +89,11 @@ document.getElementById("cart-items").addEventListener("click", (e) => {
 
     saveCart(cart);
     renderCart();
+    updateCartBadge();
 });
 
-document.getElementById("back").addEventListener("click", function () {
-    window.location.href = "product.html";
+document.addEventListener("DOMContentLoaded", () => {
+    renderCart();
+    const cartBtn = document.getElementById("cart-btn");
+    if (cartBtn) cartBtn.addEventListener("click", () => window.location.href = "cart.html");
 });
-
-document.addEventListener("DOMContentLoaded", renderCart);
