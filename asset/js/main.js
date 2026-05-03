@@ -181,6 +181,12 @@ function viewProduct(productId) {
 // -- Event Listeners --------------------------------------------
 
 function initializeEventListeners() {
+    // Cart button → navigate to cart
+    var cartBtn = document.getElementById("cart-btn");
+    if (cartBtn) cartBtn.addEventListener("click", function () {
+        window.location.href = "cart.html";
+    });
+
     // Category sidebar clicks
     var categoryItems = document.querySelectorAll(".category-item");
     for (var i = 0; i < categoryItems.length; i++) {
