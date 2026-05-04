@@ -84,6 +84,32 @@
                     <h2>Shop Products</h2>
                 </header>
 
+                <div class="filter-bar">
+                    <div class="filter-bar-inner">
+                        <div class="filter-search-wrap">
+                            <span class="material-symbols-outlined">search</span>
+                            <input id="filter-search" type="text" placeholder="Search products..." autocomplete="off" />
+                        </div>
+                        <div class="filter-cats" id="filter-cats">
+                            <button class="filter-btn active" data-cat="all">All</button>
+                            <button class="filter-btn" data-cat="smartphone">Smartphones</button>
+                            <button class="filter-btn" data-cat="wearables">Wearables</button>
+                            <button class="filter-btn" data-cat="laptops">Laptops</button>
+                            <button class="filter-btn" data-cat="audio">Audio</button>
+                            <button class="filter-btn" data-cat="cameras">Cameras</button>
+                            <button class="filter-btn" data-cat="gaming">Gaming</button>
+                        </div>
+                        <select id="filter-sort" class="sort-select">
+                            <option value="default">Sort: Default</option>
+                            <option value="price-asc">Price: Low → High</option>
+                            <option value="price-desc">Price: High → Low</option>
+                            <option value="rating">Top Rated</option>
+                            <option value="newest">Newest</option>
+                        </select>
+                    </div>
+                    <p id="result-count" class="result-count"></p>
+                </div>
+
                 <div class="container">
                     <div class="product-grid" id="product-list"></div>
                 </div>
@@ -91,6 +117,11 @@
         </div>
     </main>
 
+    <script src="../asset/js/model/product-data.js"></script>
+    <script src="../asset/js/model/user-data.js"></script>
+    <script src="../asset/js/model/order-data.js"></script>
+    <script src="../asset/js/model/notification-data.js"></script>
+    <script src="../asset/js/core/storage.js"></script>
     <script src="../asset/js/user/shop-product.js"></script>
     <script src="../asset/js/user/addtocart.js"></script>
     <script src="../asset/js/user/user-login.js"></script>
