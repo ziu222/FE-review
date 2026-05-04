@@ -200,21 +200,28 @@
     align-items: center;
     gap: 8px;
     width: fit-content;
-    padding: 10px 20px;
-    background: var(--primary-color);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.875rem;
+    padding: 9px 20px;
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 50px;
+    font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
-    transition: background 0.2s, transform 0.15s;
+    transition: background 0.25s, color 0.25s, box-shadow 0.25s, transform 0.2s;
     font-family: inherit;
     margin: 0 auto;
 }
 
-.btn-shop:hover { background: var(--primary-strong); transform: translateY(-1px); }
+.btn-shop:hover {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-strong));
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 8px 24px rgba(15, 118, 110, 0.28);
+    transform: translateY(-2px);
+}
+
 
 /* ── Summary panel ───────────────────────────────────────── */
 .summary-panel {

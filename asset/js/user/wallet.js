@@ -186,7 +186,16 @@
             renderHistory();
             resetDeposit();
 
-            showToast("Nạp " + fmt(selectedAmount) + " thành công!");
+            var modalMessage = "Bạn đã nạp " + fmt(selectedAmount) + " vào ví thành công.";
+            if (window.CustomerModal && typeof window.CustomerModal.open === "function") {
+                window.CustomerModal.open({
+                    title: "Nạp tiền thành công",
+                    message: modalMessage,
+                    buttonText: "Tuyệt vời"
+                });
+            } else {
+                showToast("Nạp " + fmt(selectedAmount) + " thành công!");
+            }
         });
     }
 
