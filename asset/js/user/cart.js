@@ -158,8 +158,14 @@ function handleCheckout() {
     updateCartBadge();
     renderCart();
 
-    alert("Đặt hàng thành công! Mã đơn: #" + order.id + (method === "wallet" ? "\nĐã thanh toán qua Ví." : "\nThanh toán khi nhận hàng."));
-    window.location.href = "home.html";
+    showOrderModal(order.id, method, total);
+}
+
+function showOrderModal(orderId, method, total) {
+    document.getElementById("modalOrderId").textContent = "#" + orderId;
+    document.getElementById("modalPayMethod").textContent = method === "wallet" ? "Wallet" : "Cash on Delivery";
+    document.getElementById("modalTotal").textContent = "$" + Number(total).toLocaleString("en-US");
+    document.getElementById("orderModal").classList.add("is-open");
 }
 
 document.addEventListener("DOMContentLoaded", () => {
