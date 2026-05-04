@@ -200,7 +200,7 @@ function updateSession(user) {
 function getRank(userId) {
     var txns = Store.getWalletTransactions(userId) || [];
     var spent = txns
-        .filter(function (t) { return t.type === "deduct"; })
+        .filter(function (t) { return t.type === "payment"; })
         .reduce(function (sum, t) { return sum + Math.abs(t.amount); }, 0);
 
     if (spent >= 3000) return { label: "VIP+",   cls: "rank-vipplus" };
