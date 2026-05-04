@@ -25,7 +25,7 @@
                 <div class="hidden lg:flex items-center gap-8">
                     <a class="text-slate-600 hover:text-teal-800 transition-colors text-sm font-medium tracking-wide no-underline hover:no-underline" href="home.html">Home</a>
                     <a class="text-slate-600 hover:text-teal-800 transition-colors text-sm font-medium tracking-wide no-underline hover:no-underline" href="product.html">Product</a>
-                    <a class="text-slate-600 hover:text-teal-800 transition-colors text-sm font-medium tracking-wide no-underline hover:no-underline" href="#">About</a>
+                    <a class="text-slate-600 hover:text-teal-800 transition-colors text-sm font-medium tracking-wide no-underline hover:no-underline" href="about.html">About</a>
                     <a class="text-slate-600 hover:text-teal-800 transition-colors text-sm font-medium tracking-wide no-underline hover:no-underline" href="#">Contact</a>
                 </div>
             </div>
@@ -50,6 +50,15 @@
 
             <!-- ── LEFT: Profile form ──────────────────────── -->
             <div class="profile-card">
+
+                <!-- Cover photo -->
+                <div class="profile-cover" id="profileCover">
+                    <div class="profile-cover-edit">
+                        <span class="material-symbols-outlined">add_a_photo</span>
+                        <span class="cover-edit-label">Change Cover</span>
+                    </div>
+                    <input type="file" id="coverInput" accept="image/*" />
+                </div>
 
                 <!-- Avatar + identity -->
                 <div class="profile-avatar-row">
@@ -79,34 +88,39 @@
                     </div>
 
                     <div class="profile-field">
-                        <label for="inputEmail">Email</label>
-                        <input class="profile-input" type="email" id="inputEmail" placeholder="your@email.com" autocomplete="email" />
+                        <div class="profile-field-label-row">
+                            <label for="inputEmail">Email</label>
+                            <button type="button" class="profile-edit-btn" id="emailEditBtn">
+                                <span class="material-symbols-outlined">edit</span> Edit
+                            </button>
+                        </div>
+                        <input class="profile-input profile-input--readonly" type="email" id="inputEmail" placeholder="your@email.com" autocomplete="off" readonly />
                         <div class="profile-field-error" id="errorEmail"></div>
                     </div>
 
                     <div class="profile-field">
                         <label for="inputUsername">Username</label>
-                        <input class="profile-input" type="text" id="inputUsername" placeholder="username" autocomplete="username" />
-                        <div class="profile-field-error" id="errorUsername"></div>
+                        <input class="profile-input profile-input--readonly" type="text" id="inputUsername" placeholder="username" autocomplete="off" readonly />
+                        <p class="profile-field-hint">Username cannot be changed.</p>
                     </div>
 
                     <!-- Change password -->
                     <div class="profile-section-title">Change Password</div>
                     <div class="profile-field">
                         <label for="inputCurrentPw">Current Password</label>
-                        <input class="profile-input" type="password" id="inputCurrentPw" placeholder="Enter current password" autocomplete="current-password" />
+                        <input class="profile-input" type="password" id="inputCurrentPw" placeholder="Enter current password" autocomplete="off" />
                         <div class="profile-field-error" id="errorCurrentPw"></div>
                     </div>
 
                     <div class="profile-field">
                         <label for="inputNewPw">New Password</label>
-                        <input class="profile-input" type="password" id="inputNewPw" placeholder="At least 6 characters" autocomplete="new-password" />
+                        <input class="profile-input" type="password" id="inputNewPw" placeholder="At least 6 characters" autocomplete="off" />
                         <div class="profile-field-error" id="errorNewPw"></div>
                     </div>
 
                     <div class="profile-field">
                         <label for="inputConfirmPw">Confirm New Password</label>
-                        <input class="profile-input" type="password" id="inputConfirmPw" placeholder="Repeat new password" autocomplete="new-password" />
+                        <input class="profile-input" type="password" id="inputConfirmPw" placeholder="Repeat new password" autocomplete="off" />
                         <div class="profile-field-error" id="errorConfirmPw"></div>
                     </div>
 

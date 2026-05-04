@@ -18,6 +18,29 @@ document.addEventListener("DOMContentLoaded", function () {
     // ── Render profile ────────────────────────────────────
     renderProfile(fullUser);
     renderBalance(fullUser.id);
+    renderCoverPhoto(fullUser);
+
+    // ── Cover photo upload ────────────────────────────────
+    var profileCover = document.getElementById("profileCover");
+    var coverInput   = document.getElementById("coverInput");
+
+    if (profileCover) profileCover.addEventListener("click", function () {
+        coverInput.click();
+    });
+
+    if (coverInput) coverInput.addEventListener("change", function (e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+            var base64 = ev.target.result;
+            fullUser.coverPhoto = base64;
+            renderCoverPhoto(fullUser);
+            Store.updateUser(fullUser.id, { coverPhoto: base64 });
+            showToast("Cover photo updated");
+        };
+        reader.readAsDataURL(file);
+    });
 
     // ── Avatar upload ─────────────────────────────────────
     var avatarWrap = document.getElementById("avatarWrap");
@@ -48,12 +71,11 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
         if (!validateForm(fullUser)) return;
 
-        var name     = document.getElementById("inputName").value.trim();
-        var email    = document.getElementById("inputEmail").value.trim();
-        var username = document.getElementById("inputUsername").value.trim();
-        var newPw    = document.getElementById("inputNewPw").value;
+        var name  = document.getElementById("inputName").value.trim();
+        var email = document.getElementById("inputEmail").value.trim();
+        var newPw = document.getElementById("inputNewPw").value;
 
-        var updates = { name: name, email: email, username: username };
+        var updates = { name: name, email: email };
         if (newPw) updates.password = newPw;
 
         Store.updateUser(fullUser.id, updates);
@@ -65,8 +87,26 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("inputNewPw").value = "";
         document.getElementById("inputConfirmPw").value = "";
 
+        // Reset email back to readonly
+        var emailEl = document.getElementById("inputEmail");
+        var editBtn = document.getElementById("emailEditBtn");
+        if (emailEl) { emailEl.setAttribute("readonly", ""); emailEl.classList.add("profile-input--readonly"); }
+        if (editBtn) editBtn.style.display = "";
+
         showToast("Profile updated successfully");
     });
+
+    // ── Email edit toggle ─────────────────────────────────
+    var emailEditBtn = document.getElementById("emailEditBtn");
+    var inputEmail   = document.getElementById("inputEmail");
+    if (emailEditBtn && inputEmail) {
+        emailEditBtn.addEventListener("click", function () {
+            inputEmail.removeAttribute("readonly");
+            inputEmail.classList.remove("profile-input--readonly");
+            inputEmail.focus();
+            emailEditBtn.style.display = "none";
+        });
+    }
 
     // ── Cart button ───────────────────────────────────────
     var cartBtn = document.getElementById("cart-btn");
@@ -120,6 +160,24 @@ function setAvatarDisplay(src, fallbackInitial) {
     }
 }
 
+function renderCoverPhoto(user) {
+    var coverEl = document.getElementById("profileCover");
+    if (!coverEl) return;
+    var existing = coverEl.querySelector("img");
+    if (user.coverPhoto) {
+        if (existing) {
+            existing.src = user.coverPhoto;
+        } else {
+            var img = document.createElement("img");
+            img.src = user.coverPhoto;
+            img.alt = "cover";
+            coverEl.insertBefore(img, coverEl.firstChild);
+        }
+    } else if (existing) {
+        existing.remove();
+    }
+}
+
 function renderBalance(userId) {
     var balance = Store.getWalletBalance(userId) || 0;
     var el = document.getElementById("profileBalance");
@@ -129,9 +187,8 @@ function renderBalance(userId) {
 function validateForm(fullUser) {
     var ok = true;
 
-    var name     = document.getElementById("inputName").value.trim();
-    var email    = document.getElementById("inputEmail").value.trim();
-    var username = document.getElementById("inputUsername").value.trim();
+    var name      = document.getElementById("inputName").value.trim();
+    var email     = document.getElementById("inputEmail").value.trim();
     var currentPw = document.getElementById("inputCurrentPw").value;
     var newPw     = document.getElementById("inputNewPw").value;
     var confirmPw = document.getElementById("inputConfirmPw").value;
@@ -142,10 +199,6 @@ function validateForm(fullUser) {
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         showError("errorEmail", "Enter a valid email"); ok = false;
-    }
-
-    if (!username || username.length < 3) {
-        showError("errorUsername", "Username must be at least 3 characters"); ok = false;
     }
 
     if (newPw || currentPw || confirmPw) {
