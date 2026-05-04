@@ -84,6 +84,10 @@
                     <span>Phí vận chuyển</span>
                     <span style="color: var(--success-color); font-weight: 600;">Miễn phí</span>
                 </div>
+                <div class="summary-row discount-row" id="discountRow" style="display:none;">
+                    <span>Discount (<span id="couponCodeLabel">—</span>)</span>
+                    <span id="discountAmount" style="color:var(--success-color);font-weight:700;">−$0</span>
+                </div>
                 <div class="summary-row total">
                     <span>Thành tiền</span>
                     <span id="total-price">$0</span>
@@ -110,9 +114,10 @@
                 </div>
 
                 <div class="discount-wrap">
-                    <input type="text" class="discount-input" placeholder="Mã giảm giá" />
-                    <button class="btn-apply">Áp dụng</button>
+                    <input type="text" class="discount-input" id="couponInput" placeholder="Mã giảm giá" />
+                    <button class="btn-apply" id="btnApplyCoupon">Áp dụng</button>
                 </div>
+                <p class="coupon-feedback" id="couponFeedback"></p>
 
                 <button class="btn-checkout" id="btnCheckout">
                     <i class="fa-solid fa-lock"></i>
@@ -164,6 +169,7 @@
     </div>
 
     <!-- Scripts -->
+    <script src="../asset/js/model/coupon-data.js"></script>
     <script src="../asset/js/model/product-data.js"></script>
     <script src="../asset/js/model/user-data.js"></script>
     <script src="../asset/js/model/order-data.js"></script>

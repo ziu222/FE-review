@@ -1,5 +1,8 @@
 // getCart / saveCart / CART_KEY are defined in addtocart.js (loaded before this file)
 
+var activeCoupon   = null;
+var discountAmount = 0;
+
 function renderCart() {
     const cart = getCart();
     const container = document.getElementById("cart-items");
@@ -31,7 +34,20 @@ function renderCart() {
 
     if (countLabel) countLabel.textContent = totalItems + " sản phẩm";
     document.getElementById("total-items").textContent = totalItems;
-    document.getElementById("total-price").textContent = "$" + totalPrice.toLocaleString("en-US");
+
+    // Re-validate active coupon when cart changes (qty may have changed)
+    if (activeCoupon) {
+        var result = Store.validateCoupon(activeCoupon.code, cart);
+        if (result.valid) {
+            discountAmount = result.discount;
+            updateDiscountUI(activeCoupon.code, discountAmount);
+        } else {
+            clearCoupon();
+        }
+    }
+
+    var finalDisplay = Math.max(0, totalPrice - discountAmount);
+    document.getElementById("total-price").textContent = "$" + finalDisplay.toLocaleString("en-US");
 }
 
 function cartItem(item) {
@@ -83,6 +99,44 @@ document.getElementById("cart-items").addEventListener("click", (e) => {
     renderCart();
     updateCartBadge();
 });
+
+function updateDiscountUI(code, discount) {
+    document.getElementById("couponCodeLabel").textContent = code;
+    document.getElementById("discountAmount").textContent = "−$" + discount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    document.getElementById("discountRow").style.display = "";
+}
+
+function clearCoupon() {
+    activeCoupon = null;
+    discountAmount = 0;
+    document.getElementById("discountRow").style.display = "none";
+}
+
+function applyCoupon() {
+    var input  = document.getElementById("couponInput");
+    var code   = (input.value || "").trim().toUpperCase();
+    var fb     = document.getElementById("couponFeedback");
+
+    if (!code) return;
+
+    var cart   = getCart();
+    var result = Store.validateCoupon(code, cart);
+
+    if (result.valid) {
+        activeCoupon   = result.coupon;
+        discountAmount = result.discount;
+        updateDiscountUI(code, discountAmount);
+        fb.textContent  = "Coupon applied — " + (result.coupon.type === "percent" ? result.coupon.value + "% off" : "$" + result.coupon.value + " off");
+        fb.className    = "coupon-feedback success";
+        // Refresh total display
+        var rawTotal = getCart().reduce(function (s, i) { return s + i.price * i.quantity; }, 0);
+        document.getElementById("total-price").textContent = "$" + Math.max(0, rawTotal - discountAmount).toLocaleString("en-US");
+    } else {
+        clearCoupon();
+        fb.textContent = result.message;
+        fb.className   = "coupon-feedback error";
+    }
+}
 
 function initCheckout() {
     const user = getCurrentUser();
