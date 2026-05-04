@@ -97,6 +97,110 @@ function logout() {
   location.reload();
 }
 
+var CustomerModal = (function () {
+  var hideTimer = null;
+  var lastActiveElement = null;
+
+  function getEls() {
+    return {
+      overlay: document.getElementById("customerModal"),
+      title: document.getElementById("customerModalTitle"),
+      message: document.getElementById("customerModalMessage"),
+      okBtn: document.getElementById("customerModalOk")
+    };
+  }
+
+  function close(options) {
+    var opts = options || {};
+    var els = getEls();
+    if (!els.overlay) return;
+
+    if (hideTimer) {
+      clearTimeout(hideTimer);
+      hideTimer = null;
+    }
+
+    els.overlay.classList.remove("show");
+    els.overlay.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("customer-modal-open");
+
+    if (opts.restoreFocus !== false && lastActiveElement && typeof lastActiveElement.focus === "function") {
+      lastActiveElement.focus();
+    }
+    lastActiveElement = null;
+
+    if (typeof opts.onClose === "function") {
+      opts.onClose();
+    }
+  }
+
+  function open(options) {
+    var opts = options || {};
+    var els = getEls();
+    if (!els.overlay) return false;
+
+    lastActiveElement = document.activeElement;
+
+    if (els.title) {
+      els.title.textContent = opts.title || "Success";
+    }
+    if (els.message) {
+      els.message.textContent = opts.message || "Action completed successfully.";
+    }
+
+    els.overlay.classList.add("show");
+    els.overlay.setAttribute("aria-hidden", "false");
+    document.body.classList.add("customer-modal-open");
+
+    if (els.okBtn) {
+      els.okBtn.textContent = opts.buttonText || "Continue";
+      els.okBtn.focus();
+    }
+
+    if (hideTimer) {
+      clearTimeout(hideTimer);
+      hideTimer = null;
+    }
+
+    if (opts.autoCloseMs && opts.autoCloseMs > 0) {
+      hideTimer = setTimeout(function () {
+        close({ restoreFocus: false, onClose: opts.onAutoClose });
+      }, opts.autoCloseMs);
+    }
+
+    return true;
+  }
+
+  function init() {
+    var els = getEls();
+    if (!els.overlay) return;
+
+    if (els.okBtn) {
+      els.okBtn.addEventListener("click", function () {
+        close();
+      });
+    }
+
+    els.overlay.addEventListener("click", function (e) {
+      if (e.target === els.overlay) {
+        close();
+      }
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && els.overlay.classList.contains("show")) {
+        close();
+      }
+    });
+  }
+
+  return {
+    init: init,
+    open: open,
+    close: close
+  };
+})();
+
 // ===== Điều hướng (navigation) =====
 const signupTab = document.querySelector(".auth-links span:first-child");
 const loginTab = document.querySelector(".auth-links span:last-child");
@@ -131,13 +235,22 @@ if (loginForm) {
     );
 
     if (user) {
-      alert("Đăng nhập thành công!");
-
       // Lưu session (save currentUser)
       localStorage.setItem("ecshop_currentUser", JSON.stringify(user));
 
-      // Điều hướng sau login (redirect)
-      window.location.href = "home.html";
+      var shown = CustomerModal.open({
+        title: "Đăng nhập thành công",
+        message: "Chào mừng bạn quay lại. Đang chuyển đến trang chủ...",
+        buttonText: "Ở lại",
+        autoCloseMs: 1250,
+        onAutoClose: function () {
+          window.location.href = "home.html";
+        }
+      });
+
+      if (!shown) {
+        window.location.href = "home.html";
+      }
     } else {
       alert("Sai tên hoặc mật khẩu!");
     }
@@ -146,4 +259,5 @@ if (loginForm) {
 
 document.addEventListener("DOMContentLoaded", () => {
   renderUser();
+  CustomerModal.init();
 });

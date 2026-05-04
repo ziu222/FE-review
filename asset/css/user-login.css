@@ -1,153 +1,325 @@
-* {
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Inter", "Be Vietnam Pro", sans-serif;
 }
 
-body {
-  background: #333;
-}
-
-/* SIGNUP */
-.container {
+body.auth-page {
+  font-family: 'Manrope', 'Segoe UI', sans-serif;
+  min-height: 100vh;
   display: flex;
-  height: 100vh;
-  width: 80%;
-  margin: 40px auto;
-  background: white;
-}
-
-/* LEFT SIDE */
-.left {
-  width: 50%;
-  background: #b88d5c;
-  color: #fff;
-  padding: 60px;
-  display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
-}
-
-.logo {
-  position: absolute;
-  top: 60px;
-  left: 180px;
-  font-size: 20px;
-  letter-spacing: 2px;
-}
-.logo a{
-  text-decoration: none;
-  color: inherit;
-}
-
-.auth-links {
-  margin-bottom: 20px;
-  font-size: 12px;
-  letter-spacing: 1px;
-}
-
-.auth-links a {
-  text-decoration: none;
-  margin-right: 15px;
-  opacity: 0.6;
-  cursor: pointer;
-  color: inherit;
-}
-
-.auth-links .active {
-  opacity: 1;
-  border-bottom: 1px solid #fff;
-}
-
-h1 {
-  font-size: 40px;
-  margin-bottom: 15px;
-}
-
-.subtitle {
-  font-size: 14px;
-  margin-bottom: 40px;
-  opacity: 0.8;
-  max-width: 350px;
-}
-
-form input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 20px;
-  border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-  background: transparent;
-  color: #fff;
-}
-
-form input::placeholder {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-button {
-  padding: 12px;
-  border: none;
-  background: #fff;
-  color: #b88d5c;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-/* RIGHT SIDE */
-.right {
-  width: 50%;
+  background: linear-gradient(135deg, #0f766e 0%, #115e59 55%, #0a3d39 100%);
   position: relative;
-  background: #e9efef;
+  overflow: hidden;
 }
 
-.nav {
+/* ── Decorative blobs ──────────────────────────────────── */
+.blob {
   position: absolute;
-  top: 20px;
-  right: 40px;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
 }
 
-.nav a {
-  margin-left: 20px;
+.blob-1 {
+  width: 420px;
+  height: 420px;
+  background: rgba(20, 184, 166, 0.35);
+  top: -120px;
+  right: -80px;
+}
+
+.blob-2 {
+  width: 360px;
+  height: 360px;
+  background: rgba(13, 148, 136, 0.3);
+  bottom: -100px;
+  left: -60px;
+}
+
+/* ── Auth card ─────────────────────────────────────────── */
+.auth-card {
+  width: min(440px, 92vw);
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 24px 60px rgba(10, 61, 57, 0.35);
+  padding: 40px 36px 32px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Logo / brand ──────────────────────────────────────── */
+.auth-logo {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.auth-logo-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0f766e;
+  letter-spacing: -0.5px;
+}
+
+.auth-logo-sub {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+/* ── Tab switcher ──────────────────────────────────────── */
+.auth-tabs {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: 50px;
+  padding: 4px;
+  margin-bottom: 28px;
+  gap: 4px;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 9px 0;
+  border: none;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Manrope', sans-serif;
+  color: #64748b;
+  background: transparent;
+  transition: all 0.2s ease;
   text-decoration: none;
-  color: #999;
-  font-size: 14px;
+  display: block;
+  text-align: center;
 }
 
-.image {
-  width: 100%;
-  height: 100%;
-  background: url('img/img1.png') center/contain no-repeat;
+.auth-tab.active {
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3);
 }
 
-/* LOGIN */
+/* ── Input groups ──────────────────────────────────────── */
+.input-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0 14px;
+  margin-bottom: 14px;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-group:focus-within {
+  border-color: #0f766e;
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+}
+
+.input-icon {
+  font-size: 18px;
+  color: #94a3b8;
+  user-select: none;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+
+.input-group:focus-within .input-icon {
+  color: #0f766e;
+}
+
+.input-group input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 13px 0;
+  font-size: 0.875rem;
+  color: #1e293b;
+  background: transparent;
+  font-family: 'Manrope', sans-serif;
+}
+
+.input-group input::placeholder {
+  color: #94a3b8;
+}
+
+/* ── Extras (remember / forgot) ────────────────────────── */
 .extra {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 12px;
-  margin-bottom: 20px;
+  font-size: 0.78rem;
+  color: #64748b;
+  margin: 2px 0 20px;
 }
 
 .extra label {
   display: flex;
   align-items: center;
-  gap: 8px;
-  white-space: nowrap;
+  gap: 6px;
+  cursor: pointer;
 }
 
 .extra input[type="checkbox"] {
-  accent-color: #fff;
+  accent-color: #0f766e;
+  width: 14px;
+  height: 14px;
   margin: 0;
 }
 
 .extra a {
-  color: #fff;
+  color: #64748b;
   text-decoration: none;
-  opacity: 0.8;
+  transition: color 0.2s;
 }
 
 .extra a:hover {
-  text-decoration: underline;
+  color: #0f766e;
+}
+
+/* ── Submit button ─────────────────────────────────────── */
+.btn-auth {
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Manrope', sans-serif;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-top: 4px;
+}
+
+.btn-auth:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15, 118, 110, 0.35);
+}
+
+.btn-auth:active {
+  transform: translateY(0);
+}
+
+/* ── Modal ─────────────────────────────────────────────── */
+body.customer-modal-open {
+  overflow: hidden;
+}
+
+.customer-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.28s ease, visibility 0.28s ease;
+  z-index: 1000;
+}
+
+.customer-modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.customer-modal-panel {
+  width: min(420px, 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #f0fdfa 100%);
+  border: 1px solid #ccfbf1;
+  border-radius: 18px;
+  box-shadow: 0 24px 56px rgba(15, 23, 42, 0.22);
+  padding: 26px 22px 20px;
+  text-align: center;
+  transform: translateY(16px) scale(0.97);
+  opacity: 0;
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.32s ease;
+}
+
+.customer-modal-overlay.show .customer-modal-panel {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.customer-modal-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin: 0 auto 12px;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  box-shadow: 0 10px 24px rgba(15, 118, 110, 0.35);
+}
+
+.customer-modal-title {
+  font-size: 24px;
+  line-height: 1.2;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.customer-modal-message {
+  font-size: 14px;
+  line-height: 1.55;
+  color: #475569;
+  margin-bottom: 16px;
+}
+
+.customer-modal-btn {
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 14px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  transition: transform 0.16s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.customer-modal-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(15, 118, 110, 0.32);
+  filter: brightness(1.04);
+}
+
+/* ── Responsive ────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 32px 24px 28px;
+  }
+}
+
+@media (max-width: 640px) {
+  .customer-modal-overlay { padding: 16px; }
+  .customer-modal-panel { padding: 22px 16px 16px; }
+  .customer-modal-title { font-size: 21px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .customer-modal-overlay,
+  .customer-modal-panel,
+  .customer-modal-btn,
+  .btn-auth,
+  .auth-tab,
+  .input-group {
+    transition: none;
+  }
 }

@@ -37,6 +37,23 @@ var Store = (function () {
 
 
     // Seed data (khởi tạo dữ liệu mẫu)
+    function migrateNewSeedProducts() {
+        if (localStorage.getItem("ecshop_products_v3")) return;
+        if (typeof SEED_PRODUCTS === "undefined") return;
+        var products = _get(KEYS.products) || [];
+        var existingIds = {};
+        for (var i = 0; i < products.length; i++) existingIds[products[i].id] = true;
+        var added = false;
+        for (var j = 0; j < SEED_PRODUCTS.length; j++) {
+            if (!existingIds[SEED_PRODUCTS[j].id]) {
+                products.push(SEED_PRODUCTS[j]);
+                added = true;
+            }
+        }
+        if (added) _set(KEYS.products, products);
+        localStorage.setItem("ecshop_products_v3", "true");
+    }
+
     function migrateSeedProductStatuses() {
         if (localStorage.getItem("ecshop_product_seed_v2")) return;
         if (typeof SEED_PRODUCTS === "undefined") return;
@@ -82,6 +99,7 @@ var Store = (function () {
                 _set(KEYS.notifications, []);
             }
             migrateSeedProductStatuses();
+            migrateNewSeedProducts();
             migrateProductSchema();
             migrateOrderSchema();
             migrateUserWallet();

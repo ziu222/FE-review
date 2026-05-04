@@ -14,7 +14,7 @@ function renderCart() {
                 <i class="fa-solid fa-cart-shopping"></i>
                 <p>Giỏ hàng của bạn đang trống</p>
                 <button class="btn-shop" onclick="window.location.href='product.html'">
-                    <i class="fa-solid fa-arrow-left"></i> Tiếp tục mua sắm
+                    Tiếp tục mua sắm
                 </button>
             </div>`;
         if (countLabel) countLabel.textContent = "0 sản phẩm";

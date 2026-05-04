@@ -1443,3 +1443,388 @@ button, a {
     text-align: center;
     line-height: 1.6;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   Site Footer
+   ══════════════════════════════════════════════════════════════ */
+.site-footer {
+    background: #071412;
+    color: #fff;
+    border-top: 2px solid #0f766e;
+}
+
+.footer-top {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 32px 48px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1.4fr;
+    gap: 40px;
+}
+
+/* Brand column */
+.footer-brand-name {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #5eead4;
+    letter-spacing: -0.5px;
+    margin-bottom: 10px;
+}
+
+.footer-brand-desc {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.7;
+    max-width: 220px;
+    margin-bottom: 24px;
+}
+
+.footer-socials {
+    display: flex;
+    gap: 10px;
+}
+
+.footer-social-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    color: rgba(255,255,255,0.6);
+}
+
+.footer-social-btn:hover {
+    background: #0f766e;
+    border-color: #0f766e;
+    color: #fff;
+}
+
+.footer-social-btn .material-symbols-outlined {
+    font-size: 17px;
+}
+
+/* Link columns */
+.footer-col-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #5eead4;
+    margin-bottom: 18px;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-links a {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    transition: color 0.2s, transform 0.2s;
+    display: inline-block;
+}
+
+.footer-links a:hover {
+    color: #fff;
+    transform: translateX(4px);
+}
+
+/* QR column */
+.footer-qr-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-qr-img {
+    width: 90px;
+    height: 90px;
+    border-radius: 10px;
+    border: 2px solid rgba(255,255,255,0.1);
+    object-fit: cover;
+}
+
+.footer-qr-label {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.5;
+    max-width: 140px;
+}
+
+/* Bottom bar */
+.footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.footer-copy {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.3);
+}
+
+.footer-locale {
+    display: flex;
+    gap: 24px;
+}
+
+.footer-locale span {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+}
+
+@media (max-width: 1024px) {
+    .footer-top {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+    .footer-brand-col { grid-column: 1 / -1; }
+}
+
+@media (max-width: 600px) {
+    .footer-top {
+        grid-template-columns: 1fr 1fr;
+        padding: 40px 20px 32px;
+    }
+    .footer-brand-col { grid-column: 1 / -1; }
+    .footer-bottom { padding: 16px 20px; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Why Shop With Us strip
+   ══════════════════════════════════════════════════════════════ */
+.why-shop-section {
+    background: #fff;
+    border-top: 1px solid #e6edf5;
+    border-bottom: 1px solid #e6edf5;
+    padding: 40px 0;
+}
+
+.why-shop-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.why-shop-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 18px;
+    border-radius: 14px;
+    border: 1px solid #e6edf5;
+    background: #f8fbff;
+    transition: box-shadow 0.22s, transform 0.22s;
+}
+
+.why-shop-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.09);
+}
+
+.why-shop-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #0f766e, #115e59);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+}
+
+.why-shop-icon .material-symbols-outlined {
+    font-size: 22px;
+    color: #fff;
+}
+
+.why-shop-text h4 {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 2px;
+}
+
+.why-shop-text p {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin: 0;
+}
+
+@media (max-width: 900px) {
+    .why-shop-container { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 500px) {
+    .why-shop-container { grid-template-columns: 1fr; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Featured Categories
+   ══════════════════════════════════════════════════════════════ */
+.feat-cat-section {
+    padding: 60px 0 52px;
+    background: #f8fbff;
+}
+
+.feat-cat-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.feat-cat-heading {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #1e293b;
+    text-align: center;
+    margin-bottom: 6px;
+}
+
+.feat-cat-sub {
+    font-size: 0.9rem;
+    color: #64748b;
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+.feat-cat-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+}
+
+.feat-cat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 12px 18px;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid #e6edf5;
+    text-decoration: none;
+    color: #1e293b;
+    font-weight: 600;
+    font-size: 0.82rem;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+
+.feat-cat-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 32px rgba(15, 23, 42, 0.12);
+    border-color: #0f766e;
+    color: #0f766e;
+    text-decoration: none;
+}
+
+.feat-cat-img-wrap {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f0fdfa, #ccfbf1);
+    display: grid;
+    place-items: center;
+    transition: background 0.25s;
+}
+
+.feat-cat-card:hover .feat-cat-img-wrap {
+    background: linear-gradient(135deg, #0f766e, #115e59);
+}
+
+.feat-cat-img-wrap img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    transition: filter 0.25s;
+}
+
+.feat-cat-card:hover .feat-cat-img-wrap img {
+    filter: brightness(0) invert(1);
+}
+
+@media (max-width: 900px) {
+    .feat-cat-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 500px) {
+    .feat-cat-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Animated brand marquee
+   ══════════════════════════════════════════════════════════════ */
+.brands-section {
+    padding: 56px 0;
+    background: #fff;
+    overflow: hidden;
+}
+
+.brands-label {
+    text-align: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(71, 85, 105, 0.45);
+    margin-bottom: 32px;
+}
+
+.brands-track-wrap {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+.brands-track {
+    display: flex;
+    gap: 72px;
+    align-items: center;
+    width: max-content;
+    animation: brands-scroll 22s linear infinite;
+}
+
+.brands-track:hover {
+    animation-play-state: paused;
+}
+
+.brands-track span {
+    font-size: 1.55rem;
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: -0.03em;
+    color: #cbd5e1;
+    white-space: nowrap;
+    transition: color 0.25s;
+    cursor: default;
+}
+
+.brands-track span:hover {
+    color: #0f766e;
+}
+
+@keyframes brands-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}

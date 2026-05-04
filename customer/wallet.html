@@ -211,6 +211,15 @@
         <span id="toastMsg">Nạp tiền thành công!</span>
     </div>
 
+    <div class="customer-modal-overlay" id="customerModal" aria-hidden="true">
+        <div class="customer-modal-panel" role="dialog" aria-modal="true" aria-labelledby="customerModalTitle" aria-describedby="customerModalMessage">
+            <div class="customer-modal-icon" id="customerModalIcon" aria-hidden="true">✓</div>
+            <h3 class="customer-modal-title" id="customerModalTitle">Success</h3>
+            <p class="customer-modal-message" id="customerModalMessage">Action completed successfully.</p>
+            <button type="button" class="customer-modal-btn" id="customerModalOk">Continue</button>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="../asset/js/model/product-data.js"></script>
     <script src="../asset/js/model/user-data.js"></script>
