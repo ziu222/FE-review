@@ -7,6 +7,7 @@ var Store = (function () {
         orders:        "ecshop_orders",
         cart:          "ecshop_cart",
         notifications: "ecshop_notifications",
+        coupons:       "ecshop_coupons",
         seeded:        "ecshop_seeded"
     };
 
@@ -98,6 +99,9 @@ var Store = (function () {
             if (!_get(KEYS.notifications)) {
                 _set(KEYS.notifications, []);
             }
+            if (!_get(KEYS.coupons)) {
+                _set(KEYS.coupons, typeof SEED_COUPONS !== "undefined" ? SEED_COUPONS : []);
+            }
             migrateSeedProductStatuses();
             migrateNewSeedProducts();
             migrateProductSchema();
@@ -111,6 +115,7 @@ var Store = (function () {
         _set(KEYS.orders,          typeof SEED_ORDERS         !== "undefined" ? SEED_ORDERS         : []);
         _set(KEYS.cart, []);
         _set(KEYS.notifications,   typeof SEED_NOTIFICATIONS  !== "undefined" ? SEED_NOTIFICATIONS  : []);
+        _set(KEYS.coupons,         typeof SEED_COUPONS        !== "undefined" ? SEED_COUPONS        : []);
 
         localStorage.setItem(KEYS.seeded, "true");
         migrateProductSchema();
@@ -1193,7 +1198,104 @@ var Store = (function () {
     }
 
 
-    // Public API 
+    // COUPONS
+
+    function getCoupons() {
+        return _get(KEYS.coupons) || [];
+    }
+
+    function getCouponsByShop(shopId) {
+        return getCoupons().filter(function (c) { return c.shopId === shopId; });
+    }
+
+    function getCouponByCode(code) {
+        var upper = (code || "").toUpperCase();
+        var all = getCoupons();
+        for (var i = 0; i < all.length; i++) {
+            if (all[i].code.toUpperCase() === upper) return all[i];
+        }
+        return null;
+    }
+
+    function addCoupon(data) {
+        var coupons = getCoupons();
+        var coupon = Object.assign({}, data, {
+            id:        _nextId(KEYS.coupons),
+            code:      (data.code || "").toUpperCase(),
+            usedCount: 0,
+            createdAt: getTodayString()
+        });
+        coupons.push(coupon);
+        _set(KEYS.coupons, coupons);
+        return coupon;
+    }
+
+    function updateCoupon(id, data) {
+        var coupons = getCoupons();
+        for (var i = 0; i < coupons.length; i++) {
+            if (coupons[i].id === id) {
+                Object.assign(coupons[i], data);
+                _set(KEYS.coupons, coupons);
+                return coupons[i];
+            }
+        }
+        return null;
+    }
+
+    function deleteCoupon(id) {
+        var coupons = getCoupons().filter(function (c) { return c.id !== id; });
+        _set(KEYS.coupons, coupons);
+    }
+
+    function validateCoupon(code, cart) {
+        var coupon = getCouponByCode(code);
+        if (!coupon) return { valid: false, message: "Invalid coupon code" };
+        if (!coupon.isActive) return { valid: false, message: "Coupon is inactive" };
+
+        var today = getTodayString();
+        if (coupon.expiresAt && today > coupon.expiresAt) return { valid: false, message: "Coupon has expired" };
+        if (coupon.usageLimit > 0 && coupon.usedCount >= coupon.usageLimit) return { valid: false, message: "Coupon usage limit reached" };
+
+        var applicableTotal = 0;
+        if (coupon.shopId === null || coupon.shopId === undefined) {
+            for (var i = 0; i < cart.length; i++) {
+                applicableTotal += cart[i].price * cart[i].quantity;
+            }
+        } else {
+            var hasShopItems = false;
+            for (var j = 0; j < cart.length; j++) {
+                if (cart[j].shopId === coupon.shopId) {
+                    applicableTotal += cart[j].price * cart[j].quantity;
+                    hasShopItems = true;
+                }
+            }
+            if (!hasShopItems) return { valid: false, message: "No items from this shop in your cart" };
+        }
+
+        if (coupon.minOrder > 0 && applicableTotal < coupon.minOrder) {
+            return { valid: false, message: "Minimum order $" + coupon.minOrder + " required" };
+        }
+
+        var discount = coupon.type === "percent"
+            ? applicableTotal * coupon.value / 100
+            : Math.min(coupon.value, applicableTotal);
+
+        return { valid: true, discount: discount, applicableTotal: applicableTotal, coupon: coupon };
+    }
+
+    function useCoupon(id) {
+        var coupons = getCoupons();
+        for (var i = 0; i < coupons.length; i++) {
+            if (coupons[i].id === id) {
+                coupons[i].usedCount = (coupons[i].usedCount || 0) + 1;
+                _set(KEYS.coupons, coupons);
+                return;
+            }
+        }
+    }
+
+
+    // Public API
 
     return {
         seed:       seed,
@@ -1273,8 +1375,19 @@ var Store = (function () {
 
         // Finance
         getFinanceSummary:       getFinanceSummary,
+
         getRevenueByShop:        getRevenueByShop,
-        getTransactions:         getTransactions
+        getTransactions:         getTransactions,
+
+        // Coupons
+        getCoupons:         getCoupons,
+        getCouponsByShop:   getCouponsByShop,
+        getCouponByCode:    getCouponByCode,
+        addCoupon:          addCoupon,
+        updateCoupon:       updateCoupon,
+        deleteCoupon:       deleteCoupon,
+        validateCoupon:     validateCoupon,
+        useCoupon:          useCoupon
     };
 
 })();
