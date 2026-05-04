@@ -60,7 +60,7 @@ function renderUser() {
         <span class="material-symbols-outlined udm-icon">account_circle</span>
         View Profile
       </button>
-      <button class="udm-item" onclick="window.location.href='cart.html'">
+      <button class="udm-item" onclick="window.location.href='wallet.html'">
         <span class="material-symbols-outlined udm-icon">account_balance_wallet</span>
         Wallet
       </button>
