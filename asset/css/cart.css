@@ -175,6 +175,9 @@
 
 /* ── Empty cart ──────────────────────────────────────────── */
 .cart-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
     padding: 64px 0 40px;
     color: var(--muted-text);
@@ -196,17 +199,19 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 12px 24px;
+    width: fit-content;
+    padding: 10px 20px;
     background: var(--primary-color);
     color: #fff;
     border: none;
-    border-radius: 10px;
-    font-size: 0.9rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
     transition: background 0.2s, transform 0.15s;
     font-family: inherit;
+    margin: 0 auto;
 }
 
 .btn-shop:hover { background: var(--primary-strong); transform: translateY(-1px); }
