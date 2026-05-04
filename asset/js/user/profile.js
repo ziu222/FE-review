@@ -95,6 +95,13 @@ function renderProfile(user) {
         memberEl.textContent = d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
     }
 
+    var rank = getRank(user.id);
+    var rankEl = document.getElementById("profileRank");
+    if (rankEl) {
+        rankEl.textContent = rank.label;
+        rankEl.className = "rank-badge " + rank.cls;
+    }
+
     var inputName = document.getElementById("inputName");
     var inputEmail = document.getElementById("inputEmail");
     var inputUsername = document.getElementById("inputUsername");
@@ -188,6 +195,18 @@ function updateSession(user) {
     });
     localStorage.setItem("ecshop_currentUser", JSON.stringify(updated));
     renderUser();
+}
+
+function getRank(userId) {
+    var txns = Store.getWalletTransactions(userId) || [];
+    var spent = txns
+        .filter(function (t) { return t.type === "payment"; })
+        .reduce(function (sum, t) { return sum + Math.abs(t.amount); }, 0);
+
+    if (spent >= 3000) return { label: "VIP+",   cls: "rank-vipplus" };
+    if (spent >= 1000) return { label: "VIP",    cls: "rank-vip" };
+    if (spent >= 200)  return { label: "Elite",  cls: "rank-elite" };
+    return                    { label: "Normal", cls: "rank-normal" };
 }
 
 function showToast(msg) {
