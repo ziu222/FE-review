@@ -29,6 +29,7 @@ function addToCart(productId) {
             name:     product.name,
             price:    product.price,
             image:    product.image,
+            shopId:   product.shopId || null,
             quantity: 1
         });
     }
