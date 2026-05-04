@@ -283,7 +283,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    background-image: url('../img/home/slider1.webp');
+    background-image: url('../img/about/background.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -292,7 +292,7 @@
 .about-mission__overlay {
     position: absolute;
     inset: 0;
-    background: rgba(15, 23, 42, 0.82);
+    background: rgba(8, 14, 30, 0.55);
     z-index: 1;
 }
 
