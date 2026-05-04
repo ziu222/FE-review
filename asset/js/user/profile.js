@@ -18,6 +18,29 @@ document.addEventListener("DOMContentLoaded", function () {
     // ── Render profile ────────────────────────────────────
     renderProfile(fullUser);
     renderBalance(fullUser.id);
+    renderCoverPhoto(fullUser);
+
+    // ── Cover photo upload ────────────────────────────────
+    var profileCover = document.getElementById("profileCover");
+    var coverInput   = document.getElementById("coverInput");
+
+    if (profileCover) profileCover.addEventListener("click", function () {
+        coverInput.click();
+    });
+
+    if (coverInput) coverInput.addEventListener("change", function (e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+            var base64 = ev.target.result;
+            fullUser.coverPhoto = base64;
+            renderCoverPhoto(fullUser);
+            Store.updateUser(fullUser.id, { coverPhoto: base64 });
+            showToast("Cover photo updated");
+        };
+        reader.readAsDataURL(file);
+    });
 
     // ── Avatar upload ─────────────────────────────────────
     var avatarWrap = document.getElementById("avatarWrap");
@@ -134,6 +157,24 @@ function setAvatarDisplay(src, fallbackInitial) {
         avatarEl.innerHTML = '<img src="' + src + '" alt="avatar" />';
     } else {
         avatarEl.textContent = fallbackInitial || "?";
+    }
+}
+
+function renderCoverPhoto(user) {
+    var coverEl = document.getElementById("profileCover");
+    if (!coverEl) return;
+    var existing = coverEl.querySelector("img");
+    if (user.coverPhoto) {
+        if (existing) {
+            existing.src = user.coverPhoto;
+        } else {
+            var img = document.createElement("img");
+            img.src = user.coverPhoto;
+            img.alt = "cover";
+            coverEl.insertBefore(img, coverEl.firstChild);
+        }
+    } else if (existing) {
+        existing.remove();
     }
 }
 
