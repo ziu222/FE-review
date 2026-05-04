@@ -84,8 +84,87 @@ document.getElementById("cart-items").addEventListener("click", (e) => {
     updateCartBadge();
 });
 
+function initCheckout() {
+    const user = getCurrentUser();
+
+    // Show wallet balance in payment section
+    const balEl = document.getElementById("walletBalanceDisplay");
+    if (balEl && user) {
+        const bal = Store.getWalletBalance(user.id);
+        balEl.textContent = "$" + Number(bal).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Validate balance when switching to wallet
+    document.querySelectorAll("input[name='payMethod']").forEach(r => {
+        r.addEventListener("change", validatePaymentMethod);
+    });
+
+    // Checkout button
+    const btn = document.getElementById("btnCheckout");
+    if (btn) btn.addEventListener("click", handleCheckout);
+}
+
+function validatePaymentMethod() {
+    const method  = document.querySelector("input[name='payMethod']:checked")?.value;
+    const warning = document.getElementById("pmWarning");
+    const btn     = document.getElementById("btnCheckout");
+    if (!warning) return;
+
+    if (method === "wallet") {
+        const user  = getCurrentUser();
+        const cart  = getCart();
+        const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+        const bal   = user ? Store.getWalletBalance(user.id) : 0;
+
+        if (bal < total) {
+            warning.classList.remove("hidden");
+            if (btn) btn.disabled = true;
+            return;
+        }
+    }
+    warning.classList.add("hidden");
+    if (btn) btn.disabled = false;
+}
+
+function handleCheckout() {
+    const user = getCurrentUser();
+    if (!user) { window.location.href = "login.html"; return; }
+
+    const cart = getCart();
+    if (!cart.length) return;
+
+    const method = document.querySelector("input[name='payMethod']:checked")?.value || "cod";
+    const total  = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+
+    if (method === "wallet") {
+        const bal = Store.getWalletBalance(user.id);
+        if (bal < total) { validatePaymentMethod(); return; }
+    }
+
+    const order = Store.addOrder({
+        customerId:    user.id,
+        userId:        user.id,
+        items:         cart.map(i => ({ productId: i.id, qty: i.quantity, price: i.price })),
+        total:         total,
+        paymentMethod: method,
+        paymentStatus: method === "wallet" ? "paid" : "pending"
+    });
+
+    if (method === "wallet") {
+        Store.deductWallet(user.id, total, order.id);
+    }
+
+    saveCart([]);
+    updateCartBadge();
+    renderCart();
+
+    alert("Đặt hàng thành công! Mã đơn: #" + order.id + (method === "wallet" ? "\nĐã thanh toán qua Ví." : "\nThanh toán khi nhận hàng."));
+    window.location.href = "home.html";
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     renderCart();
+    initCheckout();
     const cartBtn = document.getElementById("cart-btn");
     if (cartBtn) cartBtn.addEventListener("click", () => window.location.href = "cart.html");
 });

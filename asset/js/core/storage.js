@@ -58,6 +58,24 @@ var Store = (function () {
         localStorage.setItem("ecshop_product_seed_v2", "true");
     }
 
+    function migrateUserWallet() {
+        if (localStorage.getItem("ecshop_wallet_v1")) return;
+        var users = _get(KEYS.users) || [];
+        var changed = false;
+        for (var i = 0; i < users.length; i++) {
+            if (users[i].walletBalance === undefined) {
+                users[i].walletBalance = users[i].role === "customer" ? 200 : 0;
+                changed = true;
+            }
+            if (users[i].walletTransactions === undefined) {
+                users[i].walletTransactions = [];
+                changed = true;
+            }
+        }
+        if (changed) _set(KEYS.users, users);
+        localStorage.setItem("ecshop_wallet_v1", "true");
+    }
+
     function seed() {
         if (localStorage.getItem(KEYS.seeded)) {
             if (!_get(KEYS.notifications)) {
@@ -66,6 +84,7 @@ var Store = (function () {
             migrateSeedProductStatuses();
             migrateProductSchema();
             migrateOrderSchema();
+            migrateUserWallet();
             return;
         }
 
@@ -558,6 +577,82 @@ var Store = (function () {
         return null;
     }
 
+    // ── WALLET
+
+    function getWalletBalance(userId) {
+        var user = getUserById(userId);
+        return user ? (Number(user.walletBalance) || 0) : 0;
+    }
+
+    function getWalletTransactions(userId) {
+        var user = getUserById(userId);
+        return user ? (user.walletTransactions || []) : [];
+    }
+
+    function _nextWalletTxId(txs) {
+        if (!txs || txs.length === 0) return 1;
+        var max = 0;
+        for (var i = 0; i < txs.length; i++) { if (txs[i].id > max) max = txs[i].id; }
+        return max + 1;
+    }
+
+    function topUpWallet(userId, amount, description) {
+        var user = getUserById(userId);
+        if (!user) return null;
+        var amt = Number(amount);
+        if (!amt || amt <= 0) return null;
+        var txs = user.walletTransactions ? user.walletTransactions.slice() : [];
+        var tx = {
+            id:          _nextWalletTxId(txs),
+            type:        "deposit",
+            amount:      amt,
+            description: description || "Nạp tiền",
+            orderId:     null,
+            date:        new Date().toISOString()
+        };
+        txs.push(tx);
+        updateUser(userId, { walletBalance: (Number(user.walletBalance) || 0) + amt, walletTransactions: txs });
+        return tx;
+    }
+
+    function deductWallet(userId, amount, orderId) {
+        var user = getUserById(userId);
+        if (!user) return null;
+        var amt     = Number(amount);
+        var balance = Number(user.walletBalance) || 0;
+        if (balance < amt) return null;
+        var txs = user.walletTransactions ? user.walletTransactions.slice() : [];
+        var tx = {
+            id:          _nextWalletTxId(txs),
+            type:        "payment",
+            amount:      amt,
+            description: "Thanh toán đơn #" + orderId,
+            orderId:     orderId || null,
+            date:        new Date().toISOString()
+        };
+        txs.push(tx);
+        updateUser(userId, { walletBalance: balance - amt, walletTransactions: txs });
+        return tx;
+    }
+
+    function refundWallet(userId, amount, orderId) {
+        var user = getUserById(userId);
+        if (!user) return null;
+        var amt = Number(amount);
+        var txs = user.walletTransactions ? user.walletTransactions.slice() : [];
+        var tx = {
+            id:          _nextWalletTxId(txs),
+            type:        "refund",
+            amount:      amt,
+            description: "Hoàn tiền đơn #" + orderId,
+            orderId:     orderId || null,
+            date:        new Date().toISOString()
+        };
+        txs.push(tx);
+        updateUser(userId, { walletBalance: (Number(user.walletBalance) || 0) + amt, walletTransactions: txs });
+        return tx;
+    }
+
     function deleteUser(id) {
         var users = getUsers();
         var filtered = [];
@@ -661,6 +756,14 @@ var Store = (function () {
 
             if (order.userId === undefined || order.userId === null) {
                 order.userId = customerId;
+                changed = true;
+            }
+            if (order.paymentMethod === undefined) {
+                order.paymentMethod = "cod";
+                changed = true;
+            }
+            if (order.paymentStatus === undefined) {
+                order.paymentStatus = "pending";
                 changed = true;
             }
         }
@@ -795,14 +898,17 @@ var Store = (function () {
         var orders = getOrders();
         var customerId = data.customerId || data.userId || 0;
         var nowIso = new Date().toISOString();
+        var payMethod = data.paymentMethod === "wallet" ? "wallet" : "cod";
         var newOrder = {
-            id:        _nextId(KEYS.orders),
-            customerId: customerId,
-            userId:    customerId,
-            shopId:    data.shopId   || 0,
-            items:     data.items    || [],
-            total:     Number(data.total) || 0,
-            status:    "pending",
+            id:            _nextId(KEYS.orders),
+            customerId:    customerId,
+            userId:        customerId,
+            shopId:        data.shopId   || 0,
+            items:         data.items    || [],
+            total:         Number(data.total) || 0,
+            status:        "pending",
+            paymentMethod: payMethod,
+            paymentStatus: payMethod === "wallet" ? "paid" : "pending",
             statusHistory: [{
                 status: "pending",
                 changedAt: nowIso,
@@ -1099,6 +1205,13 @@ var Store = (function () {
         addUser:              addUser,
         updateUser:           updateUser,
         deleteUser:           deleteUser,
+
+        // Wallet
+        getWalletBalance:         getWalletBalance,
+        getWalletTransactions:    getWalletTransactions,
+        topUpWallet:              topUpWallet,
+        deductWallet:             deductWallet,
+        refundWallet:             refundWallet,
 
         // Shops (filtered from users)
         getShops:             getShops,
