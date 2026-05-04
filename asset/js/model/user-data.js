@@ -81,6 +81,8 @@ var SEED_USERS = [
         password: "user123",
         role: "customer",
         avatar: "",
+        walletBalance: 200,
+        walletTransactions: [],
         createdAt: "2025-03-15"
     },
     {
@@ -91,6 +93,8 @@ var SEED_USERS = [
         password: "user123",
         role: "customer",
         avatar: "",
+        walletBalance: 200,
+        walletTransactions: [],
         createdAt: "2025-05-20"
     },
     {
@@ -101,6 +105,8 @@ var SEED_USERS = [
         password: "user123",
         role: "customer",
         avatar: "",
+        walletBalance: 200,
+        walletTransactions: [],
         createdAt: "2025-07-10"
     },
 
