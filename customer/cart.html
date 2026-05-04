@@ -11,6 +11,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../asset/css/main.css">
     <link rel="stylesheet" href="../asset/css/cart.css">
+    <link rel="stylesheet" href="../asset/css/wallet.css">
 </head>
 
 <body class="cart-page">
@@ -88,12 +89,32 @@
                     <span id="total-price">$0</span>
                 </div>
 
+                <!-- Payment method -->
+                <div class="payment-method-section">
+                    <div class="pm-title">Payment Method</div>
+                    <label class="pm-option">
+                        <input type="radio" name="payMethod" value="wallet" id="pmWallet" />
+                        <span class="material-symbols-outlined">account_balance_wallet</span>
+                        <span>Wallet</span>
+                        <span class="pm-balance-badge" id="walletBalanceDisplay">$0.00</span>
+                    </label>
+                    <label class="pm-option">
+                        <input type="radio" name="payMethod" value="cod" id="pmCod" checked />
+                        <span class="material-symbols-outlined">local_shipping</span>
+                        <span>Cash on Delivery</span>
+                    </label>
+                    <p class="pm-warning hidden" id="pmWarning">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        Insufficient wallet balance
+                    </p>
+                </div>
+
                 <div class="discount-wrap">
                     <input type="text" class="discount-input" placeholder="Mã giảm giá" />
                     <button class="btn-apply">Áp dụng</button>
                 </div>
 
-                <button class="btn-checkout">
+                <button class="btn-checkout" id="btnCheckout">
                     <i class="fa-solid fa-lock"></i>
                     Thanh toán
                 </button>
