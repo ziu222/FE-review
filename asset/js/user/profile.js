@@ -48,12 +48,11 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
         if (!validateForm(fullUser)) return;
 
-        var name     = document.getElementById("inputName").value.trim();
-        var email    = document.getElementById("inputEmail").value.trim();
-        var username = document.getElementById("inputUsername").value.trim();
-        var newPw    = document.getElementById("inputNewPw").value;
+        var name  = document.getElementById("inputName").value.trim();
+        var email = document.getElementById("inputEmail").value.trim();
+        var newPw = document.getElementById("inputNewPw").value;
 
-        var updates = { name: name, email: email, username: username };
+        var updates = { name: name, email: email };
         if (newPw) updates.password = newPw;
 
         Store.updateUser(fullUser.id, updates);
@@ -65,8 +64,26 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("inputNewPw").value = "";
         document.getElementById("inputConfirmPw").value = "";
 
+        // Reset email back to readonly
+        var emailEl = document.getElementById("inputEmail");
+        var editBtn = document.getElementById("emailEditBtn");
+        if (emailEl) { emailEl.setAttribute("readonly", ""); emailEl.classList.add("profile-input--readonly"); }
+        if (editBtn) editBtn.style.display = "";
+
         showToast("Profile updated successfully");
     });
+
+    // ── Email edit toggle ─────────────────────────────────
+    var emailEditBtn = document.getElementById("emailEditBtn");
+    var inputEmail   = document.getElementById("inputEmail");
+    if (emailEditBtn && inputEmail) {
+        emailEditBtn.addEventListener("click", function () {
+            inputEmail.removeAttribute("readonly");
+            inputEmail.classList.remove("profile-input--readonly");
+            inputEmail.focus();
+            emailEditBtn.style.display = "none";
+        });
+    }
 
     // ── Cart button ───────────────────────────────────────
     var cartBtn = document.getElementById("cart-btn");
@@ -129,9 +146,8 @@ function renderBalance(userId) {
 function validateForm(fullUser) {
     var ok = true;
 
-    var name     = document.getElementById("inputName").value.trim();
-    var email    = document.getElementById("inputEmail").value.trim();
-    var username = document.getElementById("inputUsername").value.trim();
+    var name      = document.getElementById("inputName").value.trim();
+    var email     = document.getElementById("inputEmail").value.trim();
     var currentPw = document.getElementById("inputCurrentPw").value;
     var newPw     = document.getElementById("inputNewPw").value;
     var confirmPw = document.getElementById("inputConfirmPw").value;
@@ -142,10 +158,6 @@ function validateForm(fullUser) {
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         showError("errorEmail", "Enter a valid email"); ok = false;
-    }
-
-    if (!username || username.length < 3) {
-        showError("errorUsername", "Username must be at least 3 characters"); ok = false;
     }
 
     if (newPw || currentPw || confirmPw) {
