@@ -1,47 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
   <meta charset="UTF-8">
-  <title>EC SHOP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng nhập - EC SHOP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../asset/css/user-login.css">
 </head>
 
-<body>
+<body class="auth-page">
 
-  <div class="container">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
 
-    <!-- LEFT SIDE -->
-    <div class="left">
-      <div class="logo"><a href="home.html">EC SHOP</a></div>
+  <div class="auth-card">
 
-      <div class="auth-links">
-        <a href="signup.html">ĐĂNG KÝ</a>
-        <a href="login.html" class="active">ĐĂNG NHẬP</a>
+    <div class="auth-logo">
+      <div class="auth-logo-title">EC SHOP</div>
+      <div class="auth-logo-sub">Chào mừng bạn trở lại</div>
+    </div>
+
+    <div class="auth-tabs">
+      <a href="login.html" class="auth-tab active">Đăng nhập</a>
+      <a href="signup.html" class="auth-tab">Đăng ký</a>
+    </div>
+
+    <form id="loginForm">
+      <div class="input-group">
+        <span class="material-symbols-outlined input-icon">person</span>
+        <input type="text" placeholder="Tên đăng nhập" autocomplete="username">
+      </div>
+      <div class="input-group">
+        <span class="material-symbols-outlined input-icon">lock</span>
+        <input type="password" placeholder="Mật khẩu" autocomplete="current-password">
       </div>
 
-      <h1>Welcome Back</h1>
-      <p class="subtitle">
-        Đăng nhập để mua hàng ngay !!
-      </p>
+      <div class="extra">
+        <label>
+          <input type="checkbox"> Ghi nhớ tài khoản
+        </label>
+        <a href="#">Quên mật khẩu?</a>
+      </div>
 
-      <form id="loginForm">
-        <input type="text" placeholder="Tên đăng nhập">
-        <input type="password" placeholder="Mật khẩu">
-
-        <div class="extra">
-          <label>
-            <input type="checkbox"> Ghi nhớ tài khoản
-          </label>
-          <a href="#">Quên mật khẩu?</a>
-        </div>
-        <button type="submit">ĐĂNG NHẬP</button>
-      </form>
-    </div>
-    <!-- RIGHT SIDE -->
-    <div class="right">
-      <div class="image"></div>
-    </div>
+      <button type="submit" class="btn-auth">Đăng nhập</button>
+    </form>
 
   </div>
 
