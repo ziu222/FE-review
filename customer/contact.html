@@ -52,14 +52,14 @@
     <main class="contact-main">
 
         <div class="contact-header">
-            <h1 class="contact-header__title">Contact Us</h1>
-            <p class="contact-header__sub">Any question or remarks? Just write us a message!</p>
+            <h1 class="contact-header__title" data-anim="fade-up" data-delay="1">Contact Us</h1>
+            <p class="contact-header__sub" data-anim="fade-up" data-delay="2">Any question or remarks? Just write us a message!</p>
         </div>
 
         <div class="contact-card">
 
             <!-- Left: dark info panel -->
-            <div class="contact-info">
+            <div class="contact-info" data-anim="fade-right">
                 <h2 class="contact-info__title">Contact Information</h2>
                 <p class="contact-info__sub">Say something to start a live chat!</p>
 
@@ -85,7 +85,7 @@
                 </ul>
 
                 <div class="contact-socials">
-                    <button class="contact-social-btn" title="Twitter/X"><i class="fab fa-x-twitter"></i></button>
+                    <button class="contact-social-btn" title="X"><i class="fa-brands fa-x-twitter"></i></button>
                     <button class="contact-social-btn" title="Instagram"><i class="fab fa-instagram"></i></button>
                     <button class="contact-social-btn" title="Discord"><i class="fab fa-discord"></i></button>
                 </div>
@@ -96,7 +96,7 @@
             </div>
 
             <!-- Right: form panel -->
-            <div class="contact-form-panel">
+            <div class="contact-form-panel" data-anim="fade-left">
                 <form id="contactForm" novalidate>
 
                     <div class="contact-row">
@@ -179,6 +179,17 @@
     <script src="../asset/js/user/addtocart.js"></script>
     <script src="../asset/js/user/user-login.js"></script>
     <script>
+        /* scroll reveal */
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+                if (!e.isIntersecting) return;
+                e.target.classList.add('is-visible');
+                io.unobserve(e.target);
+            });
+        }, { threshold: 0.15 });
+        document.querySelectorAll('[data-anim]').forEach(function (el) { io.observe(el); });
+
+        /* form submit */
         document.getElementById('contactForm').addEventListener('submit', function (e) {
             e.preventDefault();
             var toast = document.getElementById('contactToast');
