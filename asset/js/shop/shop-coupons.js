@@ -63,8 +63,8 @@ function renderTable() {
             '<td>' + (c.expiresAt || "Never") + '</td>' +
             '<td><span class="' + statusCls + '">' + statusTxt + '</span></td>' +
             '<td>' +
-                '<button class="action-btn edit" onclick="openModal(' + c.id + ')" title="Edit"><i class="fa-solid fa-pen"></i></button>' +
-                '<button class="action-btn reject" onclick="deleteCoupon(' + c.id + ')" title="Delete"><i class="fa-solid fa-trash"></i></button>' +
+                '<button class="icon-btn icon-btn-edit" onclick="openModal(' + c.id + ')" title="Edit"><i class="fa-solid fa-pen"></i></button>' +
+                '<button class="icon-btn icon-btn-suspend" onclick="deleteCoupon(' + c.id + ')" title="Delete"><i class="fa-solid fa-trash"></i></button>' +
             '</td>' +
         '</tr>';
     }).join("");
@@ -95,11 +95,11 @@ function openModal(id) {
         document.getElementById("modalExpiresAt").value   = "";
         document.getElementById("modalActive").checked    = true;
     }
-    document.getElementById("couponModal").classList.add("active");
+    document.getElementById("couponModal").classList.add("show");
 }
 
 function closeModal() {
-    document.getElementById("couponModal").classList.remove("active");
+    document.getElementById("couponModal").classList.remove("show");
     editingId = null;
 }
 
