@@ -340,6 +340,11 @@
     margin-top: 12px;
 }
 
+/* ── Coupon feedback ─────────────────────────────────────── */
+.coupon-feedback { font-size: 0.8rem; margin-top: 4px; min-height: 18px; }
+.coupon-feedback.success { color: var(--success-color); }
+.coupon-feedback.error   { color: var(--danger-color); }
+
 /* ── Animations ──────────────────────────────────────────── */
 @keyframes fadeSlideUp {
     from { opacity: 0; transform: translateY(18px); }
