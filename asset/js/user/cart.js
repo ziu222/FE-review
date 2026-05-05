@@ -153,6 +153,10 @@ function initCheckout() {
         r.addEventListener("change", validatePaymentMethod);
     });
 
+    // Coupon apply button
+    var applyBtn = document.getElementById("btnApplyCoupon");
+    if (applyBtn) applyBtn.addEventListener("click", applyCoupon);
+
     // Checkout button
     const btn = document.getElementById("btnCheckout");
     if (btn) btn.addEventListener("click", handleCheckout);
@@ -187,32 +191,38 @@ function handleCheckout() {
     const cart = getCart();
     if (!cart.length) return;
 
-    const method = document.querySelector("input[name='payMethod']:checked")?.value || "cod";
-    const total  = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+    const method     = document.querySelector("input[name='payMethod']:checked")?.value || "cod";
+    const total      = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+    const finalTotal = Math.max(0, total - discountAmount);
 
     if (method === "wallet") {
         const bal = Store.getWalletBalance(user.id);
-        if (bal < total) { validatePaymentMethod(); return; }
+        if (bal < finalTotal) { validatePaymentMethod(); return; }
     }
 
     const order = Store.addOrder({
         customerId:    user.id,
         userId:        user.id,
         items:         cart.map(i => ({ productId: i.id, qty: i.quantity, price: i.price })),
-        total:         total,
+        total:         finalTotal,
+        couponCode:    activeCoupon ? activeCoupon.code : null,
         paymentMethod: method,
         paymentStatus: method === "wallet" ? "paid" : "pending"
     });
 
+    if (activeCoupon) Store.useCoupon(activeCoupon.id);
+
     if (method === "wallet") {
-        Store.deductWallet(user.id, total, order.id);
+        Store.deductWallet(user.id, finalTotal, order.id);
     }
 
     saveCart([]);
+    activeCoupon = null;
+    discountAmount = 0;
     updateCartBadge();
     renderCart();
 
-    showOrderModal(order.id, method, total);
+    showOrderModal(order.id, method, finalTotal);
 }
 
 function showOrderModal(orderId, method, total) {
