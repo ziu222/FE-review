@@ -1445,6 +1445,43 @@ button, a {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   Login pill — guest state
+   ══════════════════════════════════════════════════════════════ */
+#userBtn.user-btn--guest {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px 5px 9px;
+    border: none;
+    border-radius: 999px;
+    background: var(--primary-color);
+    color: #fff;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    height: auto;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+
+#userBtn.user-btn--guest:hover {
+    background: var(--primary-strong);
+    box-shadow: 0 4px 14px rgba(15, 118, 110, 0.28);
+    transform: translateY(-1px);
+}
+
+#userBtn.user-btn--guest:active { transform: translateY(0); }
+
+#userBtn.user-btn--guest .material-symbols-outlined { font-size: 1.2rem; }
+
+.user-guest-label {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+/* ══════════════════════════════════════════════════════════════
    Site Footer
    ══════════════════════════════════════════════════════════════ */
 .site-footer {

@@ -99,8 +99,9 @@ var Store = (function () {
             if (!_get(KEYS.notifications)) {
                 _set(KEYS.notifications, []);
             }
-            if (!_get(KEYS.coupons)) {
-                _set(KEYS.coupons, typeof SEED_COUPONS !== "undefined" ? SEED_COUPONS : []);
+            var _existingCoupons = _get(KEYS.coupons);
+            if (typeof SEED_COUPONS !== "undefined" && (!_existingCoupons || _existingCoupons.length === 0)) {
+                _set(KEYS.coupons, SEED_COUPONS);
             }
             migrateSeedProductStatuses();
             migrateNewSeedProducts();
@@ -115,7 +116,7 @@ var Store = (function () {
         _set(KEYS.orders,          typeof SEED_ORDERS         !== "undefined" ? SEED_ORDERS         : []);
         _set(KEYS.cart, []);
         _set(KEYS.notifications,   typeof SEED_NOTIFICATIONS  !== "undefined" ? SEED_NOTIFICATIONS  : []);
-        _set(KEYS.coupons,         typeof SEED_COUPONS        !== "undefined" ? SEED_COUPONS        : []);
+        if (typeof SEED_COUPONS !== "undefined") _set(KEYS.coupons, SEED_COUPONS);
 
         localStorage.setItem(KEYS.seeded, "true");
         migrateProductSchema();

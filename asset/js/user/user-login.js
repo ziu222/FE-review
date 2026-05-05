@@ -19,13 +19,15 @@ function renderUser() {
 
   if (!user) {
     userBtn.classList.remove("user-btn--logged-in");
-    // Restore icon font so "person" renders as a symbol
-    userContent.className = "material-symbols-outlined";
-    userContent.textContent = "person";
+    userBtn.classList.add("user-btn--guest");
+    userContent.className = "user-content-pill";
+    userContent.innerHTML = `<span class="material-symbols-outlined">person</span><span class="user-guest-label">Login</span>`;
     if (userMenu) { userMenu.classList.add("hidden"); userMenu.style.display = ""; }
     userBtn.onclick = () => { window.location.href = "login.html"; };
     return;
   }
+
+  userBtn.classList.remove("user-btn--guest");
 
   const displayName = user.name || user.username || "User";
   const initial     = displayName.charAt(0).toUpperCase();
