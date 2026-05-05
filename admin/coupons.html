@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EC SHOP - Coupon Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="../asset/css/admin-dashboard.css">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <a href="dashboard.html" class="sidebar-logo-text">EC SHOP</a>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Main</div>
+        <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="shops-manage.html" class="nav-item"><i class="fa-solid fa-store"></i> Shops</a>
+        <a href="products.html" class="nav-item"><i class="fa-solid fa-box-open"></i> Products</a>
+        <a href="orders-manage.html" class="nav-item"><i class="fa-solid fa-clipboard-list"></i> Orders</a>
+        <a href="users-manage.html" class="nav-item"><i class="fa-solid fa-users"></i> Users</a>
+        <a href="notifications.html" class="nav-item"><i class="fa-solid fa-bell"></i> Notifications</a>
+        <a href="coupons.html" class="nav-item active"><i class="fa-solid fa-tag"></i> Coupons</a>
+        <div class="nav-section-label">Support</div>
+        <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Settings</a>
+    </nav>
+</aside>
+
+<header class="topbar">
+    <h1 class="topbar-title">Coupon Management</h1>
+    <div class="topbar-right">
+        <div class="topbar-user">
+            <div class="topbar-avatar" id="topbarAvatar">A</div>
+            <span id="topbarUserName">Admin</span>
+        </div>
+        <button class="btn-logout" id="logoutBtn">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+    </div>
+</header>
+
+<main class="main-content">
+
+    <div class="stats-row stats-row-4">
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <span class="stat-card-label">Total Coupons</span>
+                <div class="stat-card-icon teal"><i class="fa-solid fa-tag"></i></div>
+            </div>
+            <div class="stat-card-value" id="statTotal">0</div>
+            <div class="stat-card-sub">All coupon codes</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <span class="stat-card-label">Active</span>
+                <div class="stat-card-icon blue"><i class="fa-solid fa-circle-check"></i></div>
+            </div>
+            <div class="stat-card-value" id="statActive">0</div>
+            <div class="stat-card-sub">Currently usable</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <span class="stat-card-label">Shop-Issued</span>
+                <div class="stat-card-icon orange"><i class="fa-solid fa-store"></i></div>
+            </div>
+            <div class="stat-card-value" id="statShopIssued">0</div>
+            <div class="stat-card-sub">From shop owners</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <span class="stat-card-label">Global</span>
+                <div class="stat-card-icon purple"><i class="fa-solid fa-globe"></i></div>
+            </div>
+            <div class="stat-card-value" id="statGlobal">0</div>
+            <div class="stat-card-sub">Site-wide codes</div>
+        </div>
+    </div>
+
+    <div class="toolbar product-toolbar">
+        <div class="toolbar-stack">
+            <div class="filter-tabs">
+                <button class="filter-tab active" type="button" data-filter="all">All</button>
+                <button class="filter-tab" type="button" data-filter="active">Active</button>
+                <button class="filter-tab" type="button" data-filter="inactive">Inactive</button>
+                <button class="filter-tab" type="button" data-filter="global">Global</button>
+                <button class="filter-tab" type="button" data-filter="shop">Shop</button>
+            </div>
+        </div>
+        <div class="toolbar-right">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="couponSearch" placeholder="Search code...">
+            </div>
+            <button class="btn-primary" type="button" id="btnNewCoupon">
+                <i class="fa-solid fa-plus"></i> New Coupon
+            </button>
+        </div>
+    </div>
+
+    <div style="overflow-x: auto;">
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Scope</th>
+                    <th>Type</th>
+                    <th>Value</th>
+                    <th>Min Order</th>
+                    <th>Used / Limit</th>
+                    <th>Expires</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="couponTableBody"></tbody>
+        </table>
+    </div>
+
+    <div class="table-empty" id="emptyState" style="display:none;">
+        <i class="fa-solid fa-tag"></i>
+        <p>No coupons found</p>
+    </div>
+
+</main>
+
+<!-- Create / Edit Modal -->
+<div class="modal-overlay" id="couponModal">
+    <div class="modal-panel">
+        <div class="modal-header">
+            <h3 id="modalTitle">New Coupon</h3>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="modalCouponId" />
+
+            <div class="form-group">
+                <label class="form-label">Code</label>
+                <input type="text" class="form-input" id="modalCode" placeholder="e.g. SUMMER25" style="text-transform:uppercase;" />
+            </div>
+
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label class="form-label">Type</label>
+                    <select class="form-input" id="modalType">
+                        <option value="percent">Percent off (%)</option>
+                        <option value="fixed">Fixed amount ($)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Value</label>
+                    <input type="number" class="form-input" id="modalValue" min="0" placeholder="e.g. 20" />
+                </div>
+            </div>
+
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label class="form-label">Min Order ($)</label>
+                    <input type="number" class="form-input" id="modalMinOrder" min="0" value="0" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Usage Limit (0 = unlimited)</label>
+                    <input type="number" class="form-input" id="modalUsageLimit" min="0" value="0" />
+                </div>
+            </div>
+
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label class="form-label">Expires At (leave blank = never)</label>
+                    <input type="date" class="form-input" id="modalExpiresAt" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Scope</label>
+                    <select class="form-input" id="modalScope">
+                        <option value="">Global (all shops)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label toggle-label">
+                    <input type="checkbox" id="modalActive" checked />
+                    <span>Active</span>
+                </label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn close" type="button" onclick="closeModal()">Cancel</button>
+            <button class="modal-btn confirm" type="button" id="btnSaveCoupon">Save</button>
+        </div>
+    </div>
+</div>
+
+<script src="../asset/js/model/coupon-data.js"></script>
+<script src="../asset/js/model/product-data.js"></script>
+<script src="../asset/js/model/user-data.js"></script>
+<script src="../asset/js/model/order-data.js"></script>
+<script src="../asset/js/model/notification-data.js"></script>
+<script src="../asset/js/core/storage.js"></script>
+<script src="../asset/js/core/auth.js"></script>
+<script src="../asset/js/admin/admin-common.js"></script>
+<script src="../asset/js/admin/admin-coupons.js"></script>
+
+</body>
+</html>
